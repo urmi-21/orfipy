@@ -7,7 +7,10 @@ import multiprocessing
 import math
 
 
-def worker(seqlist,result):
+out_bedfile=""
+out_fastafile=""
+
+def worker(seqlist,q):
     """
     start worker
     """
@@ -16,12 +19,23 @@ def worker(seqlist,result):
         thisname=k[0]
         thisseq=k[1]
         thisseq_rc=k[2]
-        #add results
-        fwd_res=orfs.get_orfs(thisseq)
-        rev_res=orfs.get_orfs(thisseq_rc,True)
-        combined=fwd_res+rev_res
-        result[thisname]=combined
-    #print('finished',len(result))
+
+        #call orf function
+        res=orfs.find_orfs(thisseq,thisseq_rc,thisname)
+        q.put(res)
+
+
+
+def listener(q):
+    '''listens for messages on the q, writes to file. '''
+    with open('sampout', 'w') as f:
+        while 1:
+            m = q.get()
+            if m == 'kill':
+                #f.write('killed')
+                break
+            f.write(str(m) + '\n')
+            f.flush()
 
 
 def list_chunks(inlist, n):
@@ -99,11 +113,12 @@ def result_to_seq(result,fastaob,minlen=30):
     return '\n'.join(seq_result)
 
 def main():
-    print("start")
     start = time.time()
-    threads=int(sys.argv[2])
+    threads=int(sys.argv[2])+2
     infasta=sys.argv[1]
     seqs = Fasta(infasta)
+    duration = time.time() - start
+    #print('Readting time',duration)
     totalseqs=len(seqs.keys())
     seqperthread=math.ceil((totalseqs/threads))
     splitlist= list(list_chunks(list(seqs.keys()),seqperthread))
@@ -113,31 +128,54 @@ def main():
     #print('splitt',splitlist)
 
     #split keys
+    #jobs = []
+    #for i in range(len(splitlist)):
+    #    thisseqlist=[]
+    #    for k in splitlist[i]:
+    #        thisname=seqs[k].name
+    #        thisseq=seqs[k][:].seq
+    #        thisseq_rc=seqs[k][:].complement.reverse.seq
+    #        thisseqlist.append((thisname,thisseq,thisseq_rc))
+    #    p = multiprocessing.Process(target=worker, args=(thisseqlist,))
+    #    jobs.append(p)
+    #    p.start()
+
+    #must use Manager queue here, or will not work
     manager = multiprocessing.Manager()
-    result = manager.dict()
+    q = manager.Queue()
+    pool = multiprocessing.Pool(threads)
+
+    #put listener to work first
+    watcher = pool.apply_async(listener, (q,))
+    #fire off workers
     jobs = []
     for i in range(len(splitlist)):
-        print('a')
         thisseqlist=[]
         for k in splitlist[i]:
             thisname=seqs[k].name
             thisseq=seqs[k][:].seq
             thisseq_rc=seqs[k][:].complement.reverse.seq
             thisseqlist.append((thisname,thisseq,thisseq_rc))
-        print('b')
-        print(i,len(splitlist))
-        p = multiprocessing.Process(target=worker, args=(thisseqlist,result))
-        jobs.append(p)
-        p.start()
+        job = pool.apply_async(worker, (thisseqlist, q))
+        jobs.append(job)
 
-    print('wait join')
-    for proc in jobs:
-        proc.join()
-    print('done join')
+    # collect results from the workers through the pool result queue
+    for job in jobs:
+        job.get()
+
+    #now we are done, kill the listener
+    q.put('kill')
+    pool.close()
+    pool.join()
+
+    #print('wait join')
+    #for proc in jobs:
+    #    proc.join()
+    #print('done join')
     duration = time.time() - start
     print('d0',duration)
     #print ('result',result)
-    fres=result_to_bed(result,seqs)
+    #fres=result_to_bed(result,seqs)
     #print (fres[0])
     #print (fres[1])
     #print(result_to_seq(result,seqs))
@@ -145,10 +183,10 @@ def main():
     print('d1',duration)
 
     #write to file
-    bedfile=infasta.split('.')[0]+'.orfs.bed'
-    orfsfile=infasta.split('.')[0]+'.orfs.fasta'
-    open(bedfile,'w').write(fres[0])
-    open(orfsfile,'w').write(fres[1])
+    #bedfile=infasta.split('.')[0]+'.orfs.bed'
+    #orfsfile=infasta.split('.')[0]+'.orfs.fasta'
+    #open(bedfile,'w').write(fres[0])
+    #open(orfsfile,'w').write(fres[1])
 
     duration = time.time() - start
     print(duration)

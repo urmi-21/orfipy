@@ -1,7 +1,21 @@
 import re
 import time
 
-def get_orfs(seq,rev_com=False):
+def find_orfs(seq,seq_rc,seqname,minlen=30):
+    fwd_res=get_orfs(seq,seqname)
+    rev_res=get_orfs(seq_rc,seqname,True)
+    combined=fwd_res+rev_res
+
+    #get result as fasta and bed
+    results=result_to_bed({seqname:combined},seq,seq_rc,minlen)
+    #print(results[0])
+    #print('XXXXXXXXXXX')
+    #print(results[1])
+
+    return results
+
+
+def get_orfs(seq,seqname,rev_com=False):
     seq_len=len(seq)
     start_codons=['ATG']
     stop_codons=['TAA','TAG','TGA']
@@ -69,7 +83,97 @@ def get_orfs(seq,rev_com=False):
         orfs_2=transform_to_sense(orfs_2,seq_len)
         orfs_3=transform_to_sense(orfs_3,seq_len)
 
+
     return[orfs_1,orfs_2,orfs_3]
+
+
+def result_to_bed(result,seq,seq_rc,minlen=30):
+    cdef list bed_result=[]
+
+    for key, value in result.items():
+        chrstart='0'
+        chrend=str(len(seq)-1)
+        totalorfs=0
+
+        #value is a tuple with three lists
+        for i in range(len(value)):
+            for orf in value[i]:
+                frame=str(i+1)
+                if i>=3:
+                    frame=str(3-(i+1)) #frames -1,-2,-3
+                orfstart=orf[0]
+                orfend=orf[1]
+                #determine strand
+                strand='+'
+                #if negative strand
+                if orfstart >= orfend:
+                    #swap start and end
+                    temp=orfstart
+                    orfstart=orfend
+                    orfend=temp
+                    strand='-'
+                #filter by len
+                thisorf_len=orfend-orfstart+1
+                #skip is short
+                if thisorf_len < minlen:
+                    continue
+                #continue is len passes
+                totalorfs+=1
+                id='ID='+key+'.'+str(totalorfs)+';ORF len:'+str(thisorf_len)+';ORF frame:'+frame
+                score='0'
+                thisorf='\t'.join([key,chrstart,chrend,id,score,strand,str(orfstart),str(orfend)])
+                bed_result.append(thisorf)
+
+    return '\n'.join(bed_result)
+
+
+def oldresult_to_bed(result,seq,seq_rc,minlen=30):
+    bed_result=[]
+    seq_result=[]
+    for key, value in result.items():
+        chrstart='0'
+        chrend=str(len(seq)-1)
+        totalorfs=0
+        #value is a tuple with three lists
+        for i in range(len(value)):
+            for orf in value[i]:
+                frame=str(i+1)
+                if i>=3:
+                    frame=str(3-(i+1)) #frames -1,-2,-3
+                orfstart=orf[0]
+                orfend=orf[1]
+                #determine strand
+                strand='+'
+                #fwd strand seq
+                thisseq=seq[orfstart:orfend+1]
+
+                #if negative strand
+                if orfstart >= orfend:
+                    thisseq=seq_rc[(len(seq)-orfstart):(len(seq)-orfend+1)]
+                    #swap start and end
+                    temp=orfstart
+                    orfstart=orfend
+                    orfend=temp
+                    strand='-'
+                #filter by len
+                if len(thisseq)<minlen:
+                    continue
+
+                totalorfs+=1
+                id='ID='+key+'.'+str(totalorfs)+';ORF len:'+str(len(thisseq))+';ORF frame:'+frame
+                score='0'
+
+                thisorf='\t'.join([key,chrstart,chrend,id,score,strand,str(orfstart),str(orfend)])
+                bed_result.append(thisorf)
+
+                ##get seq
+                thisname='>'+key+'.'+str(totalorfs)+' '+str(orfstart)+'-'+str(orfend)+'('+strand+')'+' len:'+str(len(thisseq))+' ORF frame:'+frame
+                seq_result.append(str(thisname)+'\n'+str(thisseq))
+                if not thisseq:
+                    print ("EROOORRRRRRRRRRRRRRRRRRR")
+
+    return ('\n'.join(bed_result),'\n'.join(seq_result))
+
 
 def transform_to_sense(orfs_list,total_len):
     for orf in orfs_list:
