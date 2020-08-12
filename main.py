@@ -7,20 +7,21 @@ import multiprocessing
 import math
 
 
-def worker(keys,seqs,result):
+def worker(seqlist,result):
     """
     start worker
     """
     #for each fasta find orf
-    for k in keys:
-        thisname=seqs[k].name
-        thisseq=seqs[k][:].seq
-        thisseq_rc=seqs[k][:].complement.reverse.seq
+    for k in seqlist:
+        thisname=k[0]
+        thisseq=k[1]
+        thisseq_rc=k[2]
         #add results
         fwd_res=orfs.get_orfs(thisseq)
         rev_res=orfs.get_orfs(thisseq_rc,True)
         combined=fwd_res+rev_res
         result[thisname]=combined
+    #print('finished',len(result))
 
 
 def list_chunks(inlist, n):
@@ -34,6 +35,7 @@ def result_to_bed(result,fastaob,minlen=30):
     for key, value in result.items():
         seq=fastaob[key][:].seq
         seq_rc=fastaob[key][:].reverse.complement.seq
+
         chrstart='0'
         chrend=str(len(seq)-1)
         totalorfs=0
@@ -97,8 +99,9 @@ def result_to_seq(result,fastaob,minlen=30):
     return '\n'.join(seq_result)
 
 def main():
+    print("start")
     start = time.time()
-    threads=4
+    threads=int(sys.argv[2])
     infasta=sys.argv[1]
     seqs = Fasta(infasta)
     totalseqs=len(seqs.keys())
@@ -114,18 +117,32 @@ def main():
     result = manager.dict()
     jobs = []
     for i in range(len(splitlist)):
-        p = multiprocessing.Process(target=worker, args=(splitlist[i],seqs,result))
+        print('a')
+        thisseqlist=[]
+        for k in splitlist[i]:
+            thisname=seqs[k].name
+            thisseq=seqs[k][:].seq
+            thisseq_rc=seqs[k][:].complement.reverse.seq
+            thisseqlist.append((thisname,thisseq,thisseq_rc))
+        print('b')
+        print(i,len(splitlist))
+        p = multiprocessing.Process(target=worker, args=(thisseqlist,result))
         jobs.append(p)
         p.start()
 
+    print('wait join')
     for proc in jobs:
         proc.join()
-
+    print('done join')
+    duration = time.time() - start
+    print('d0',duration)
     #print ('result',result)
     fres=result_to_bed(result,seqs)
     #print (fres[0])
     #print (fres[1])
     #print(result_to_seq(result,seqs))
+    duration = time.time() - start
+    print('d1',duration)
 
     #write to file
     bedfile=infasta.split('.')[0]+'.orfs.bed'
