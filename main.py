@@ -1,6 +1,6 @@
 import time
 import pyximport; pyximport.install()
-import orfs
+import orfipy_core as oc
 import sys
 from pyfaidx import Fasta
 import multiprocessing
@@ -21,8 +21,10 @@ def worker(seqlist,q):
         thisseq_rc=k[2]
 
         #call orf function
-        res=orfs.find_orfs(thisseq,thisseq_rc,thisname)
-        q.put(res)
+        
+        #res=oc.find_orfs(thisseq,thisseq_rc,thisname)
+        res=oc.find_orfs2(thisseq,thisseq_rc,thisname,minlen=0)
+        #q.put(res)
 
 
 
