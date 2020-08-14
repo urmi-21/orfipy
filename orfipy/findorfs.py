@@ -32,6 +32,19 @@ def worker(seqlist,minlen,starts,stops,outfile,outfmt,q):
         res=oc.find_orfs(thisseq,thisseq_rc,thisname,minlen,starts,stops)
         #q.put(res)
 
+def worker2(seqlist,minlen,starts,stops,outfile,outfmt):
+    """
+    start worker
+    """
+    #for each fasta find orf
+    for k in seqlist:
+        thisname=k[0]
+        thisseq=k[1]
+        thisseq_rc=k[2]
+        #call orf function
+        #res=oc.find_orfs(thisseq,thisseq_rc,thisname)
+        res=oc.find_orfs(thisseq,thisseq_rc,thisname,minlen,starts,stops)
+        #q.put(res)
 
 
 def listener(q):
@@ -156,6 +169,25 @@ def main(infasta,minlen,procs,starts,stops,outfile,outfmt):
     pool.close()
     #wait
     pool.join()
+    duration = time.time() - start
+    print("Finished in {0:.2f} seconds".format(duration),file=sys.stderr)
+    
+    ##test
+    #split data
+    start = time.time()
+    poolargs=[]
+    for i in range(len(splitlist)):
+        thisseqlist=[]
+        for k in splitlist[i]:
+            thisname=seqs[k].name
+            thisseq=seqs[k][:].seq
+            thisseq_rc=seqs[k][:].complement.reverse.seq
+            thisseqlist.append((thisname,thisseq,thisseq_rc))
+            poolargs.append((thisseqlist,minlen,starts,stops,outfile,outfmt))
+            
+    with multiprocessing.Pool(processes=procs) as pool:
+        results = pool.starmap(worker2, poolargs)
+    #print(results)
     duration = time.time() - start
     print("Finished in {0:.2f} seconds".format(duration),file=sys.stderr)
     
