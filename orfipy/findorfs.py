@@ -1,16 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Aug 13 20:01:56 2020
+
+@author: usingh
+"""
 import time
 import pyximport; pyximport.install()
-import orfipy_core as oc
+import orfipy.orfipy_core as oc
 import sys
 from pyfaidx import Fasta
 import multiprocessing
 import math
 
 
-out_bedfile=""
-out_fastafile=""
 
-def worker(seqlist,q):
+
+def worker(seqlist,minlen,starts,stops,outfile,outfmt,q):
     """
     start worker
     """
@@ -23,7 +29,7 @@ def worker(seqlist,q):
         #call orf function
         
         #res=oc.find_orfs(thisseq,thisseq_rc,thisname)
-        res=oc.find_orfs2(thisseq,thisseq_rc,thisname,minlen=0)
+        res=oc.find_orfs(thisseq,thisseq_rc,thisname,minlen,starts,stops)
         #q.put(res)
 
 
@@ -114,42 +120,24 @@ def result_to_seq(result,fastaob,minlen=30):
     print(seq_result)
     return '\n'.join(seq_result)
 
-def main():
+
+##########main################
+def main(infasta,minlen,procs,starts,stops,outfile,outfmt):
+    if not procs:
+        procs=multiprocessing.cpu_count()+2
     start = time.time()
-    threads=int(sys.argv[2])+2
-    infasta=sys.argv[1]
     seqs = Fasta(infasta)
-    duration = time.time() - start
-    #print('Readting time',duration)
     totalseqs=len(seqs.keys())
-    seqperthread=math.ceil((totalseqs/threads))
+    seqperthread=math.ceil((totalseqs/procs))
     splitlist= list(list_chunks(list(seqs.keys()),seqperthread))
-    #print('totalseq',totalseqs,'spt',seqperthread,'lst len',len(splitlist))
-    #for i in list_chunks(list(seqs.keys()),threads):
-    #    splitlist.append(i)
-    #print('splitt',splitlist)
-
-    #split keys
-    #jobs = []
-    #for i in range(len(splitlist)):
-    #    thisseqlist=[]
-    #    for k in splitlist[i]:
-    #        thisname=seqs[k].name
-    #        thisseq=seqs[k][:].seq
-    #        thisseq_rc=seqs[k][:].complement.reverse.seq
-    #        thisseqlist.append((thisname,thisseq,thisseq_rc))
-    #    p = multiprocessing.Process(target=worker, args=(thisseqlist,))
-    #    jobs.append(p)
-    #    p.start()
-
-    #must use Manager queue here, or will not work
+    
+    #mp manager
     manager = multiprocessing.Manager()
     q = manager.Queue()
-    pool = multiprocessing.Pool(threads)
-
+    pool = multiprocessing.Pool(procs)
     #put listener to work first
-    watcher = pool.apply_async(listener, (q,))
-    #fire off workers
+    pool.apply_async(listener, (q,))
+    #start workers
     jobs = []
     for i in range(len(splitlist)):
         thisseqlist=[]
@@ -158,41 +146,19 @@ def main():
             thisseq=seqs[k][:].seq
             thisseq_rc=seqs[k][:].complement.reverse.seq
             thisseqlist.append((thisname,thisseq,thisseq_rc))
-        job = pool.apply_async(worker, (thisseqlist, q))
+        job = pool.apply_async(worker,(thisseqlist,minlen,starts,stops,outfile,outfmt,q))
         jobs.append(job)
-
     # collect results from the workers through the pool result queue
     for job in jobs:
         job.get()
-
-    #now we are done, kill the listener
+    #kill the listener
     q.put('kill')
     pool.close()
+    #wait
     pool.join()
-
-    #print('wait join')
-    #for proc in jobs:
-    #    proc.join()
-    #print('done join')
     duration = time.time() - start
-    print('d0',duration)
-    #print ('result',result)
-    #fres=result_to_bed(result,seqs)
-    #print (fres[0])
-    #print (fres[1])
-    #print(result_to_seq(result,seqs))
-    duration = time.time() - start
-    print('d1',duration)
-
-    #write to file
-    #bedfile=infasta.split('.')[0]+'.orfs.bed'
-    #orfsfile=infasta.split('.')[0]+'.orfs.fasta'
-    #open(bedfile,'w').write(fres[0])
-    #open(orfsfile,'w').write(fres[1])
-
-    duration = time.time() - start
-    print(duration)
-
+    print("Finished in {0:.2f} seconds".format(duration),file=sys.stderr)
+    
 
 if __name__ == '__main__':
     main()

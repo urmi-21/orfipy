@@ -1,25 +1,32 @@
+#!python
+#cython: language_level=3
+"""
+Created on Thu Aug 13 20:01:56 2020
+
+@author: usingh
+"""
 import re
 import time
 
-def find_orfs(seq,seq_rc,seqname,minlen=30):
-    fwd_res=get_orfs(seq,seqname)
-    rev_res=get_orfs(seq_rc,seqname,True)
-    combined=fwd_res+rev_res
+#def find_orfs(seq,seq_rc,seqname,minlen=30):
+#    fwd_res=get_orfs(seq,seqname)
+#    rev_res=get_orfs(seq_rc,seqname,True)
+#    combined=fwd_res+rev_res
 
     #get result as fasta and bed
-    results=result_to_bed({seqname:combined},seq,seq_rc)
-    print(results)
+#    results=result_to_bed({seqname:combined},seq,seq_rc)
+#    print(results)
     #print('XXXXXXXXXXX')
     #print(results[1])
-    results=combined
-    return results
+#    results=combined
+#    return results
 
-def find_orfs2(seq,seq_rc,seqname,minlen=30):
+def find_orfs(seq,seq_rc,seqname,minlen,starts,stops):
     """
     min length is excluding stop
     """
-    fwd_res=get_orfs_new(seq,seqname,minlen)
-    rev_res=get_orfs_new(seq_rc,seqname,minlen,rev_com=True)
+    fwd_res=get_orfs(seq,seqname,minlen,starts=starts,stops=stops)
+    rev_res=get_orfs(seq_rc,seqname,minlen,rev_com=True,starts=starts,stops=stops)
     combined_orfs=fwd_res[0]+rev_res[0]
     combined_seq=fwd_res[1]+rev_res[1]
 
@@ -28,8 +35,8 @@ def find_orfs2(seq,seq_rc,seqname,minlen=30):
     #print('\n'.join(combined_seq))
     #print('XXXXXXXXXXX')
     #print(results[1])
-    orfs_to_bed12(combined_orfs,seqname,len(seq))
-    orfs_to_seq(combined_orfs,combined_seq,seqname)
+    #orfs_to_bed12(combined_orfs,seqname,len(seq))
+    #orfs_to_seq(combined_orfs,combined_seq,seqname)
     return results
 
 
@@ -117,16 +124,16 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen):
         
     
 
-def get_orfs_new(seq,seqname,minlen,start_codons=['ATG'],stop_codons=['TAA','TAG','TGA'],report_incomplete=True,rev_com=False):
+def get_orfs(seq,seqname,minlen,starts=['ATG'],stops=['TAA','TAG','TGA'],report_incomplete=True,rev_com=False):
     cdef int seq_len=len(seq)   
     #get start and stop positions
     cdef list start_positions=[]
     cdef list stop_positions=[]
     
     #re is extremely fast
-    for c in start_codons:
+    for c in starts:
         start_positions.extend([m.start() for m in re.finditer(c,seq)])
-    for c in stop_codons:
+    for c in stops:
         stop_positions.extend([m.start() for m in re.finditer(c,seq)])
     
     #sort start and stops
@@ -222,7 +229,7 @@ def transform_to_sense(orfs_list,total_len):
     
 
 
-def get_orfs(seq,seqname,rev_com=False):
+def get_orfs_old(seq,seqname,rev_com=False):
     seq_len=len(seq)
     start_codons=['ATG']
     stop_codons=['TAA','TAG','TGA']
@@ -294,7 +301,7 @@ def get_orfs(seq,seqname,rev_com=False):
     return[orfs_1,orfs_2,orfs_3]
 
 
-def result_to_bed(result,seq,seq_rc,minlen=30):
+def result_to_bed_old(result,seq,seq_rc,minlen=30):
     cdef list bed_result=[]
 
     for key, value in result.items():
