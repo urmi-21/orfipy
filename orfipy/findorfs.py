@@ -11,52 +11,18 @@ import orfipy.orfipy_core as oc
 import sys
 from pyfaidx import Fasta
 import multiprocessing
-import math
 
 
 
 
-def worker(seqlist,minlen,starts,stops,outfile,outfmt,q):
+def worker(thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep):
     """
     start worker
     """
-    #for each fasta find orf
-    for k in seqlist:
-        thisname=k[0]
-        thisseq=k[1]
-        thisseq_rc=k[2]
+    #call orf function
+    res=oc.find_orfs(thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep)
+    return res
 
-        #call orf function
-        
-        #res=oc.find_orfs(thisseq,thisseq_rc,thisname)
-        res=oc.find_orfs(thisseq,thisseq_rc,thisname,minlen,starts,stops)
-        #q.put(res)
-
-def worker2(seqlist,minlen,starts,stops,outfile,outfmt):
-    """
-    start worker
-    """
-    #for each fasta find orf
-    for k in seqlist:
-        thisname=k[0]
-        thisseq=k[1]
-        thisseq_rc=k[2]
-        #call orf function
-        #res=oc.find_orfs(thisseq,thisseq_rc,thisname)
-        res=oc.find_orfs(thisseq,thisseq_rc,thisname,minlen,starts,stops)
-        #q.put(res)
-
-
-def listener(q):
-    '''listens for messages on the q, writes to file. '''
-    with open('sampout', 'w') as f:
-        while 1:
-            m = q.get()
-            if m == 'kill':
-                #f.write('killed')
-                break
-            f.write(str(m) + '\n')
-            f.flush()
 
 
 def list_chunks(inlist, n):
@@ -64,132 +30,101 @@ def list_chunks(inlist, n):
     for i in range(0, len(inlist), n):
         yield inlist[i:i + n]
 
-def result_to_bed(result,fastaob,minlen=30):
-    bed_result=[]
-    seq_result=[]
-    for key, value in result.items():
-        seq=fastaob[key][:].seq
-        seq_rc=fastaob[key][:].reverse.complement.seq
-
-        chrstart='0'
-        chrend=str(len(seq)-1)
-        totalorfs=0
-        #value is a tuple with three lists
-        for i in range(len(value)):
-            for orf in value[i]:
-                frame=str(i+1)
-                if i>=3:
-                    frame=str(3-(i+1)) #frames -1,-2,-3
-                orfstart=orf[0]
-                orfend=orf[1]
-                #determine strand
-                strand='+'
-                #fwd strand seq
-                thisseq=seq[orfstart:orfend+1]
-
-                #if negative strand
-                if orfstart >= orfend:
-                    thisseq=seq_rc[(len(seq)-orfstart):(len(seq)-orfend+1)]
-                    #swap start and end
-                    temp=orfstart
-                    orfstart=orfend
-                    orfend=temp
-                    strand='-'
-
-                #filter by len
-                if len(thisseq)<minlen:
-                    continue
-
-                totalorfs+=1
-                id='ID='+key+'.'+str(totalorfs)+';ORF len:'+str(len(thisseq))+';ORF frame:'+frame
-                score='0'
-
-                thisorf='\t'.join([key,chrstart,chrend,id,score,strand,str(orfstart),str(orfend)])
-                bed_result.append(thisorf)
-
-                ##get seq
-                thisname='>'+key+'.'+str(totalorfs)+' '+str(orfstart)+'-'+str(orfend)+'('+strand+')'+' len:'+str(len(thisseq))+' ORF frame:'+frame
-                seq_result.append(str(thisname)+'\n'+str(thisseq))
-                if not thisseq:
-                    print ("EROOORRRRRRRRRRRRRRRRRRR")
-
-    return ('\n'.join(bed_result),'\n'.join(seq_result))
-
-def result_to_seq(result,fastaob,minlen=30):
-    seq_result=[]
-    for key, value in result.items():
-        seq=fastaob[key][:]
-        #value is a tuple with three lists
-        for i in range(len(value)):
-            for orf in value[i]:
-                thisname='>'+key+str(orf[0])+'-'+str(orf[1])
-                #seq_result.append(thisname)
-                thisseq=seq[orf[0]:orf[1]+3]
-                if len(thisseq)>=minlen:
-                    seq_result.append(str(thisname)+'\n'+str(thisseq))
-                if not thisseq:
-                    print ("EROOORRRRRRRRRRRRRRRRRRR")
-
-    print(seq_result)
-    return '\n'.join(seq_result)
 
 
 ##########main################
-def main(infasta,minlen,procs,starts,stops,outfile,outfmt):
+def main(infasta,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
+    print("orfipy")
+    ##start time
+    start = time.time()
+    
     if not procs:
         procs=multiprocessing.cpu_count()+2
-    start = time.time()
+    else:
+        procs+=2
+    
+    #read fasta file
     seqs = Fasta(infasta)
-    totalseqs=len(seqs.keys())
-    seqperthread=math.ceil((totalseqs/procs))
-    splitlist= list(list_chunks(list(seqs.keys()),seqperthread))
-    
-    #mp manager
-    manager = multiprocessing.Manager()
-    q = manager.Queue()
-    pool = multiprocessing.Pool(procs)
-    #put listener to work first
-    pool.apply_async(listener, (q,))
-    #start workers
-    jobs = []
-    for i in range(len(splitlist)):
-        thisseqlist=[]
-        for k in splitlist[i]:
-            thisname=seqs[k].name
-            thisseq=seqs[k][:].seq
-            thisseq_rc=seqs[k][:].complement.reverse.seq
-            thisseqlist.append((thisname,thisseq,thisseq_rc))
-        job = pool.apply_async(worker,(thisseqlist,minlen,starts,stops,outfile,outfmt,q))
-        jobs.append(job)
-    # collect results from the workers through the pool result queue
-    for job in jobs:
-        job.get()
-    #kill the listener
-    q.put('kill')
-    pool.close()
-    #wait
-    pool.join()
+    #totalseqs=len(seqs.keys())
     duration = time.time() - start
-    print("Finished in {0:.2f} seconds".format(duration),file=sys.stderr)
-    
-    ##test
-    #split data
-    start = time.time()
+    print("read in {0:.2f} seconds".format(duration),file=sys.stderr)
+          
+    #split data for mp
+        
     poolargs=[]
-    for i in range(len(splitlist)):
-        thisseqlist=[]
-        for k in splitlist[i]:
-            thisname=seqs[k].name
-            thisseq=seqs[k][:].seq
-            thisseq_rc=seqs[k][:].complement.reverse.seq
-            thisseqlist.append((thisname,thisseq,thisseq_rc))
-            poolargs.append((thisseqlist,minlen,starts,stops,outfile,outfmt))
-            
-    with multiprocessing.Pool(processes=procs) as pool:
-        results = pool.starmap(worker2, poolargs)
-    #print(results)
+    for s in list(seqs.keys()):
+        thisname=s
+        thisseq=str(seqs[s])
+        #thisseq=seqs[s][:].seq
+        thisseq_rc=None
+        if strand == 'b' or strand =='r':
+            thisseq_rc=seqs[s][:].complement.reverse.seq
+        poolargs.append((thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep))
+    
     duration = time.time() - start
-    print("Finished in {0:.2f} seconds".format(duration),file=sys.stderr)
+    print("split in {0:.2f} seconds".format(duration),file=sys.stderr)
+    
+    with multiprocessing.Pool(processes=procs) as pool:
+        results = pool.starmap(worker, poolargs)
+        
+    print('total res',len(results)) #should be equal to procs
+    
+    start2=time.time()
+    #f=open('sampout4','w')
+    #for l in results:
+    #    f.write(l+'\n')
+     #   print(l)
+    #f.close()
+    
+    #parse results
+    if not (bed12 or bed or dna or rna or pep):
+        #print('stdout')
+        for reslist in results:
+            print(reslist[0]) #reslist[0] contains bed
+    else:
+        if bed:
+            bf=open(bed,'w')
+        if bed12:
+            b12f=open(bed12,'w')
+        if dna:
+            dnaf=open(dna,'w')
+        if rna:
+            rnaf=open(rna,'w')
+        if pep:
+            pepf=open(pep,'w')
+        for reslist in results:
+            if bed:
+                bf.write(reslist[0]+'\n')
+            if bed12:
+                b12f.write(reslist[1]+'\n')
+            if dna:
+                dnaf.write(reslist[2]+'\n')
+            if rna:
+                rnaf.write(reslist[3]+'\n')
+            if pep:
+                pepf.write(reslist[4]+'\n')
+        #close files
+        if bed:
+            bf.close()
+        if bed12:
+            b12f.close()
+        if dna:
+            dnaf.close()
+        if rna:
+            rnaf.close()
+        if pep:
+            pepf.close()
+        
+    
+    
+    duration = time.time() - start2
+    print("write in {0:.2f} seconds".format(duration),file=sys.stderr)
+    
+    duration = time.time() - start
+    print("Processed {0:d} sequences in {1:.2f} seconds".format(len(poolargs),duration),file=sys.stderr)
+    
+    
+    
     
 
 if __name__ == '__main__':

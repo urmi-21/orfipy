@@ -38,13 +38,22 @@ def main():
     parser = argparse.ArgumentParser(description='orfipy: extract Open Reading Frames',
     usage="""
     orfipy [<options>] <infasta>
+     Specify at least one output type i.e. dna, rna, pep, bed or bed12. 
+     If not specified output is bed format to stdout.
     """)
     parser.add_argument("--procs", help="Num processes\nDefault:mp.cpu_count()")
     parser.add_argument("--starts", help="Comma-separated list of start-codons\nDefault: ATG")
     parser.add_argument("--stops", help="Comma-separated list of stop codons\nDefault: TAA,TGA,TAG")
-    parser.add_argument("--out", help="Path to out file\nDefault: None (stdout)")
-    parser.add_argument("--outfmt", help="Outfile type [(b)ed,(d)na,(r)na,(p)eptide]\ndefault: a'",default='b',choices=['b', 'd', 'r','p'])
+    
+    #output options    
+    parser.add_argument("--bed12", help="bed12 out file\nDefault: None")
+    parser.add_argument("--bed", help="bed out file\nDefault: None")
+    parser.add_argument("--dna", help="fasta (DNA) out file\nDefault: None")
+    parser.add_argument("--rna", help="fasta (RNA) out file\nDefault: None")
+    parser.add_argument("--pep", help="fasta (peptide) out file\nDefault: None")
+    
     parser.add_argument("--min", help="Minimum length of ORF\ndefault: 30'",default=30)
+    parser.add_argument("--strand", help="Strands to find ORFs [(f)orward,(r)everse,(b)oth]\ndefault: b'",default='b',choices=['f', 'r', 'b'])
     parser.add_argument('infile', help='Fasta containing sequences',action="store")
     args = parser.parse_args()
     
@@ -54,6 +63,8 @@ def main():
     minlen=args.min
     if minlen:
         minlen=int(minlen)
+    else:
+        minlen=30
     procs=args.procs
     if procs:
         procs=int(procs)
@@ -70,14 +81,20 @@ def main():
     if not validate_codons(starts,stops):
         print('Please check start/stop codon list again')
         sys.exit(1)
-    outfile=args.out
-    outfmt=args.outfmt
+    
+    strand=args.strand
+    
+    bed12=args.bed12
+    bed=args.bed
+    dna=args.dna
+    rna=args.rna
+    pep=args.pep
         
     #print(args)
-    #print(minlen,procs,starts,stops,outfile,outfmt)
+    #print(minlen,procs,starts,stops)
     
     #call main program    
-    orfipy.findorfs.main(infile,minlen,procs,starts,stops,outfile,outfmt)
+    orfipy.findorfs.main(infile,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep)
 
       
     

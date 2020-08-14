@@ -8,43 +8,86 @@ Created on Thu Aug 13 20:01:56 2020
 import re
 import time
 
-#def find_orfs(seq,seq_rc,seqname,minlen=30):
-#    fwd_res=get_orfs(seq,seqname)
-#    rev_res=get_orfs(seq_rc,seqname,True)
-#    combined=fwd_res+rev_res
 
-    #get result as fasta and bed
-#    results=result_to_bed({seqname:combined},seq,seq_rc)
-#    print(results)
-    #print('XXXXXXXXXXX')
-    #print(results[1])
-#    results=combined
-#    return results
+def get_rev_comp(seq):
+    start=time.time()
+    res=seq.replace('A','0').replace('T','A').replace('0','T').replace('G','0').replace('C','G').replace('0','C')[::-1]
+    return res
 
-def find_orfs(seq,seq_rc,seqname,minlen,starts,stops):
+def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep):
     """
     min length is excluding stop
     """
-    fwd_res=get_orfs(seq,seqname,minlen,starts=starts,stops=stops)
-    rev_res=get_orfs(seq_rc,seqname,minlen,rev_com=True,starts=starts,stops=stops)
-    combined_orfs=fwd_res[0]+rev_res[0]
-    combined_seq=fwd_res[1]+rev_res[1]
 
-    #get result as fasta and bed
-    results=combined_orfs
-    #print('\n'.join(combined_seq))
-    #print('XXXXXXXXXXX')
-    #print(results[1])
-    #orfs_to_bed12(combined_orfs,seqname,len(seq))
-    #orfs_to_seq(combined_orfs,combined_seq,seqname)
+    if strand=='b':
+        fwd_res=get_orfs(seq,seqname,minlen,starts=starts,stops=stops)
+        rev_res=get_orfs(seq_rc,seqname,minlen,rev_com=True,starts=starts,stops=stops)
+        combined_orfs=fwd_res[0]+rev_res[0]
+        combined_seq=fwd_res[1]+rev_res[1]
+    elif strand == 'f':
+        fwd_res=get_orfs(seq,seqname,minlen,starts=starts,stops=stops)
+        combined_orfs=fwd_res[0]
+        combined_seq=fwd_res[1]
+    elif strand == 'r':
+        rev_res=get_orfs(seq_rc,seqname,minlen,rev_com=True,starts=starts,stops=stops)
+        combined_orfs=rev_res[0]
+        combined_seq=rev_res[1]
+
+    
+    
+    
+    #if no output specified only return bed
+    if not (bed12 or bed or dna or rna or pep):
+        #print('stdout')
+        bedresults=orfs_to_bed12(combined_orfs,seqname,len(seq))
+        return (bedresults,)
+    
+    #compile results to return
+    results=[]
+    
+    bedresults=[]
+    bed12results=[]
+    dnaresults=[]
+    rnaresults=[]
+    pepresults=[]
+    
+    if bed:
+        bedresults=orfs_to_bed12(combined_orfs,seqname,len(seq))
+    if bed12:
+        bed12results=orfs_to_bed12(combined_orfs,seqname,len(seq))
+    if dna:
+        dnaresults=orfs_to_seq(combined_orfs,combined_seq,seqname)
+    if rna:
+        rnaresults=orfs_to_seq(combined_orfs,combined_seq,seqname,out='r')
+    if pep:
+        pepresults=orfs_to_seq(combined_orfs,combined_seq,seqname,out='p')
+        
+    
+    results.append(bedresults)
+    results.append(bed12results)
+    results.append(dnaresults)
+    results.append(rnaresults)
+    results.append(pepresults)
     return results
 
 
-def orfs_to_seq(orfs_list,seq_list,seq_name):
+def transcribe_dna(dna):
+    return dna.replace('T','U')
+def translate_dna(dna):
+    #replace Cys,Gly,Tyr,Ala last
+    return dna
+    #dna.replace('TTT','F').replace('TTC','F').replace('TTA','L').replace('TTG','L').replace('CTT','L').replace('CTC','L').replace('CTA','L').replace('CTG','L').replace('ATT','I').replace('ATC','I').replace('ATA','I').replace('ATG','M').replace('GTT','V').replace('GTC','V').replace('GTA','V').replace('GTG','V').replace('TCT','S').replace('TCC','S').replace('TCA','S').replace('TCG','S').replace('CCT','P').replace('CCC','P').replace('CCA','P').replace('CCG','P').replace('TAT','Y').replace('TAC','Y').replace('TAA','.').replace('TAG','.').replace('CAT','H').replace('CAC','H').replace('CAA','Q').replace('CAG','Q').replace('AAT','N').replace('AAC','N').replace('AAA','K').replace('AAG','K').replace('GAT','D').replace('GAC','D').replace('GAA','E').replace('GAG','E').replace('TGA','.').replace('TGG','W').replace('CGT','R').replace('CGC','R').replace('CGA','R').replace('CGG','R').replace('AGA','R').replace('AGG','R').replace('AGT','S').replace('AGC','S').replace('TGT','0').replace('TGC','0').replace('ACT','1').replace('ACC','1').replace('ACA','1').replace('ACG','1').replace('GCT','2').replace('GCC','2').replace('GCA','2').replace('GCG','2').replace('GGT','3').replace('GGC','3').replace('GGA','3').replace('GGG','3').replace('0','C').replace('1','T').replace('2','A').replace('3','G')
+    
+    
+    
+def orfs_to_seq(orfs_list,seq_list,seq_name,out='d'):
     if not len(orfs_list) == len(seq_list):
         print ("Error")
-        return None
+        return ''
+    
+        
     ind=0
+    result=[]
     for i in range(len(orfs_list)):
         pair=orfs_list[i]
         ind+=1
@@ -74,14 +117,23 @@ def orfs_to_seq(orfs_list,seq_list,seq_name):
         else:
             olen=oend-ostart+1
             otype='complete'
-                
+        
         thisorfid=seq_name+"_ORF."+str(ind)+' ['+str(ostart)+'-'+str(oend)+']('+strand+') type:'+otype+' length:'+str(olen)+' frame:'+str(frame)
-        print('>'+thisorfid+'\n'+seq_list[i])
-    
+        thisseq=seq_list[i]
+        if out=='p':
+            #convert to prot
+            thisseq=translate_dna(thisseq)
+        if out == 'r':
+            #conver to RNA
+            thisseq=transcribe_dna(thisseq)
+        result.append('>'+thisorfid+'\n'+thisseq)
+        #print('>'+thisorfid+'\n'+seq_list[i])
+    return '\n'.join(result)
 
 #compile results in bed12
 def orfs_to_bed12(orfs_list,seq_name,seqlen):
-    print(orfs_list)
+    #print(orfs_list)
+    result=[]
     ind=0
     for pair in orfs_list:
         ind+=1
@@ -118,7 +170,10 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen):
         thisorfid=seq_name+"_ORF."+str(ind)
         oid= 'ID='+thisorfid+';ORF_type='+otype+';ORF_len='+str(olen)+';ORF_frame='+str(frame)
         thisorf=seq_name+'\t'+str(0)+'\t'+str(seqlen-1)+'\t'+oid+'\t'+strand+'\t'+str(ostart)+'\t'+str(oend)+'\t'+str(0)+'\t'+str(seqlen-1)+'\t'+str(0)
-        print(thisorf)
+        #print(thisorf)
+        result.append(thisorf)
+    #return as string    
+    return '\n'.join(result)
         
             
         
