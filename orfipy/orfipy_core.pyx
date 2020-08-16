@@ -197,7 +197,7 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen):
             
 
 
-def get_orfs(seq,seqname,minlen,starts=['ATG'],stops=['TAA','TAG','TGA'],report_incomplete=True,rev_com=False):
+def get_orfs(seq,seqname,minlen,starts=['ATG'],stops=['TAA','TAG','TGA'],report_incomplete=True,rev_com=False,exclude_stop=False):
     """
 
     Parameters
@@ -226,6 +226,7 @@ def get_orfs(seq,seqname,minlen,starts=['ATG'],stops=['TAA','TAG','TGA'],report_
         DESCRIPTION.
 
     """
+    
     cdef int seq_len=len(seq)   
     #get start and stop positions
     cdef list start_positions=[]
@@ -310,15 +311,21 @@ def get_orfs(seq,seqname,minlen,starts=['ATG'],stops=['TAA','TAG','TGA'],report_
                 #print('Adding',current_start_index)
                 incomplete_found[this_frame]=1
                 if report_incomplete:
-                    current_length=seq_len-current_start_index+1
-                    current_orf_seq = seq[current_start_index:seq_len-current_length%3]
-                    current_length=len(current_orf_seq)+3 #since there is not stop codon add 3
-                    print('Addeding IC',current_start_index,' Len of IC is',current_length,'seqlen',len(current_orf_seq),current_orf_seq)
+                    current_orf_seq=seq[current_start_index:]
+                    #if seq isnt multiple of 3
+                    current_length=len(current_orf_seq)
+                    endind=current_length-(current_length%3)
+                    current_orf_seq=current_orf_seq[0:endind]
+                    current_length=len(current_orf_seq)
+                    #current_length=seq_len-current_start_index+1
+                    #current_orf_seq = seq[current_start_index:seq_len-current_length%3]
+                    #current_length=len(current_orf_seq)+3 #since there is not stop codon add 3
+                    #print('Addeding IC',current_start_index,' Len of IC is',current_length,'seqlen',len(current_orf_seq),current_orf_seq)
                     if current_length >= minlen:
                         incomplete_orfs.append([current_start_index,-1,this_frame])
                         #current_orf_seq = seq[current_start_index:1+seq_len-current_length%3]
                         incomplete_orfs_seq.append(current_orf_seq)
-                        print('Addeding IC',current_start_index)
+                        #print('Addeding IC',current_start_index)
             
                 
     
