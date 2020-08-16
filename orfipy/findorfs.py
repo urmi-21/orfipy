@@ -11,7 +11,7 @@ import orfipy.orfipy_core as oc
 import sys
 from pyfaidx import Fasta
 import multiprocessing
-
+from contextlib import closing
 
 
 
@@ -23,14 +23,21 @@ def worker(thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,
     res=oc.find_orfs(thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep)
     return res
 
+def worker2(arglist):
+    """
+    start worker
+    """
+    #call orf function
+    res=oc.find_orfs(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7],arglist[8],arglist[9],arglist[10],arglist[11])
+    return res
+
 
 
 def list_chunks(inlist, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(inlist), n):
         yield inlist[i:i + n]
-
-
+        
 
 ##########main################
 def main(infasta,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
@@ -39,9 +46,7 @@ def main(infasta,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
     start = time.time()
     
     if not procs:
-        procs=multiprocessing.cpu_count()+2
-    else:
-        procs+=2
+        procs=multiprocessing.cpu_count()
     
     #read fasta file
     seqs = Fasta(infasta)
@@ -59,22 +64,26 @@ def main(infasta,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
         thisseq_rc=None
         if strand == 'b' or strand =='r':
             thisseq_rc=seqs[s][:].complement.reverse.seq
-        poolargs.append((thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep))
+        #poolargs.append((thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep))
+        poolargs.append([thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep])
     
     duration = time.time() - start
     print("split in {0:.2f} seconds".format(duration),file=sys.stderr)
     
-    with multiprocessing.Pool(processes=procs) as pool:
-        results = pool.starmap(worker, poolargs)
+    #with multiprocessing.Pool(processes=procs,maxtasksperchild=10) as pool:
+    #    results = pool.starmap(worker, poolargs)
         
-    print('total res',len(results)) #should be equal to procs
     
+    with closing( multiprocessing.Pool(procs) ) as p:
+        results = p.imap_unordered(worker2, poolargs, 100)
+ 
+        
+    #print('total res',(results)) #should be equal to procs
+    #for i in results:
+    #    print (i)
+    #print(results[0])
     start2=time.time()
-    #f=open('sampout4','w')
-    #for l in results:
-    #    f.write(l+'\n')
-     #   print(l)
-    #f.close()
+    
     
     #parse results
     if not (bed12 or bed or dna or rna or pep):
@@ -115,7 +124,7 @@ def main(infasta,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
         if pep:
             pepf.close()
         
-    
+        
     
     duration = time.time() - start2
     print("write in {0:.2f} seconds".format(duration),file=sys.stderr)
