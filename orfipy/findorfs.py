@@ -12,6 +12,7 @@ import sys
 from pyfaidx import Fasta
 import multiprocessing
 from contextlib import closing
+#import gc
 
 
 
@@ -45,42 +46,96 @@ def main(infasta,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
     ##start time
     start = time.time()
     
+    single_mode=False
     if not procs:
-        procs=multiprocessing.cpu_count()
+        single_mode=True
+        #procs=multiprocessing.cpu_count()
     
     #read fasta file
     seqs = Fasta(infasta)
     #totalseqs=len(seqs.keys())
     duration = time.time() - start
     print("read in {0:.2f} seconds".format(duration),file=sys.stderr)
-          
-    #split data for mp
+    
+    if single_mode:
+        print('running single')
+        results=[]
+        for s in list(seqs.keys()):
+            thisname=s
+            thisseq=str(seqs[s])
+            #ignore if seq is < minlen
+            if len(thisseq)<minlen:
+                continue
+            thisseq_rc=None
+            if strand == 'b' or strand =='r':
+                thisseq_rc=seqs[s][:].complement.reverse.seq
+            res=oc.find_orfs(thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep)
+            results.append(res)
+            
+    else:
+        results=[]
+        #poolargsset=[]
+        #split data for mp
+        poolargs=[]
+        #loads all data at once, this can cause problems with big files
+        #FIX this
+        _LIMIT=50000 #1 GB
+        total_read=0
+        for s in list(seqs.keys()):
+            thisname=s
+            thisseq=str(seqs[s])
+            this_read=len(thisseq.encode('utf-8'))
+            #ignore if seq is < minlen
+            if len(thisseq)<minlen:
+                continue
+            thisseq_rc=None
+            if strand == 'b' or strand =='r':
+                thisseq_rc=seqs[s][:].complement.reverse.seq
+                this_read+=len(thisseq_rc.encode('utf-8'))
+                
+            
+            #check how much is read
+            
+            if total_read+this_read > _LIMIT:
+                print('Running',total_read,'bytes'+'total',total_read+this_read, end="\r", flush=True )
+                #print(time.ctime(), end="\r", flush=True)
+                #sys.stdout.write("\r" + time.ctime())
+                #process current seqs
+                with closing( multiprocessing.Pool(procs) ) as p:
+                    results_inner = p.imap_unordered(worker2, poolargs, 100)
+                for r in results_inner:
+                    results.append(r)
+                print('Finish Running')
+                #poolargsset.append(poolargs)
+                del poolargs
+                poolargs=[]
+                total_read=this_read
+            poolargs.append([thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep])
+            
+        #afterloop process remaining
+        with closing( multiprocessing.Pool(procs) ) as p:
+            results_inner = p.imap_unordered(worker2, poolargs, 100)
+            for r in results_inner:
+                results.append(r)
+        #poolargsset.append(poolargs)
         
-    poolargs=[]
-    #loads all data at once, this can cause problems with big files
-    #FIX this
-    for s in list(seqs.keys()):
-        thisname=s
-        thisseq=str(seqs[s])
-        #ignore if seq is < minlen
-        if len(thisseq)<minlen:
-            continue
-        thisseq_rc=None
-        if strand == 'b' or strand =='r':
-            thisseq_rc=seqs[s][:].complement.reverse.seq
-        #poolargs.append((thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep))
-        poolargs.append([thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep])
-    
-    duration = time.time() - start
-    print("split in {0:.2f} seconds".format(duration),file=sys.stderr)
-    
-    #with multiprocessing.Pool(processes=procs,maxtasksperchild=10) as pool:
-    #    results = pool.starmap(worker, poolargs)
+        #print(results)
         
+        print('XXXXXXXXXXX')
+        #print(len(poolargsset))
+        duration = time.time() - start
+        print("split in {0:.2f} seconds".format(duration),file=sys.stderr)
     
-    with closing( multiprocessing.Pool(procs) ) as p:
-        results = p.imap_unordered(worker2, poolargs, 100)
- 
+    
+        #with closing( multiprocessing.Pool(procs) ) as p:
+        #    results = p.imap_unordered(worker2, poolargs, 100)
+        #i=0
+        #for poolargs in poolargsset:
+        #    i+=1
+        #    print('processing',i)
+        #    with closing( multiprocessing.Pool(procs) ) as p:
+        #        results = p.imap_unordered(worker2, poolargs, 100)
+                
         
     #print('total res',(results)) #should be equal to procs
     #for i in results:
