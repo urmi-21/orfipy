@@ -57,10 +57,14 @@ def main(infasta,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
     #split data for mp
         
     poolargs=[]
+    #loads all data at once, this can cause problems with big files
+    #FIX this
     for s in list(seqs.keys()):
         thisname=s
         thisseq=str(seqs[s])
-        #thisseq=seqs[s][:].seq
+        #ignore if seq is < minlen
+        if len(thisseq)<minlen:
+            continue
         thisseq_rc=None
         if strand == 'b' or strand =='r':
             thisseq_rc=seqs[s][:].complement.reverse.seq
@@ -130,7 +134,7 @@ def main(infasta,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
     print("write in {0:.2f} seconds".format(duration),file=sys.stderr)
     
     duration = time.time() - start
-    print("Processed {0:d} sequences in {1:.2f} seconds".format(len(poolargs),duration),file=sys.stderr)
+    print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
     
     
     
