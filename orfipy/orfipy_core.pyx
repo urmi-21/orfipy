@@ -110,12 +110,16 @@ def orfs_to_seq(orfs_list,seq_list,seq_name,out='d'):
     ind=0
     result=[]
     for i in range(len(orfs_list)):
+        
+        #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon]
         pair=orfs_list[i]
         ind+=1
         #print(pair[0],pair[1])
         ostart=pair[0]
         oend=pair[1]
-        frame=pair[-1]+1
+        frame=pair[2]+1
+        startcodon=pair[3]
+        stopcodon=pair[4]
         #determine strand
         strand='+'
         if ostart > oend and oend >= 0:
@@ -139,7 +143,7 @@ def orfs_to_seq(orfs_list,seq_list,seq_name,out='d'):
             olen=oend-ostart+1
             otype='complete'
         
-        thisorfid=seq_name+"_ORF."+str(ind)+' ['+str(ostart)+'-'+str(oend)+']('+strand+') type:'+otype+' length:'+str(olen)+' frame:'+str(frame)
+        thisorfid=seq_name+"_ORF."+str(ind)+' ['+str(ostart)+'-'+str(oend)+']('+strand+') type:'+otype+' length:'+str(olen)+' frame:'+str(frame)+' start:'+startcodon+' stop:'+stopcodon
         thisseq=seq_list[i]
         if out=='p':
             #convert to prot
@@ -158,10 +162,13 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen):
     ind=0
     for pair in orfs_list:
         ind+=1
-        #print(pair[0],pair[1])
+        #print(pair)
+        #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon]
         ostart=pair[0]
         oend=pair[1]
-        frame=pair[-1]+1
+        frame=pair[2]+1
+        startcodon=pair[3]
+        stopcodon=pair[4]
         #determine strand
         strand='+'
         if ostart > oend and oend >= 0:
@@ -187,7 +194,7 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen):
         
         
         thisorfid=seq_name+"_ORF."+str(ind)
-        oid= 'ID='+thisorfid+';ORF_type='+otype+';ORF_len='+str(olen)+';ORF_frame='+str(frame)
+        oid= 'ID='+thisorfid+';ORF_type='+otype+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
         thisorf=seq_name+'\t'+str(0)+'\t'+str(seqlen-1)+'\t'+oid+'\t'+strand+'\t'+str(ostart)+'\t'+str(oend)+'\t'+str(0)+'\t'+str(seqlen-1)+'\t'+str(0)
         #print(thisorf)
         result.append(thisorf)
@@ -290,11 +297,15 @@ def get_orfs(seq,seqname,minlen,starts=['ATG'],stops=['TAA','TAG','TGA'],report_
             if current_stop_index > current_start_index:
                 #found ORF!! in this_frame
                 current_stop_found=True
-                current_length=current_stop_index+3-current_start_index #length including stop codon
+                current_length=current_stop_index-current_start_index #length excluding stop codon
                 #print('CL',current_length,'SI now',current_start_index)
                 if current_length >= minlen:
-                    complete_orfs.append([current_start_index,current_stop_index+2,this_frame]) #+3 to complete ORF n 0 based corrdinate
-                    current_orf_seq = seq[current_start_index:current_stop_index+3]
+                    #start and stop codons
+                    this_stop_codon=seq[current_stop_index:current_stop_index+3]
+                    this_start_codon=seq[current_start_index:current_start_index+3]
+                    #Using 0 based coordinate, slice [current_start_index,current_stop_index] will yeild the ORF without the stop codon
+                    complete_orfs.append([current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon]) 
+                    current_orf_seq = seq[current_start_index:current_stop_index] #current seq
                     complete_orfs_seq.append(current_orf_seq)
                     break
                 else:
@@ -317,13 +328,11 @@ def get_orfs(seq,seqname,minlen,starts=['ATG'],stops=['TAA','TAG','TGA'],report_
                     endind=current_length-(current_length%3)
                     current_orf_seq=current_orf_seq[0:endind]
                     current_length=len(current_orf_seq)
-                    #current_length=seq_len-current_start_index+1
-                    #current_orf_seq = seq[current_start_index:seq_len-current_length%3]
-                    #current_length=len(current_orf_seq)+3 #since there is not stop codon add 3
                     #print('Addeding IC',current_start_index,' Len of IC is',current_length,'seqlen',len(current_orf_seq),current_orf_seq)
                     if current_length >= minlen:
-                        incomplete_orfs.append([current_start_index,-1,this_frame])
-                        #current_orf_seq = seq[current_start_index:1+seq_len-current_length%3]
+                        this_stop_codon="NA"
+                        this_start_codon=seq[current_start_index:current_start_index+3]
+                        incomplete_orfs.append([current_start_index,-1,this_frame,this_start_codon,this_stop_codon])
                         incomplete_orfs_seq.append(current_orf_seq)
                         #print('Addeding IC',current_start_index)
             
