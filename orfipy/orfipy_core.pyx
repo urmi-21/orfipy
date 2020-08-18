@@ -15,8 +15,46 @@ def get_rev_comp(seq):
 
 def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep):
     """
-    min length is excluding stop
+    
+
+    Parameters
+    ----------
+    seq : TYPE
+        DESCRIPTION.
+    seq_rc : TYPE
+        DESCRIPTION.
+    seqname : TYPE
+        DESCRIPTION.
+    minlen : TYPE
+        DESCRIPTION.
+    strand : TYPE
+        DESCRIPTION.
+    starts : TYPE
+        DESCRIPTION.
+    stops : TYPE
+        DESCRIPTION.
+    bed12 : TYPE
+        DESCRIPTION.
+    bed : TYPE
+        DESCRIPTION.
+    dna : TYPE
+        DESCRIPTION.
+    rna : TYPE
+        DESCRIPTION.
+    pep : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    TYPE
+        Returns a list containing results. each list element is text. if a result type is not specified an empty list is returned at that position
+        0 results in bed format
+        1 results in bed12 format
+        2 dna seq
+        3 rna seq
+        4 peptide
     """
+    
 
     if strand=='b':
         fwd_res=get_orfs(seq,seqname,minlen,starts=starts,stops=stops)
@@ -42,7 +80,7 @@ def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pe
     if not (bed12 or bed or dna or rna or pep):
         #print('stdout')
         bedresults=orfs_to_bed12(combined_orfs,seqname,len(seq))
-        return (bedresults,)
+        return [bedresults,[],[],[],[]]
     
     #compile results to return
     results=[]

@@ -42,6 +42,9 @@ def main():
      If not specified output is bed format to stdout.
     """)
     parser.add_argument("--procs", help="Num processes\nDefault:mp.cpu_count()")
+    parser.add_argument("--single-mode", help="Run in single mode i.e. no parallel processing (SLOWER). If supplied with procs, it is ignored. \nDefault: False", dest='single', action='store_true',default=False)
+
+    
     parser.add_argument("--starts", help="Comma-separated list of start-codons\nDefault: ATG")
     parser.add_argument("--stops", help="Comma-separated list of stop codons\nDefault: TAA,TGA,TAG")
     
@@ -53,7 +56,10 @@ def main():
     parser.add_argument("--pep", help="fasta (peptide) out file\nDefault: None")
     
     parser.add_argument("--min", help="Minimum length of ORF\ndefault: 30'",default=30)
-    parser.add_argument("--strand", help="Strands to find ORFs [(f)orward,(r)everse,(b)oth]\ndefault: b'",default='b',choices=['f', 'r', 'b'])
+    parser.add_argument("--strand", help="Strands to find ORFs [(f)orward,(r)everse,(b)oth]\ndefault: b",default='b',choices=['f', 'r', 'b'])
+    
+    parser.add_argument("--chunk-size", help="Max chunk size in MB. This is useful for limiting memory usage for large fasta files. The files are processed in chunks if file size is greater than chunk. NOTE: Having smaller chunk size lowers memory usage but chunk, actual memory used by orfipy can be double the chunk size. For python < 3.8 this can not be more that 2000\nDefault: based on system memory and py version")
+    
     parser.add_argument('infile', help='Fasta containing sequences',action="store")
     args = parser.parse_args()
     
@@ -65,9 +71,11 @@ def main():
         minlen=int(minlen)
     else:
         minlen=30
+    single=args.single
     procs=args.procs
     if procs:
         procs=int(procs)
+        single=False
     starts=args.starts
     if starts:
         starts=starts.split(',')
@@ -83,6 +91,7 @@ def main():
         sys.exit(1)
     
     strand=args.strand
+    chunk_size=args.chunk_size
     
     bed12=args.bed12
     bed=args.bed
@@ -91,10 +100,11 @@ def main():
     pep=args.pep
         
     #print(args)
+    #print(single)
     #print(minlen,procs,starts,stops)
     
     #call main program    
-    orfipy.findorfs.main(infile,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep)
+    orfipy.findorfs.main(infile,minlen,procs,single,chunk_size,strand,starts,stops,bed12,bed,dna,rna,pep)
 
       
     
