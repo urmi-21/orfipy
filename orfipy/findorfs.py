@@ -168,6 +168,9 @@ def main(infasta,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
                 print('#####')
                 #for r in results_inner:
                 #    results.append(r)
+                #to list
+                rlist=list(results_inner)
+                print (rlist)
                 results.append(results_inner)
                 #write_results(results_inner,bed12,bed,dna,rna,pep)
                 del results_inner
@@ -183,6 +186,8 @@ def main(infasta,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
         with closing( multiprocessing.Pool(procs) ) as p:
             results_inner = p.imap_unordered(worker2, poolargs, 100)
         #write_results(results_inner,bed12,bed,dna,rna,pep)
+        rlist=list(results_inner)
+        print (rlist)
         results.append(results_inner)
         del results_inner
         #for r in results_inner:
