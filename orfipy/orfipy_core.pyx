@@ -72,10 +72,14 @@ def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pe
         combined_orfs=rev_res[0]
         combined_seq=rev_res[1]
         #combined_orfs=rev_res
-
+    
+    write_dna(seqname+"_dna_fasta",orfs_to_seq(combined_orfs,combined_seq,seqname))
+    #write_dna(dna,orfs_to_seq(combined_orfs,combined_seq,seqname))
+    del combined_seq
+    del combined_orfs
     #return orfs_to_bed12(combined_orfs,seqname,len(seq))
     
-    
+    '''
     #if no output specified only return bed
     if not (bed12 or bed or dna or rna or pep):
         #print('stdout')
@@ -103,14 +107,17 @@ def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pe
         pepresults=orfs_to_seq(combined_orfs,combined_seq,seqname,out='p')
         
     
-    results.append(bedresults)
-    results.append(bed12results)
-    results.append(dnaresults)
-    results.append(rnaresults)
-    results.append(pepresults)
-    return results
+    #results.append(bedresults)
+    #results.append(bed12results)
+    #results.append(dnaresults)
+    #results.append(rnaresults)
+    #results.append(pepresults)
+    #return results
+    '''
     
-
+def write_dna(file,seqs):
+    f=open(file,'a')
+    f.write(seqs+'\n')
 
 def transcribe_dna(dna):
     return dna.replace('T','U')

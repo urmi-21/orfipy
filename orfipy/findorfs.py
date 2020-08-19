@@ -84,9 +84,11 @@ def start_multiprocessor(seqs,minlen,procs,chunk_size,strand,starts,stops,bed12,
                 results_inner = p.imap_unordered(worker2, poolargs, 100)
             #print('#####')
             #convert results_inner from generator object to a list
-            rlist=list(results_inner)
+            print('tolist')
+            #rlist=list(results_inner)
+            print('tolist done')
             #write these results to file
-            write_results(rlist,bed12,bed,dna,rna,pep)
+            write_results(results_inner,bed12,bed,dna,rna,pep)
             #perfor GC
             del results_inner
             del poolargs
@@ -175,7 +177,8 @@ def worker_single(seqs,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep):
 
 
 def write_results(results,bed12,bed,dna,rna,pep):
-        
+    return 0
+    print('write start')
     #if no out type is specified
     if not (bed12 or bed or dna or rna or pep):
         #print('stdout')
@@ -215,6 +218,7 @@ def write_results(results,bed12,bed,dna,rna,pep):
         if pep:
             pepf.close()
     
+    print('write end')
     
 def init_result_files(bed12,bed,dna,rna,pep):
     #create empty files to append later
@@ -252,7 +256,7 @@ def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,b
     else:
         chunk_size=int(chunk_size)
     #check py < 3.8; if yes max chunk size can be 2000 other wise error is reported
-    if sys.version_info[2] < 8 and chunk_size > 2000:
+    if sys.version_info[1] < 8 and chunk_size > 2000:
         chunk_size = 1900
                 
     print("Setting chunk size {} MB".format(chunk_size),file=sys.stderr)
