@@ -37,7 +37,7 @@ def validate_codons(starts,stops):
 def main():
     parser = argparse.ArgumentParser(description='orfipy: extract Open Reading Frames',
     usage="""
-    orfipy [<options>] <infasta>
+    orfipy [<options>] <infasta> <outdir>
      Specify at least one output type i.e. dna, rna, pep, bed or bed12. 
      If not specified output is bed format to stdout.
     """)
@@ -60,7 +60,10 @@ def main():
     
     parser.add_argument("--chunk-size", help="Max chunk size in MB. This is useful for limiting memory usage for large fasta files. The files are processed in chunks if file size is greater than chunk. NOTE: Having smaller chunk size lowers memory usage but chunk, actual memory used by orfipy can be double the chunk size. For python < 3.8 this can not be more that 2000\nDefault: based on system memory and py version")
     
+    parser.add_argument('--outdir', help='Path to outdir',action="store")
     parser.add_argument('infile', help='Fasta containing sequences',action="store")
+    
+    
     args = parser.parse_args()
     
     infile=args.infile
@@ -98,13 +101,11 @@ def main():
     dna=args.dna
     rna=args.rna
     pep=args.pep
-        
-    #print(args)
-    #print(single)
-    #print(minlen,procs,starts,stops)
+    
+    outdir=args.outdir
     
     #call main program    
-    orfipy.findorfs.main(infile,minlen,procs,single,chunk_size,strand,starts,stops,bed12,bed,dna,rna,pep)
+    orfipy.findorfs.main(infile,minlen,procs,single,chunk_size,strand,starts,stops,bed12,bed,dna,rna,pep,outdir)
 
       
     

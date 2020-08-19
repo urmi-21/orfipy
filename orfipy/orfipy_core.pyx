@@ -54,7 +54,7 @@ def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pe
         3 rna seq
         4 peptide
     """
-    
+    #print('getting res')
 
     if strand=='b':
         fwd_res=get_orfs(seq,seqname,minlen,starts=starts,stops=stops)
@@ -73,13 +73,18 @@ def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pe
         combined_seq=rev_res[1]
         #combined_orfs=rev_res
     
-    write_dna(seqname+"_dna_fasta",orfs_to_seq(combined_orfs,combined_seq,seqname))
+    #status=write_dna(seqname+"_dna_fasta",orfs_to_seq(combined_orfs,combined_seq,seqname))
+    #if status:
+    #    print('written')
+    #else:
+    #    print('FAILLL')
     #write_dna(dna,orfs_to_seq(combined_orfs,combined_seq,seqname))
-    del combined_seq
-    del combined_orfs
+    #del combined_seq
+    #del combined_orfs
     #return orfs_to_bed12(combined_orfs,seqname,len(seq))
     
-    '''
+    #print('getting out')
+    
     #if no output specified only return bed
     if not (bed12 or bed or dna or rna or pep):
         #print('stdout')
@@ -107,17 +112,22 @@ def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pe
         pepresults=orfs_to_seq(combined_orfs,combined_seq,seqname,out='p')
         
     
-    #results.append(bedresults)
-    #results.append(bed12results)
-    #results.append(dnaresults)
-    #results.append(rnaresults)
-    #results.append(pepresults)
-    #return results
-    '''
+    results.append(bedresults)
+    results.append(bed12results)
+    results.append(dnaresults)
+    results.append(rnaresults)
+    results.append(pepresults)
+    
+    
+    return results
+    
     
 def write_dna(file,seqs):
     f=open(file,'a')
     f.write(seqs+'\n')
+    f.close()
+    print(file,'written')
+    return True
 
 def transcribe_dna(dna):
     return dna.replace('T','U')
