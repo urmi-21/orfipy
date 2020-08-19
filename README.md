@@ -1,6 +1,9 @@
 # Introduction
 orfipy is a python package to extract ORFs in extremely fast and flexible manner.
 
+## Stability
+Experimental
+
 ## Installation
 Install from source
 
