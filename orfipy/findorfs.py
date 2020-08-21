@@ -127,15 +127,15 @@ def start_imap_unordered(poolargs,procs):
     
     #return results_inner
     #results inner is generator with results
-        #write results to file
-        bed12=poolargs[0][7]
-        bed=poolargs[0][8]
-        dna=poolargs[0][9]
-        rna=poolargs[0][10]
-        pep=poolargs[0][11]
-        tmpdir=poolargs[0][12]
-        write_results_multiple(results_inner,bed12,bed,dna,rna,pep,tmpdir)
-    
+    #write results to file
+    bed12=poolargs[0][7]
+    bed=poolargs[0][8]
+    dna=poolargs[0][9]
+    rna=poolargs[0][10]
+    pep=poolargs[0][11]
+    tmpdir=poolargs[0][12]
+    write_results_multiple(results_inner,bed12,bed,dna,rna,pep,tmpdir)
+
     
 
 def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,bed12,bed,dna,rna,pep,tmpdir):

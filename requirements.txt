@@ -1,3 +1,4 @@
 regex
 cython
 pyfaidx
+psutil
