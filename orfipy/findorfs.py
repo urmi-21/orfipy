@@ -308,12 +308,11 @@ def close_result_files(fstreams):
             f.close()
     print('closed all')
     
-def concat_resultfiles(fstreams,outdir):
+def concat_resultfiles(fstreams):
     """
     Merge any temporary files, if created
     """
-    os.chdir(outdir)
-    
+    #os.chdir(outdir)    
     for f in fstreams:
         if f:
             thisfilename=f.name
@@ -377,7 +376,7 @@ def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,b
     
     close_result_files(file_streams)
     print("Concat...",file=sys.stderr)
-    concat_resultfiles(file_streams,outdir)
+    concat_resultfiles(file_streams)
         
     print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
 
