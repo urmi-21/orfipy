@@ -308,7 +308,7 @@ def close_result_files(fstreams):
             f.close()
     print('closed all')
     
-def concat_resultfiles(fstreams):
+def concat_resultfiles(fstreams,outdir):
     """
     Merge any temporary files, if created
     """
@@ -318,10 +318,12 @@ def concat_resultfiles(fstreams):
             thisfilename=f.name
             x=fstreams.index(f)
             
-            cmd='cat *.orfipytmp_'+str(x)+' >> '+thisfilename
+            cmd='cat '+outdir+'/*.orfipytmp_'+str(x)+' >> '+thisfilename
+            print('now',cmd)
             proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             out,err = proc.communicate()
-            cmd='rm *.orfipytmp_'+str(x)
+            cmd='rm '+outdir+'/*.orfipytmp_'+str(x)
+            print('now',cmd)
             proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             out,err = proc.communicate()
     
@@ -376,7 +378,7 @@ def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,b
     
     close_result_files(file_streams)
     print("Concat...",file=sys.stderr)
-    concat_resultfiles(file_streams)
+    concat_resultfiles(file_streams,outdir)
         
     print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
 
