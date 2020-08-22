@@ -171,7 +171,7 @@ def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,file_strea
             #mem=float(process.memory_info().rss)/1000000.0
             #print('Processed {0:.2f} MB:'.format(cummulative_read_bytes/1000000),'this c',total_read_bytes,'Memory usage: {0:.2f}MB'.format(mem), end="\r", flush=True,file=sys.stderr )
             #print('Processing {0:d} bytes:'.format(cummulative_read_bytes),'Current Memory usage: {0:.2f}MB'.format(mem), end="\r", flush=True,file=sys.stderr )
-            print('Processed {0:d} bytes'.format(cummulative_read_bytes), end="\r", flush=True,file=sys.stderr)
+            print('Processing {0:d} bytes'.format(cummulative_read_bytes), end="\r", flush=True,file=sys.stderr)
             #process seqs that were added to poolargs
             
             
@@ -202,7 +202,7 @@ def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,file_strea
     #after loop poolargs contains seq; process these 
     #print('executing outer',len(poolargs))
     if len(poolargs) > 0:
-        print('Processed {0:d} bytes'.format(cummulative_read_bytes), end="\r", flush=True,file=sys.stderr)
+        print('Processing {0:d} bytes'.format(cummulative_read_bytes), end="\r", flush=True,file=sys.stderr)
         if len(poolargs) < procs-2:
             #print('starting map')
             #results are written to temp files by each worker
