@@ -319,11 +319,10 @@ def concat_resultfiles(fstreams,outdir):
             x=fstreams.index(f)
             
             cmd='cat '+outdir+'/*.orfipytmp_'+str(x)+' >> '+thisfilename
-            print('now',cmd)
             proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             out,err = proc.communicate()
+            
             cmd='rm '+outdir+'/*.orfipytmp_'+str(x)
-            print('now',cmd)
             proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             out,err = proc.communicate()
     
