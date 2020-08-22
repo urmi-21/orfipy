@@ -40,11 +40,6 @@ def worker_map(arglist):
     res=oc.find_orfs(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7])
     
     #directly write to files
-    bed12=arglist[7][0]
-    bed=arglist[7][1]
-    dna=arglist[7][2]
-    rna=arglist[7][3]
-    pep=arglist[7][4]
     
     file_streams=()
     for x in range(len(arglist[7])):
@@ -312,13 +307,24 @@ def close_result_files(fstreams):
         if f:
             f.close()
     print('closed all')
-def concat_resultfiles(bed12,bed,dna,rna,pep,outdir):
+    
+def concat_resultfiles(fstreams,outdir):
     """
     Merge any temporary files, if created
     """
     os.chdir(outdir)
-    #allfiles=[file for file in os.listdir('.')]
-    #print(allfiles)
+    
+    for f in fstreams:
+        if f:
+            thisfilename=f.name
+            x=fstreams.index(f)
+            
+            cmd='*.orfipytmp_'+str(x)+' >> '+thisfilename
+            proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            out,err = proc.communicate()
+            cmd='rm *.orfipytmp_'+str(x)
+            proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            out,err = proc.communicate()
     
     #combine bed12
     if bed12:
@@ -390,18 +396,17 @@ def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,b
     if single_mode:
         worker_single(seqs, minlen, procs, strand, starts, stops, bed12, bed, dna, rna, pep,outdir)
         duration = time.time() - start
-        print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
-        
     else:
         start_multiprocs(seqs, minlen, procs, chunk_size, strand, starts, stops, file_streams, outdir)
         duration = time.time() - start
-        print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
-        
-        print("Concat...",file=sys.stderr)
-        concat_resultfiles(bed12,bed,dna,rna,pep,outdir)
-        
+             
+               
     
     close_result_files(file_streams)
+    print("Concat...",file=sys.stderr)
+    concat_resultfiles(file_streams,outdir)
+        
+    print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
 
 
 if __name__ == '__main__':
