@@ -13,7 +13,7 @@ def get_rev_comp(seq):
     res=seq.replace('A','0').replace('T','A').replace('0','T').replace('G','0').replace('C','G').replace('0','C')[::-1]
     return res
 
-def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep):
+def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,out_opts):
     """
     
 
@@ -73,20 +73,16 @@ def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pe
         combined_seq=rev_res[1]
         #combined_orfs=rev_res
     
-    #status=write_dna(seqname+"_dna_fasta",orfs_to_seq(combined_orfs,combined_seq,seqname))
-    #if status:
-    #    print('written')
-    #else:
-    #    print('FAILLL')
-    #write_dna(dna,orfs_to_seq(combined_orfs,combined_seq,seqname))
-    #del combined_seq
-    #del combined_orfs
-    #return orfs_to_bed12(combined_orfs,seqname,len(seq))
+    #out opts
     
-    #print('getting out')
+    bed=out_opts[0]
+    bed12=out_opts[1]
+    dna=out_opts[2]
+    rna=out_opts[3]
+    pep=out_opts[4]
     
     #if no output specified only return bed
-    if not (bed12 or bed or dna or rna or pep):
+    if not (bed or bed12 or dna or rna or pep):
         #print('stdout')
         bedresults=orfs_to_bed12(combined_orfs,seqname,len(seq))
         return [bedresults,[],[],[],[]]
@@ -122,22 +118,14 @@ def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,bed12,bed,dna,rna,pe
     return results
     
     
-def write_dna(file,seqs):
-    f=open(file,'a')
-    f.write(seqs+'\n')
-    f.close()
-    print(file,'written')
-    return True
 
 def transcribe_dna(dna):
     return dna.replace('T','U')
 
-
 def translate_dna(dna):    
     #add space after 3 positions; #replace Cys,Gly,Tyr,Ala last
     return " ".join(dna[i: i + 3] for i in range(0, len(dna), 3)).replace('TTT','F').replace('TTC','F').replace('TTA','L').replace('TTG','L').replace('CTT','L').replace('CTC','L').replace('CTA','L').replace('CTG','L').replace('ATT','I').replace('ATC','I').replace('ATA','I').replace('ATG','M').replace('GTT','V').replace('GTC','V').replace('GTA','V').replace('GTG','V').replace('TCT','S').replace('TCC','S').replace('TCA','S').replace('TCG','S').replace('CCT','P').replace('CCC','P').replace('CCA','P').replace('CCG','P').replace('TAT','Y').replace('TAC','Y').replace('TAA','.').replace('TAG','.').replace('CAT','H').replace('CAC','H').replace('CAA','Q').replace('CAG','Q').replace('AAT','N').replace('AAC','N').replace('AAA','K').replace('AAG','K').replace('GAT','D').replace('GAC','D').replace('GAA','E').replace('GAG','E').replace('TGA','.').replace('TGG','W').replace('CGT','R').replace('CGC','R').replace('CGA','R').replace('CGG','R').replace('AGA','R').replace('AGG','R').replace('AGT','S').replace('AGC','S').replace('TGT','0').replace('TGC','0').replace('ACT','1').replace('ACC','1').replace('ACA','1').replace('ACG','1').replace('GCT','2').replace('GCC','2').replace('GCA','2').replace('GCG','2').replace('GGT','3').replace('GGC','3').replace('GGA','3').replace('GGG','3').replace('0','C').replace('1','T').replace('2','A').replace('3','G').replace(' ','')
-    #pep=dna
-    #return pep
+    
 
 def format_fasta(seq,width=62):
     """

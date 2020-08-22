@@ -18,60 +18,48 @@ from pyfaidx import Fasta
 import subprocess
 
 
-
+'''
 def start_workers(poolargs,procs):
     
     #if large seqs start map
     if len(poolargs) < procs-2:
         #print('starting map')
         start_map(poolargs,procs)
-        #return res
+        
     else:            
         #print('starting Imap')
-        start_imap_unordered(poolargs, procs)
-        
+        results=start_imap_unordered(poolargs, procs)
+'''       
     
 def worker_map(arglist):
     """
     start worker
     """
     #call orf function
-    res=oc.find_orfs(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7],arglist[8],arglist[9],arglist[10],arglist[11])
+    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,outputs,tmpdir]
+    res=oc.find_orfs(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7])
     
-    #print(res)
-    
-    #poolargs=[thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep,tmpdir]
     #directly write to files
-    bed12=arglist[7]
-    bed=arglist[8]
-    dna=arglist[9]
-    rna=arglist[10]
-    pep=arglist[11]
+    bed12=arglist[7][0]
+    bed=arglist[7][1]
+    dna=arglist[7][2]
+    rna=arglist[7][3]
+    pep=arglist[7][4]
     
-    if bed12:
-        bed12=arglist[2]+'.tmp_bed12'
-    if bed:
-        bed=arglist[2]+'.tmp_bed'
-    if dna:
-        dna=arglist[2]+'.tmp_dna'
-    if rna:
-        rna=arglist[2]+'.tmp_rna'
-    if pep:
-        pep=arglist[2]+'.tmp_pep'
+    file_streams=()
+    for x in range(len(arglist[7])):
+        if arglist[7][x]:
+            #open stream in tmp dir
+            file_streams+=(open(os.path.join(arglist[-1],arglist[2]+'.orfipytmp_'+str(x)),'w'),)
+        else:
+            file_streams+=(None,)
     
     #write_map_results(res,bed12,bed,dna,rna,pep,arglist[12])
-    write_results_single(res,bed12,bed,dna,rna,pep,arglist[12])
-    #file=os.path.join(arglist[-1],arglist[2]+"_tmp")
-    #f=open(file,'w')
-    #f.write(res[2])
-    #f.close()
-    #del res
-    #gc.collect()
-    #print('return')
-    #return True
+    write_results_single(res,file_streams)
+    
+    del res
+    gc.collect()
 
-#def write_map_results(results,bed12,bed,dna,rna,pep,tmpdir):
-#    write_results_single(results,bed12,bed,dna,rna,pep,tmpdir)
 
 def start_map(poolargs,procs):
     """
@@ -94,16 +82,15 @@ def start_map(poolargs,procs):
     pool.map(worker_map,poolargs)
     pool.close()
     pool.join()
-    
-
 
 
 def worker_imap(arglist):
     """
     start worker
     """
+    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,outputs,tmpdir]
     #call orf function
-    res=oc.find_orfs(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7],arglist[8],arglist[9],arglist[10],arglist[11])
+    res=oc.find_orfs(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7])
     return res
     
 def start_imap_unordered(poolargs,procs):
@@ -128,17 +115,27 @@ def start_imap_unordered(poolargs,procs):
     #return results_inner
     #results inner is generator with results
     #write results to file
-    bed12=poolargs[0][7]
-    bed=poolargs[0][8]
-    dna=poolargs[0][9]
-    rna=poolargs[0][10]
-    pep=poolargs[0][11]
-    tmpdir=poolargs[0][12]
-    write_results_multiple(results_inner,bed12,bed,dna,rna,pep,tmpdir)
+    #bed12=poolargs[0][7]
+    #bed=poolargs[0][8]
+    #dna=poolargs[0][9]
+    #rna=poolargs[0][10]
+    #pep=poolargs[0][11]
+    #tmpdir=poolargs[0][12]
+    #write_results_multiple(results_inner,bed12,bed,dna,rna,pep,tmpdir)
+    #return results
+    return results_inner
 
     
 
-def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,bed12,bed,dna,rna,pep,tmpdir):
+def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,file_streams,tmpdir):
+    
+    #outputs
+    outputs=[]
+    for f in file_streams:
+        if f:
+            outputs.append(True)
+        else:
+            outputs.append(False)
     #process = psutil.Process(os.getpid())
     #poolargs contain data to be passed to mp workers
     poolargs=[]
@@ -172,7 +169,7 @@ def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,bed12,bed,
         #print(s,total_read_bytes,this_read)
         
         #add to poolargs; if limit is reached this will be reset
-        poolargs.append([thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep,tmpdir])
+        poolargs.append([thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,outputs,tmpdir])
         
         #if total_read_bytes is more than memory limit
         if total_read_bytes+1000000 >= _MEMLIMIT:
@@ -183,7 +180,18 @@ def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,bed12,bed,
             #process seqs that were added to poolargs
             
             
-            start_workers(poolargs,procs)
+            #start_workers(poolargs,procs)
+            # find ORFs in currently read data
+            if len(poolargs) < procs-2:
+                #print('starting map')
+                #results are written to temp files by each worker
+                start_map(poolargs,procs)
+            else:            
+                #print('starting Imap')
+                results=start_imap_unordered(poolargs, procs)
+                #collect and write these results
+                write_results_multiple(results,file_streams)
+                
             
             #perform GC
             #del results_inner
@@ -200,9 +208,16 @@ def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,bed12,bed,
     #print('executing outer',len(poolargs))
     if len(poolargs) > 0:
         print('Processed {0:d} bytes'.format(cummulative_read_bytes), end="\r", flush=True,file=sys.stderr)
-        start_workers(poolargs,procs)
+        if len(poolargs) < procs-2:
+            #print('starting map')
+            #results are written to temp files by each worker
+            start_map(poolargs,procs)
+        else:            
+            #print('starting Imap')
+            results=start_imap_unordered(poolargs, procs)
+            #collect and write these results
+            write_results_multiple(results,file_streams)
         #perform GC
-        #del results_inner
         del poolargs
         gc.collect()
         #create empty list
@@ -262,72 +277,45 @@ def worker_single(seqs,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep,tm
         write_results_single(res, bed12, bed, dna, rna, pep,tmp)
 
 
-def write_results_single(results,bed12,bed,dna,rna,pep,tmp=""):
-    #print(results)
-    #if no out type is specified
-    if not (bed12 or bed or dna or rna or pep):
-        #print('stdout')
-        print(results[0]) #reslist[0] contains bed
-    else:
-        if bed:
-            bf=open(os.path.join(tmp, bed),'a')
-        if bed12:
-            b12f=open(os.path.join(tmp, bed12),'a')
-        if dna:
-            dnaf=open(os.path.join(tmp, dna),'a')
-        if rna:
-            rnaf=open(os.path.join(tmp, rna),'a')
-        if pep:
-            pepf=open(os.path.join(tmp, pep),'a')
-        if bed:
-            bf.write(results[0]+'\n')
-        if bed12:
-            b12f.write(results[1]+'\n')
-        if dna:
-            dnaf.write(results[2]+'\n')
-        if rna:
-            rnaf.write(results[3]+'\n')
-        if pep:
-            pepf.write(results[4]+'\n')
-    #close files
-        if bed:
-            bf.close()
-        if bed12:
-            b12f.close()
-        if dna:
-            dnaf.close()
-        if rna:
-            rnaf.close()
-        if pep:
-            pepf.close()
+def write_results_single(results,file_streams):
+    #results is a list on n lists. each n lists contain a string; file_streams contain n streams to write n lists
+    
+    all_none=True
+    for i in range(len(file_streams)):
+        if file_streams[i]:            
+            file_streams[i].write(results[i]+'\n')
+            all_none=False
+    #no output file specified, print bed results
+    if all_none:
+        print(results[0])
 
-
-def write_results_multiple(results,bed12,bed,dna,rna,pep,tmp=""):
+def write_results_multiple(results,file_streams):
+    #results is a generator; each item in result is a list of n lists.
+    #file_streams contain n file_streams for each list in a result item
     for reslist in results:
-        write_results_single(reslist, bed12, bed, dna, rna, pep,tmp)
+        write_results_single(reslist, file_streams)
     return
     
     
-def init_result_files(bed12,bed,dna,rna,pep,tmp=""):
+def init_result_files(fileslist,tmp=""):
     #create empty files to append later
-    if bed:
-        f=open(os.path.join(tmp, bed),'w')
-        f.close()
-    if bed12:
-        f=open(os.path.join(tmp, bed12),'w')
-        f.close()
-    if dna:
-        f=open(os.path.join(tmp, dna),'w')
-        f.close()
-    if rna:
-        f=open(os.path.join(tmp, rna),'w')
-        f.close()
-    if pep:
-        f=open(os.path.join(tmp, pep),'w')
-        f.close()
+    fstreams=()
+    for f in fileslist:
+        if f:
+            fstreams=fstreams+(open(os.path.join(tmp, f),'w'),)
+        else:
+            fstreams=fstreams+(None,)
+    return fstreams
 
-
+def close_result_files(fstreams):
+    for f in fstreams:
+        if f:
+            f.close()
+    print('closed all')
 def concat_resultfiles(bed12,bed,dna,rna,pep,outdir):
+    """
+    Merge any temporary files, if created
+    """
     os.chdir(outdir)
     #allfiles=[file for file in os.listdir('.')]
     #print(allfiles)
@@ -363,6 +351,8 @@ def concat_resultfiles(bed12,bed,dna,rna,pep,outdir):
     
 ##########main################
 def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,bed,dna,rna,pep,outdir):
+    ##start time
+    start = time.time()
     
     if not outdir:
         outdir="orfipy_"+os.path.basename(infasta)+'_out'
@@ -371,12 +361,9 @@ def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,b
     #create the tmpdir; all tmp out will be stored here
     if not os.path.exists(outdir):
         os.makedirs(outdir)
+      
+    file_streams=init_result_files((bed12, bed, dna, rna, pep),tmp=outdir)    
     
-    
-    init_result_files(bed12, bed, dna, rna, pep,tmp=outdir)    
-    
-    ##start time
-    start = time.time()
     
     if not procs:
         procs=multiprocessing.cpu_count()
@@ -393,7 +380,8 @@ def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,b
         chunk_size = 1900
                 
     print("Setting chunk size {} MB".format(chunk_size),file=sys.stderr)
-    #sys.exit(1)
+    
+    
     #read fasta file
     seqs = Fasta(infasta)
     #totalseqs=len(seqs.keys())
@@ -403,16 +391,17 @@ def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,b
         worker_single(seqs, minlen, procs, strand, starts, stops, bed12, bed, dna, rna, pep,outdir)
         duration = time.time() - start
         print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
-        return
+        
     else:
-        start_multiprocs(seqs, minlen, procs, chunk_size, strand, starts, stops, bed12, bed, dna, rna, pep,outdir)
+        start_multiprocs(seqs, minlen, procs, chunk_size, strand, starts, stops, file_streams, outdir)
         duration = time.time() - start
         print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
         
         print("Concat...",file=sys.stderr)
         concat_resultfiles(bed12,bed,dna,rna,pep,outdir)
-        return
+        
     
+    close_result_files(file_streams)
 
 
 if __name__ == '__main__':
