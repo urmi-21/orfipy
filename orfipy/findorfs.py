@@ -326,33 +326,6 @@ def concat_resultfiles(fstreams,outdir):
             proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             out,err = proc.communicate()
     
-    #combine bed12
-    if bed12:
-        proc = subprocess.Popen('cat *tmp_bed12 >> '+bed12, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err = proc.communicate()
-        proc = subprocess.Popen('rm *tmp_bed12', shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err = proc.communicate()
-    if bed:
-        proc = subprocess.Popen('cat *tmp_bed >> '+bed, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err = proc.communicate()
-        proc = subprocess.Popen('rm *tmp_bed', shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err = proc.communicate()
-    if dna:
-        proc = subprocess.Popen('cat *tmp_dna >> '+dna, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err = proc.communicate()
-        proc = subprocess.Popen('rm *tmp_dna', shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err = proc.communicate()
-    if rna:
-        proc = subprocess.Popen('cat *tmp_rna >> '+rna, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err = proc.communicate()
-        proc = subprocess.Popen('rm *tmp_rna', shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err = proc.communicate()
-    if pep:
-        proc = subprocess.Popen('cat *tmp_pep >> '+pep, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err = proc.communicate()
-        proc = subprocess.Popen('rm *tmp_pep', shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err = proc.communicate()
-    
             
     
 ##########main################
