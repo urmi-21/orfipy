@@ -36,7 +36,7 @@ def worker_map(arglist):
     start worker
     """
     #call orf function
-    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, longest, byframe,outputs,tmpdir]
+    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, outputs,tmpdir]
     res=oc.start_search(*arglist[:-1])
     
     #directly write to files
@@ -83,7 +83,7 @@ def worker_imap(arglist):
     """
     start worker
     """
-    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, longest, byframe,outputs,tmpdir]
+    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, outputs,tmpdir]
     #call orf function
     #res=oc.start_search(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7])
     #pass all but last argument
@@ -114,7 +114,7 @@ def start_imap_unordered(poolargs,procs):
 
     
 
-def start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, stops, nested, partial3, partial5, longest, byframe, file_streams,tmpdir):
+def start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, stops, nested, partial3, partial5, file_streams,tmpdir):
     
     #outputs
     outputs=[]
@@ -156,7 +156,7 @@ def start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, st
         #print(s,total_read_bytes,this_read)
         
         #add to poolargs; if limit is reached this will be reset
-        poolargs.append([thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, longest, byframe,outputs,tmpdir])
+        poolargs.append([thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, outputs,tmpdir])
         
         #if total_read_bytes is more than memory limit
         if total_read_bytes+1000000 >= _MEMLIMIT:
@@ -217,7 +217,7 @@ def start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, st
     print()
     
 
-def worker_single(seqs,minlen,maxlen,strand,starts,stops,nested,partial3,partial5,longest,byframe,file_streams,tmp):
+def worker_single(seqs,minlen,maxlen,strand,starts,stops,nested,partial3,partial5,file_streams,tmp):
     """
     Perform sequential processing
 
@@ -267,7 +267,7 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,nested,partial3,partial
         thisseq_rc=None
         if strand == 'b' or strand =='r':
             thisseq_rc=seqs[s][:].complement.reverse.seq
-        res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, nested, partial3, partial5,longest, byframe, outputs)
+        res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, nested, partial3, partial5, outputs)
         write_results_single(res, file_streams)
 
 
@@ -292,6 +292,8 @@ def write_results_multiple(results,file_streams):
     
     
 def init_result_files(fileslist,tmp=""):
+    #create outdir
+    create_outdir(fileslist,tmp)
     #create empty files to append later
     fstreams=()
     for f in fileslist:
@@ -300,6 +302,13 @@ def init_result_files(fileslist,tmp=""):
         else:
             fstreams=fstreams+(None,)
     return fstreams
+
+
+def create_outdir(outlist,outdir):
+    for f in outlist:
+        if f:
+            os.makedirs(outdir)
+            return
 
 def close_result_files(fstreams):
     for f in fstreams:
@@ -325,9 +334,13 @@ def concat_resultfiles(fstreams,outdir):
             proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             out,err = proc.communicate()
     
-            
+
+
+    
+    
     
 ##########main################
+#TODO: handle longest and byframe opts
 def main(infasta,minlen,maxlen,procs,single_mode,chunk_size,strand,starts,stops,nested,partial3,partial5,longest,byframe,bed12,bed,dna,rna,pep,outdir):
     """
     
@@ -381,11 +394,7 @@ def main(infasta,minlen,maxlen,procs,single_mode,chunk_size,strand,starts,stops,
     ##start time
     start = time.time()
     
-        
-    #create the tmpdir; all tmp out will be stored here
-    if not os.path.exists(outdir):
-        os.makedirs(outdir)
-      
+         
     file_streams=init_result_files((bed12, bed, dna, rna, pep),tmp=outdir)    
     
     
@@ -413,10 +422,10 @@ def main(infasta,minlen,maxlen,procs,single_mode,chunk_size,strand,starts,stops,
     
     if single_mode:
         
-        worker_single(seqs, minlen, maxlen, strand, starts, stops, nested, partial3, partial5, longest,byframe, file_streams, outdir)
+        worker_single(seqs, minlen, maxlen, strand, starts, stops, nested, partial3, partial5, file_streams, outdir)
         duration = time.time() - start
     else:
-        start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, stops, nested,partial3,partial5,longest, byframe, file_streams, outdir)
+        start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, stops, nested,partial3,partial5, file_streams, outdir)
         duration = time.time() - start
              
                
@@ -424,6 +433,8 @@ def main(infasta,minlen,maxlen,procs,single_mode,chunk_size,strand,starts,stops,
     close_result_files(file_streams)
     print("Concat...",file=sys.stderr)
     concat_resultfiles(file_streams,outdir)
+    
+    #after writing all files, write additional file for longest and bystrand
         
     print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
 

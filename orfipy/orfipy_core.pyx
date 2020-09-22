@@ -13,9 +13,9 @@ def get_rev_comp(seq):
     res=seq.replace('A','0').replace('T','A').replace('0','T').replace('G','0').replace('C','G').replace('0','C')[::-1]
     return res
 
-def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, longest,byframe,out_opts):
+def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, out_opts):
     
-    print('find_orfs params:',seqname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, longest,byframe,out_opts)
+    print('find_orfs params:',seqname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, out_opts)
     
     """
     
@@ -60,21 +60,25 @@ def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,nested, pa
     #print('getting res')
 
     if strand=='b':
-        fwd_res=get_orfs(seq,seqname,minlen,starts=starts,stops=stops)
-        rev_res=get_orfs(seq_rc,seqname,minlen,rev_com=True,starts=starts,stops=stops)
+        #run on fwd strand    
+        fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
+        #run of rev complemnt strand
+        rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
         combined_orfs=fwd_res[0]+rev_res[0]
         combined_seq=fwd_res[1]+rev_res[1]
-        #combined_orfs=fwd_res+rev_res
+        
     elif strand == 'f':
-        fwd_res=get_orfs(seq,seqname,minlen,starts=starts,stops=stops)
+        #run on only fwd strand
+        fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
         combined_orfs=fwd_res[0]
         combined_seq=fwd_res[1]
-        #combined_orfs=fwd_res
+        
     elif strand == 'r':
-        rev_res=get_orfs(seq_rc,seqname,minlen,rev_com=True,starts=starts,stops=stops)
+        #run on only rev comp strand
+        rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
         combined_orfs=rev_res[0]
         combined_seq=rev_res[1]
-        #combined_orfs=rev_res
+        
     
     #out opts
     
@@ -249,8 +253,17 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen):
         
             
 
-
-def get_orfs(seq,seqname,minlen,starts=['ATG'],stops=['TAA','TAG','TGA'],report_incomplete=True,rev_com=False,exclude_stop=False):
+#TODO: implement nested,partial3 options
+def get_orfs(seq,
+             seqname,
+             minlen,
+             maxlen,
+             starts=['ATG'],
+             stops=['TAA','TAG','TGA'],
+             nested=False, 
+             partial3=False, 
+             partial5=False, 
+             rev_com=False):
     """
 
     Parameters
@@ -367,7 +380,8 @@ def get_orfs(seq,seqname,minlen,starts=['ATG'],stops=['TAA','TAG','TGA'],report_
             if incomplete_found[this_frame] < 0:
                 #print('Adding',current_start_index)
                 incomplete_found[this_frame]=1
-                if report_incomplete:
+                #ORFs without a stop
+                if partial5:
                     current_orf_seq=seq[current_start_index:]
                     #if seq isnt multiple of 3
                     current_length=len(current_orf_seq)
