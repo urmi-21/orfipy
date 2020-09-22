@@ -8,6 +8,7 @@ Created on Wed Aug 12 18:57:38 2020
 import argparse
 import orfipy.findorfs
 import sys
+import os
 
 def validate_codons(starts,stops):
     validalphabets=['A','C','T','G']
@@ -37,30 +38,44 @@ def validate_codons(starts,stops):
 def main():
     parser = argparse.ArgumentParser(description='orfipy: extract Open Reading Frames',
     usage="""
-    orfipy [<options>] <infasta> <outdir>
+    orfipy [<options>] <infasta>
      Specify at least one output type i.e. dna, rna, pep, bed or bed12. 
      If not specified output is bed format to stdout.
     """)
     parser.add_argument("--procs", help="Num processes\nDefault:mp.cpu_count()")
-    parser.add_argument("--single-mode", help="Run in single mode i.e. no parallel processing (SLOWER). If supplied with procs, it is ignored. \nDefault: False", dest='single', action='store_true',default=False)
+    parser.add_argument("--single-mode", help="Run in single mode i.e. no parallel processing (SLOWER). If supplied with procs, this is ignored. \nDefault: False", dest='single', action='store_true',default=False)
 
     
     parser.add_argument("--starts", help="Comma-separated list of start-codons\nDefault: ATG")
     parser.add_argument("--stops", help="Comma-separated list of stop codons\nDefault: TAA,TGA,TAG")
     
     #output options    
+    parser.add_argument('--outdir', help='Path to outdir\ndefault: orfipy_<infasta>_out',action="store")
     parser.add_argument("--bed12", help="bed12 out file\nDefault: None")
     parser.add_argument("--bed", help="bed out file\nDefault: None")
     parser.add_argument("--dna", help="fasta (DNA) out file\nDefault: None")
     parser.add_argument("--rna", help="fasta (RNA) out file\nDefault: None")
     parser.add_argument("--pep", help="fasta (peptide) out file\nDefault: None")
+    parser.add_argument("--min", help="Minimum length of ORF, excluding stop codon (nucleotide)\nDefault: 30",default=30)
+    parser.add_argument("--max", help="Maximum length of ORF, excluding stop codon (nucleotide)\nDefault: inf",default=100000000000000)
+    parser.add_argument("--strand", help="Strands to find ORFs [(f)orward,(r)everse,(b)oth]\nDefault: b",default='b',choices=['f', 'r', 'b'])
+    parser.add_argument("--nested", help="Output nested and overlapping ORFs in the same frame \nDefault: False",default=False,dest='nested', action='store_true')
+    parser.add_argument("--partial-3", help="Output ORFs lacking a start codon\nDefault: False",default=False,dest='partial3', action='store_true')
+    parser.add_argument("--partial-5", help="Output ORFs lacking a stop codon\nDefault: False",default=False,dest='partial5', action='store_true')
+    parser.add_argument("--longest", help="Output only longest ORFs per sequence\nDefault: False",default=False,dest='longest', action='store_true')
+    parser.add_argument("--byframe", help="Write ORFs output by frame\nDefault: False",default=False,dest='byframe', action='store_true')
     
-    parser.add_argument("--min", help="Minimum length of ORF\ndefault: 30'",default=30)
-    parser.add_argument("--strand", help="Strands to find ORFs [(f)orward,(r)everse,(b)oth]\ndefault: b",default='b',choices=['f', 'r', 'b'])
     
-    parser.add_argument("--chunk-size", help="Max chunk size in MB. This is useful for limiting memory usage for large fasta files. The files are processed in chunks if file size is greater than chunk. NOTE: Having smaller chunk size lowers memory usage but chunk, actual memory used by orfipy can be double the chunk size. For python < 3.8 this can not be more that 2000\nDefault: based on system memory and py version")
     
-    parser.add_argument('--outdir', help='Path to outdir',action="store")
+    parser.add_argument("--chunk-size", help="""Max chunk size in MB. This is useful for limiting memory usage when processing large fasta files using multiple processes
+                        The files are processed in chunks if file size is greater than chunk-size. 
+                        By default orfipy computes the chunk size based on available memory and cpu cores.
+                        Providing a smaller chunk-size will lower the memory usage but, actual memory used by orfipy can be more than the chunk-size. 
+                        Providing a very high chunk-size can lead to memory problems. 
+                        It is best to let orfipy decide on the chunk-size.
+                        \nDefault: estimated by orfipy based on system memory and cpu""")
+    
+    
     parser.add_argument('infile', help='Fasta containing sequences',action="store")
     
     
@@ -74,6 +89,14 @@ def main():
         minlen=int(minlen)
     else:
         minlen=30
+    #maxlen
+    maxlen=args.max
+    if maxlen:
+        maxlen=int(maxlen)
+    else:
+        maxlen=1000000000000
+    
+    
     single=args.single
     procs=args.procs
     if procs:
@@ -94,6 +117,7 @@ def main():
         sys.exit(1)
     
     strand=args.strand
+    #chunk-size; if not provided, it is estimated in findorfs.py
     chunk_size=args.chunk_size
     
     bed12=args.bed12
@@ -103,13 +127,15 @@ def main():
     pep=args.pep
     
     outdir=args.outdir
+    if not outdir:
+        outdir="orfipy_"+os.path.basename(infile)+'_out'
+        #print("Temp dir is {}".format(tmpdir),file=sys.stderr)
     
+    
+    print(args)
     #call main program    
-    orfipy.findorfs.main(infile,minlen,procs,single,chunk_size,strand,starts,stops,bed12,bed,dna,rna,pep,outdir)
-
-    #add option to display all orfs (included nested)
-    #add option to report ORFs without start
-    #option to report orfs without a start codon; first available codon becomes start 
+    orfipy.findorfs.main(infile,minlen,maxlen,procs,single,chunk_size,strand,starts,stops,args.nested,args.partial3,args.partial5,args.longest,args.byframe,bed12,bed,dna,rna,pep,outdir)
+    
     
     
 if __name__ == '__main__':

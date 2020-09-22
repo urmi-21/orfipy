@@ -13,7 +13,10 @@ def get_rev_comp(seq):
     res=seq.replace('A','0').replace('T','A').replace('0','T').replace('G','0').replace('C','G').replace('0','C')[::-1]
     return res
 
-def find_orfs(seq,seq_rc,seqname,minlen,strand,starts,stops,out_opts):
+def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, longest,byframe,out_opts):
+    
+    print('find_orfs params:',seqname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, longest,byframe,out_opts)
+    
     """
     
 

@@ -36,20 +36,20 @@ def worker_map(arglist):
     start worker
     """
     #call orf function
-    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,outputs,tmpdir]
-    res=oc.find_orfs(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7])
+    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, longest, byframe,outputs,tmpdir]
+    res=oc.start_search(*arglist[:-1])
     
     #directly write to files
     
     file_streams=()
-    for x in range(len(arglist[7])):
-        if arglist[7][x]:
+    for x in range(len(arglist[-1])):
+        if arglist[-1][x]:
             #open stream in tmp dir
             file_streams+=(open(os.path.join(arglist[-1],arglist[2]+'.orfipytmp_'+str(x)),'w'),)
         else:
             file_streams+=(None,)
     
-    #write_map_results(res,bed12,bed,dna,rna,pep,arglist[12])
+    #write results to tmp dir
     write_results_single(res,file_streams)
     
     del res
@@ -83,9 +83,11 @@ def worker_imap(arglist):
     """
     start worker
     """
-    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,outputs,tmpdir]
+    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, longest, byframe,outputs,tmpdir]
     #call orf function
-    res=oc.find_orfs(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7])
+    #res=oc.start_search(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7])
+    #pass all but last argument
+    res=oc.start_search(*arglist[:-1])
     return res
     
 def start_imap_unordered(poolargs,procs):
@@ -106,23 +108,13 @@ def start_imap_unordered(poolargs,procs):
     """
     with closing( multiprocessing.Pool(procs) ) as p:
         results_inner = p.imap_unordered(worker_imap, poolargs, 100)
-    
-    #return results_inner
-    #results inner is generator with results
-    #write results to file
-    #bed12=poolargs[0][7]
-    #bed=poolargs[0][8]
-    #dna=poolargs[0][9]
-    #rna=poolargs[0][10]
-    #pep=poolargs[0][11]
-    #tmpdir=poolargs[0][12]
-    #write_results_multiple(results_inner,bed12,bed,dna,rna,pep,tmpdir)
+   
     #return results
     return results_inner
 
     
 
-def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,file_streams,tmpdir):
+def start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, stops, nested, partial3, partial5, longest, byframe, file_streams,tmpdir):
     
     #outputs
     outputs=[]
@@ -164,7 +156,7 @@ def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,file_strea
         #print(s,total_read_bytes,this_read)
         
         #add to poolargs; if limit is reached this will be reset
-        poolargs.append([thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,outputs,tmpdir])
+        poolargs.append([thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, longest, byframe,outputs,tmpdir])
         
         #if total_read_bytes is more than memory limit
         if total_read_bytes+1000000 >= _MEMLIMIT:
@@ -175,13 +167,16 @@ def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,file_strea
             #process seqs that were added to poolargs
             
             
-            #start_workers(poolargs,procs)
+            
             # find ORFs in currently read data
+            
+            #if num seq in chunk size are less --> larger seqs; call star_map
             if len(poolargs) < procs-2:
                 #print('starting map')
                 #results are written to temp files by each worker
                 start_map(poolargs,procs)
             else:            
+                #call imap unorderd for multiple smaller seqs
                 #print('starting Imap')
                 results=start_imap_unordered(poolargs, procs)
                 #collect and write these results
@@ -196,7 +191,6 @@ def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,file_strea
             poolargs=[]
             #reset total read bytes for next batch
             total_read_bytes=0
-            
             
         
     #after loop poolargs contains seq; process these 
@@ -223,15 +217,13 @@ def start_multiprocs(seqs,minlen,procs,chunk_size,strand,starts,stops,file_strea
     print()
     
 
-def worker_single(seqs,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep,tmp):
+def worker_single(seqs,minlen,maxlen,strand,starts,stops,nested,partial3,partial5,longest,byframe,file_streams,tmp):
     """
     Perform sequential processing
 
     Parameters
     ----------
     infasta : TYPE
-        DESCRIPTION.
-    minlen : TYPE
         DESCRIPTION.
     procs : TYPE
         DESCRIPTION.
@@ -258,6 +250,13 @@ def worker_single(seqs,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep,tm
 
     """
     print('orfipy single-mode',file=sys.stderr)
+    #outputs
+    outputs=[]
+    for f in file_streams:
+        if f:
+            outputs.append(True)
+        else:
+            outputs.append(False)
     #results=[]
     for s in list(seqs.keys()):
         thisname=s
@@ -268,8 +267,8 @@ def worker_single(seqs,minlen,procs,strand,starts,stops,bed12,bed,dna,rna,pep,tm
         thisseq_rc=None
         if strand == 'b' or strand =='r':
             thisseq_rc=seqs[s][:].complement.reverse.seq
-        res=oc.find_orfs(thisseq,thisseq_rc,thisname,minlen,strand,starts,stops,bed12,bed,dna,rna,pep)
-        write_results_single(res, bed12, bed, dna, rna, pep,tmp)
+        res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, nested, partial3, partial5,longest, byframe, outputs)
+        write_results_single(res, file_streams)
 
 
 def write_results_single(results,file_streams):
@@ -329,14 +328,60 @@ def concat_resultfiles(fstreams,outdir):
             
     
 ##########main################
-def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,bed,dna,rna,pep,outdir):
+def main(infasta,minlen,maxlen,procs,single_mode,chunk_size,strand,starts,stops,nested,partial3,partial5,longest,byframe,bed12,bed,dna,rna,pep,outdir):
+    """
+    
+
+    Parameters
+    ----------
+    infasta : string
+        input path to input fasta file
+    minlen : TYPE
+        DESCRIPTION.
+    maxlen : TYPE
+        DESCRIPTION.
+    procs : TYPE
+        DESCRIPTION.
+    single_mode : TYPE
+        DESCRIPTION.
+    chunk_size : TYPE
+        DESCRIPTION.
+    strand : TYPE
+        DESCRIPTION.
+    starts : TYPE
+        DESCRIPTION.
+    stops : TYPE
+        DESCRIPTION.
+    nested : TYPE
+        DESCRIPTION.
+    partial3 : TYPE
+        DESCRIPTION.
+    partial5 : TYPE
+        DESCRIPTION.
+    byframe : TYPE
+        DESCRIPTION.
+    bed12 : TYPE
+        DESCRIPTION.
+    bed : TYPE
+        DESCRIPTION.
+    dna : TYPE
+        DESCRIPTION.
+    rna : TYPE
+        DESCRIPTION.
+    pep : TYPE
+        DESCRIPTION.
+    outdir : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
     ##start time
     start = time.time()
     
-    if not outdir:
-        outdir="orfipy_"+os.path.basename(infasta)+'_out'
-        #print("Temp dir is {}".format(tmpdir),file=sys.stderr)
-    
+        
     #create the tmpdir; all tmp out will be stored here
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -351,12 +396,12 @@ def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,b
     if not chunk_size:
         #total mem in MB
         total_mem_MB=psutil.virtual_memory()[0]/1000000
-        chunk_size=int(total_mem_MB/2)
+        chunk_size=int(total_mem_MB/(procs*4))
     else:
         chunk_size=int(chunk_size)
     #check py < 3.8; if yes max chunk size can be 2000 other wise error is reported
-    if sys.version_info[1] < 8 and chunk_size > 2000:
-        chunk_size = 1900
+    #if sys.version_info[1] < 8 and chunk_size > 2000:
+    #    chunk_size = 1900
                 
     print("Setting chunk size {} MB".format(chunk_size),file=sys.stderr)
     
@@ -367,10 +412,11 @@ def main(infasta,minlen,procs,single_mode,chunk_size,strand,starts,stops,bed12,b
     
     
     if single_mode:
-        worker_single(seqs, minlen, procs, strand, starts, stops, bed12, bed, dna, rna, pep,outdir)
+        
+        worker_single(seqs, minlen, maxlen, strand, starts, stops, nested, partial3, partial5, longest,byframe, file_streams, outdir)
         duration = time.time() - start
     else:
-        start_multiprocs(seqs, minlen, procs, chunk_size, strand, starts, stops, file_streams, outdir)
+        start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, stops, nested,partial3,partial5,longest, byframe, file_streams, outdir)
         duration = time.time() - start
              
                
