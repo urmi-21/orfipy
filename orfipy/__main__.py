@@ -107,7 +107,8 @@ def main():
     #call main program    
     orfipy.findorfs.main(infile,minlen,procs,single,chunk_size,strand,starts,stops,bed12,bed,dna,rna,pep,outdir)
 
-      
+    #add option to display all orfs (included nested)
+    #add option to report ORFs without start
     
     
     
