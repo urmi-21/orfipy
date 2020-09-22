@@ -109,7 +109,7 @@ def main():
 
     #add option to display all orfs (included nested)
     #add option to report ORFs without start
-    
+    #option to report orfs without a start codon; first available codon becomes start 
     
     
 if __name__ == '__main__':
