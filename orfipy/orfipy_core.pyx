@@ -91,7 +91,7 @@ def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,nested, pa
     #if no output specified only return bed
     if not (bed or bed12 or dna or rna or pep):
         #print('stdout')
-        bedresults=orfs_to_bed12(combined_orfs,seqname,len(seq))
+        bedresults=orfs_to_bed12(combined_orfs,seqname,len(seq),starts,stops)
         return [bedresults,[],[],[],[]]
     
     #compile results to return
@@ -104,15 +104,15 @@ def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,nested, pa
     pepresults=[]
     
     if bed:
-        bedresults=orfs_to_bed12(combined_orfs,seqname,len(seq))
+        bedresults=orfs_to_bed12(combined_orfs,seqname,len(seq),starts,stops)
     if bed12:
-        bed12results=orfs_to_bed12(combined_orfs,seqname,len(seq))
+        bed12results=orfs_to_bed12(combined_orfs,seqname,len(seq),starts,stops)
     if dna:
-        dnaresults=orfs_to_seq(combined_orfs,combined_seq,seqname)
+        dnaresults=orfs_to_seq(combined_orfs,combined_seq,seqname,starts,stops)
     if rna:
-        rnaresults=orfs_to_seq(combined_orfs,combined_seq,seqname,out='r')
+        rnaresults=orfs_to_seq(combined_orfs,combined_seq,seqname,starts,stops,out='r')
     if pep:
-        pepresults=orfs_to_seq(combined_orfs,combined_seq,seqname,out='p')
+        pepresults=orfs_to_seq(combined_orfs,combined_seq,seqname,starts,stops,out='p')
         
     
     results.append(bedresults)
@@ -151,8 +151,56 @@ def format_fasta(seq,width=62):
     """
     return "\n".join(seq[i: i + width] for i in range(0, len(seq), width))
     
+def format_orf(pair,starts,stops):   
+    #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon]
+    ostart=pair[0]
+    oend=pair[1]
+    frame=pair[2]+1
+    startcodon=pair[3]
+    stopcodon=pair[4]
+    #determine strand
+    strand='+'
+    if ostart > oend and oend >= 0 and ostart >=0:
+        #reverse frame
+        strand='-'
+        #swap start end values
+        temp=ostart
+        ostart=oend
+        oend=temp
+        
+    if oend == -9 and ostart >= 0:
+        strand='-'
+        oend='NA'
+    elif oend==-1 and ostart >= 0:
+        strand='+'
+        oend='NA'
+    #handle 3primepartial
+    if ostart == -7 and oend >= 0:
+        strand='-'
+        ostart='NA'
+    elif ostart == -3 and oend >= 0:
+        strand='+'
+        ostart='NA'
+        
+    #compute len
+    if oend == 'NA':
+        olen='NA'
+        otype='5-prime-partial'
+    elif ostart == 'NA':
+        olen='NA'
+        otype='3-prime-partial'
+    else:
+        olen=oend-ostart+1
+        otype='complete'
+        
+    #special case for otype if start codon not in starts
+    if startcodon not in starts:
+        otype='3-prime-partial'
     
-def orfs_to_seq(orfs_list,seq_list,seq_name,out='d'):
+    return (ostart,oend,frame,startcodon,stopcodon,strand,otype,olen)
+    
+    
+def orfs_to_seq(orfs_list,seq_list,seq_name,starts,stops,out='d'):
     if not len(orfs_list) == len(seq_list):
         print ("Error")
         return ''
@@ -164,35 +212,8 @@ def orfs_to_seq(orfs_list,seq_list,seq_name,out='d'):
         #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon]
         pair=orfs_list[i]
         ind+=1
-        #print(pair[0],pair[1])
-        ostart=pair[0]
-        oend=pair[1]
-        frame=pair[2]+1
-        startcodon=pair[3]
-        stopcodon=pair[4]
-        #determine strand
-        strand='+'
-        if ostart > oend and oend >= 0:
-            #reverse frame
-            strand='-'
-            #swap
-            temp=ostart
-            ostart=oend
-            oend=temp
-        if oend == -9:
-            strand='-'
-            oend='NA'
-        elif oend==-1:
-            strand='+'
-            oend='NA'
-        #compute len
-        if oend == 'NA':
-            olen='NA'
-            otype='incomplete'
-        else:
-            olen=oend-ostart+1
-            otype='complete'
-        
+        #infer strand len etc...
+        ostart,oend,frame,startcodon,stopcodon,strand,otype,olen=format_orf(pair,starts,stops)        
         thisorfid=seq_name+"_ORF."+str(ind)+' ['+str(ostart)+'-'+str(oend)+']('+strand+') type:'+otype+' length:'+str(olen)+' frame:'+str(frame)+' start:'+startcodon+' stop:'+stopcodon
         thisseq=seq_list[i]
         if out=='p':
@@ -206,42 +227,15 @@ def orfs_to_seq(orfs_list,seq_list,seq_name,out='d'):
     return '\n'.join(result)
 
 #compile results in bed12
-def orfs_to_bed12(orfs_list,seq_name,seqlen):
+def orfs_to_bed12(orfs_list,seq_name,seqlen,starts,stops):
     #print(orfs_list)
     result=[]
     ind=0
     for pair in orfs_list:
         ind+=1
-        #print(pair)
         #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon]
-        ostart=pair[0]
-        oend=pair[1]
-        frame=pair[2]+1
-        startcodon=pair[3]
-        stopcodon=pair[4]
-        #determine strand
-        strand='+'
-        if ostart > oend and oend >= 0:
-            #reverse frame
-            strand='-'
-            #swap
-            temp=ostart
-            ostart=oend
-            oend=temp
-        if oend == -9:
-            strand='-'
-            oend='NA'
-        elif oend==-1:
-            strand='+'
-            oend='NA'
-        #compute len
-        if oend == 'NA':
-            olen='NA'
-            otype='incomplete'
-        else:
-            olen=oend-ostart+1
-            otype='complete'
-        
+        #infer strand len etc...
+        ostart,oend,frame,startcodon,stopcodon,strand,otype,olen=format_orf(pair,starts,stops)
         
         thisorfid=seq_name+"_ORF."+str(ind)
         oid= 'ID='+thisorfid+';ORF_type='+otype+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
@@ -253,7 +247,7 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen):
         
             
 
-#TODO: implement nested,partial3 options
+#TODO: implement maxlen, nested,partial3 options
 def get_orfs(seq,
              seqname,
              minlen,
@@ -321,9 +315,15 @@ def get_orfs(seq,
     cdef list incomplete_orfs=[]
     cdef list complete_orfs_seq=[]
     cdef list incomplete_orfs_seq=[]
-    #find all orfs
-    cdef int starts_found[3]
-    starts_found[:]=[-1,-1,-1]#indices starts found in frame 1 2 3
+    #lists to track used stop codons
+    cdef list unused_stops=[]
+    cdef list used_stops=[]
+    
+    #Starts_found point to start codons
+    #cdef int starts_found[3]
+    #starts_found[:]=[-1,-1,-1]#indices of starts found in frame 1 2 3
+    
+    #last_stop[i] store index of last stop codon in ith frame
     cdef int last_stop[3]
     last_stop[:]=[-1,-1,-1]
     cdef int current_start_index
@@ -345,8 +345,10 @@ def get_orfs(seq,
         
         #if current_start is contained in prev ORF then ignore: means this start codon lies in another ORF in same frame
         if last_stop_index >=0 and current_start_index < stops_by_frame[this_frame][last_stop_index]:
-            #print('inside',current_start_index)
-            continue
+            #if nested option is on keep this start position
+            if not nested:
+                #print('inside',current_start_index)
+                continue
         
                 
         for j in range(last_stop_index+1,len(stops_by_frame[this_frame])):
@@ -358,7 +360,7 @@ def get_orfs(seq,
                 current_stop_found=True
                 current_length=current_stop_index-current_start_index #length excluding stop codon
                 #print('CL',current_length,'SI now',current_start_index)
-                if current_length >= minlen:
+                if current_length >= minlen and current_length <= maxlen:
                     #start and stop codons
                     this_stop_codon=seq[current_stop_index:current_stop_index+3]
                     this_start_codon=seq[current_start_index:current_start_index+3]
@@ -389,15 +391,55 @@ def get_orfs(seq,
                     current_orf_seq=current_orf_seq[0:endind]
                     current_length=len(current_orf_seq)
                     #print('Addeding IC',current_start_index,' Len of IC is',current_length,'seqlen',len(current_orf_seq),current_orf_seq)
-                    if current_length >= minlen:
+                    if current_length >= minlen and current_length <= maxlen:
                         this_stop_codon="NA"
                         this_start_codon=seq[current_start_index:current_start_index+3]
                         incomplete_orfs.append([current_start_index,-1,this_frame,this_start_codon,this_stop_codon])
                         incomplete_orfs_seq.append(current_orf_seq)
                         #print('Addeding IC',current_start_index)
             
-                
-    
+    #find orfs without a start codon            
+    if partial3:
+        for orf in complete_orfs:
+            used_stops.append(orf[1])
+        for s in stop_positions:
+            if s not in used_stops:
+                unused_stops.append(s)
+        #print('USC:',unused_stops)
+        #find a start position for unused stops
+        for sind in range(len(unused_stops)):
+            current_unused_stop_index=unused_stops[sind]
+            this_frame=current_unused_stop_index%3
+            
+            #find index of current unused stop_codon
+            index_current=stops_by_frame[this_frame].index(current_unused_stop_index)
+            if index_current > 0:
+                #start will be upstream stop+3
+                upstream_stop_index=stops_by_frame[this_frame][index_current-1]
+                current_start_index=upstream_stop_index+3
+                current_length=current_unused_stop_index-current_start_index #length excluding stop codon
+                #check length and add to complete ORFs
+                if current_length >= minlen and current_length <= maxlen:
+                    #start and stop codons
+                    this_stop_codon=seq[current_unused_stop_index:current_unused_stop_index+3]
+                    this_start_codon=seq[current_start_index:current_start_index+3]
+                    #Using 0 based coordinate, slice [current_start_index,current_stop_index] will yeild the ORF without the stop codon
+                    complete_orfs.append([current_start_index,current_unused_stop_index,this_frame,this_start_codon,this_stop_codon]) 
+                    current_orf_seq = seq[current_start_index:current_unused_stop_index] #current seq
+                    complete_orfs_seq.append(current_orf_seq)
+            else:
+                #this is the first stop codon in sequence
+                current_start_index=this_frame
+                current_length=current_unused_stop_index-current_start_index #length excluding stop codon
+                if current_length >= minlen and current_length <= maxlen:
+                        this_stop_codon=seq[current_unused_stop_index:current_unused_stop_index+3]
+                        this_start_codon="NA"
+                        incomplete_orfs.append([-3,current_unused_stop_index,this_frame,this_start_codon,this_stop_codon])
+                        current_orf_seq = seq[current_start_index:current_unused_stop_index] #current seq
+                        incomplete_orfs_seq.append(current_orf_seq)
+            
+        
+        
     #print('total orfs',len(complete_orfs))
     #print('total orfs',(complete_orfs))
     #print('ic orfs',incomplete_orfs)
@@ -414,9 +456,14 @@ def get_orfs(seq,
         
         
 def transform_to_sense(orfs_list,total_len):
+    #subtract 1
     total_len-=1
     for orf in orfs_list:
-        orf[0]=total_len-orf[0]
+        if orf[0] >= 0:
+            orf[0]=total_len-orf[0]
+        else:
+            orf[0]=-7
+            
         if orf[1]>=0:
             orf[1]=total_len-orf[1]
         else:
