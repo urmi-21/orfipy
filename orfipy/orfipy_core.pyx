@@ -395,13 +395,18 @@ def get_orfs(seq,
         #failed to find a stop after searching list of stops
         #if no stops left: ORF has start codon but no downstream in-frame stop codon
         if not current_stop_found:
+            
             #print('No stops for',current_start_index)
             #this means a start codon upstream already codes for an incomplete ORF
-            if incomplete_found[this_frame] < 0:
+            if incomplete_found[this_frame] < 0 or nested:
+                current_orf_type='3-prime-partial'
+                #this orf is contained in another orf without stop codon in same frame
+                if incomplete_found[this_frame] >= 0:
+                    current_orf_type='nested'
                 #print('Adding',current_start_index)
                 incomplete_found[this_frame]=1
                 #ORFs without a stop
-                if partial5:
+                if partial3:
                     current_orf_seq=seq[current_start_index:]
                     #if seq isnt multiple of 3
                     current_length=len(current_orf_seq)
@@ -417,13 +422,13 @@ def get_orfs(seq,
                                                 this_frame,
                                                 this_start_codon,
                                                 this_stop_codon,
-                                                '5-prime-partial',
+                                                current_orf_type,
                                                 current_length])
                         incomplete_orfs_seq.append(current_orf_seq)
                         #print('Addeding IC',current_start_index)
             
     #find orfs without a start codon            
-    if partial3:
+    if partial5:
         for orf in complete_orfs:
             used_stops.append(orf[1])
         for s in stop_positions:
@@ -453,7 +458,7 @@ def get_orfs(seq,
                                           this_frame,
                                           this_start_codon,
                                           this_stop_codon,
-                                          '3-prime-partial',
+                                          '5-prime-partial',
                                           current_length]) 
                     current_orf_seq = seq[current_start_index:current_unused_stop_index] #current seq
                     complete_orfs_seq.append(current_orf_seq)
@@ -469,7 +474,7 @@ def get_orfs(seq,
                                                 this_frame,
                                                 this_start_codon,
                                                 this_stop_codon,
-                                                '3-prime-partial',
+                                                '5-prime-partial',
                                                 current_length])
                         current_orf_seq = seq[current_start_index:current_unused_stop_index] #current seq
                         incomplete_orfs_seq.append(current_orf_seq)

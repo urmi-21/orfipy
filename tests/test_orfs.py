@@ -9,11 +9,13 @@ import orfipy.orfipy_core as oc
 
 seq='ATGTTTATGAAATAGAACTAAATGCCCATG'
 orfs_pos=[[0, 12, 0, 'ATG', 'TAG', 'complete', 12], 
-         [6, 12, 0, 'ATG', 'TAG', 'nested', 6], 
-         [15, 18, 0, 'AAC', 'TAA', '3-prime-partial', 3], 
-         [21, -1, 0, 'ATG', 'NA', '5-prime-partial', 9], 
-         [-3, 7, 1, 'NA', 'TGA', '3-prime-partial', 6]]
-orfs_seq=['ATGTTTATGAAA', 'ATGAAA', 'AAC', 'ATGCCCATG', 'TGTTTA']
+          [6, 12, 0, 'ATG', 'TAG', 'nested', 6], 
+          [15, 18, 0, 'AAC', 'TAA', '5-prime-partial', 3], 
+          [21, -1, 0, 'ATG', 'NA', '3-prime-partial', 9], 
+          [27, -1, 0, 'ATG', 'NA', 'nested', 3], 
+          [-3, 7, 1, 'NA', 'TGA', '5-prime-partial', 6]]
+         
+orfs_seq=['ATGTTTATGAAA', 'ATGAAA', 'AAC', 'ATGCCCATG', 'ATG', 'TGTTTA']
          
 def test_orf_search():
     result=oc.get_orfs(seq,"seq1",0,10000,rev_com=False,nested=True, partial3=True, partial5=True)
