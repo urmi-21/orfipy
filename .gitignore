@@ -1,4 +1,6 @@
 testdata/
+tests/testout/
+
 *.swp
 *.fasta*
 # Byte-compiled / optimized / DLL files
