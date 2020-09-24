@@ -27,6 +27,6 @@ def test_transcribe():
     assert res=='AUGCUUGA'
     
 def test_translate():
-    res=oc.translate_dna('ATGCTTGAG')
+    res=oc.translate_dna('ATGCCCCTTGAGTAG')
     print(res)
-    assert res=='MLE'
+    assert res=='MPLE.'
