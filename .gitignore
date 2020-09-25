@@ -3,6 +3,7 @@ tests/testout/
 
 *.swp
 *.fasta*
+*.fai
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
