@@ -1,0 +1,4 @@
+>t1_ORF.1 [0-12](+) type:complete length:12 frame:1 start:ATG stop:TAG
+MFMK
+>t1_ORF.2 [19-28](-) type:complete length:9 frame:2 start:ATG stop:TAG
+MGI

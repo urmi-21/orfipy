@@ -14,9 +14,9 @@ pip install -e <path to orfipy>
 
 ## Examples
 
-Extract ORF sequences
+Extract ORF sequences and write ORF sequences in orfs.fa file
 ```
-orfipy input.fasta --dna orfs.fa --min 50 --procs 4
+orfipy input.fasta --dna orfs.fa --min 10 --max 10000 --procs 4 --table 1
 ```
 
 Extract ORF BED file

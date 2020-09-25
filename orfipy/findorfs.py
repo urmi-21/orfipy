@@ -276,7 +276,8 @@ def write_results_single(results,file_streams):
     
     all_none=True
     for i in range(len(file_streams)):
-        if file_streams[i]:            
+        if file_streams[i]:
+            #print('XXXXXXXXX:',results[i])            
             file_streams[i].write(results[i]+'\n')
             all_none=False
     #no output file specified, print bed results
