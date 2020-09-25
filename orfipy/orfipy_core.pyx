@@ -15,6 +15,8 @@ def get_rev_comp(seq):
 
 def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, out_opts):
     
+    
+    
     """
     
 

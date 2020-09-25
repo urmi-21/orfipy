@@ -6,9 +6,10 @@ Created on Wed Aug 12 18:57:38 2020
 @author: usingh
 """
 import argparse
-import orfipy.findorfs
 import sys
 import os
+import orfipy.translation_tables
+import orfipy.findorfs
 
 def validate_codons(starts,stops):
     validalphabets=['A','C','T','G']
@@ -45,9 +46,9 @@ def main():
     parser.add_argument("--procs", help="Num processes\nDefault:mp.cpu_count()")
     parser.add_argument("--single-mode", help="Run in single mode i.e. no parallel processing (SLOWER). If supplied with procs, this is ignored. \nDefault: False", dest='single', action='store_true',default=False)
 
-    
-    parser.add_argument("--starts", help="Comma-separated list of start-codons\nDefault: ATG")
-    parser.add_argument("--stops", help="Comma-separated list of stop codons\nDefault: TAA,TGA,TAG")
+    parser.add_argument("--table", help="<int> The translation table to use\nDefault: 1\nLits of tables at https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=cgencodes",default=1)
+    parser.add_argument("--start", help="Comma-separated list of start-codons. This will override start codons described in translation table\nDefault: Derived from the translation table selected")
+    parser.add_argument("--stop", help="Comma-separated list of stop codons. This will override stop codons described in translation table\nDefault: Derived from the translation table selected")
     
     #output options    
     parser.add_argument('--outdir', help='Path to outdir\ndefault: orfipy_<infasta>_out',action="store")
@@ -102,19 +103,25 @@ def main():
     if procs:
         procs=int(procs)
         single=False
-    starts=args.starts
-    if starts:
+        
+    #init translation table
+    tablenum=args.table
+    table=orfipy.translation_tables.translation_tables_dict[tablenum]
+    starts=table['start']
+    stops=table['stop']
+    #if start and stop are provided, override
+    if args.start:
+        starts=args.start
         starts=starts.split(',')
-    else:
-        starts=['ATG']
-    stops=args.stops
-    if stops:
+    if args.stop:
+        stops=args.stop
         stops=stops.split(',')
-    else:
-        stops=['TAA','TAG','TGA']
+    #valid start, stop codons
     if not validate_codons(starts,stops):
         print('Please check start/stop codon list again')
         sys.exit(1)
+    print('Using translation table:',table['name'],'start:',starts,'stop:',stops)
+        
     
     strand=args.strand
     #chunk-size; if not provided, it is estimated in findorfs.py

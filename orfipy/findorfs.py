@@ -342,6 +342,7 @@ def concat_resultfiles(fstreams,outdir):
 ##########main################
 #TODO: handle longest and byframe opts
 def main(infasta,minlen,maxlen,procs,single_mode,chunk_size,strand,starts,stops,nested,partial3,partial5,longest,byframe,bed12,bed,dna,rna,pep,outdir):
+    
     """
     
 
