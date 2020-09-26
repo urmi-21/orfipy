@@ -10,6 +10,7 @@ Created on Thu Sep 24 23:31:00 2020
 available translation tables compiled from https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=cgencodes
 """
 translation_tables_dict={
+    "source":"https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=cgencodes",
     "1": {
         "name": "Standard (transl_table=1)",
         "start": [

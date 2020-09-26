@@ -36,12 +36,28 @@ def validate_codons(starts,stops):
             return False
     return True
 
+
+def print_tables():
+    """
+    Print translation tables and exit
+    """
+    tab_dict=orfipy.translation_tables.translation_tables_dict
+    print ('Translation tables compiled from:',tab_dict['source'])    
+    print ('Table#','Name','Start','Stop')
+    for k in tab_dict:
+        if 'source' in k:
+            continue
+        print (k,
+               tab_dict[k]['name'],
+               '['+','.join(tab_dict[k]['start'])+']',
+               '['+','.join(tab_dict[k]['stop'])+']')
+    
+
 def main():
     parser = argparse.ArgumentParser(description='orfipy: extract Open Reading Frames',
     usage="""
     orfipy [<options>] <infasta>
-     Specify at least one output type i.e. dna, rna, pep, bed or bed12. 
-     If not specified output is bed format to stdout.
+    If no output type, i.e. dna, rna, pep, bed or bed12, is specified, default output is bed format to stdout.
     """)
     parser.add_argument("--procs", help="Num processes\nDefault:mp.cpu_count()")
     parser.add_argument("--single-mode", help="Run in single mode i.e. no parallel processing (SLOWER). If supplied with procs, this is ignored. \nDefault: False", dest='single', action='store_true',default=False)
@@ -75,14 +91,25 @@ def main():
                         Providing a very high chunk-size can lead to memory problems. 
                         It is best to let orfipy decide on the chunk-size.
                         \nDefault: estimated by orfipy based on system memory and cpu""")
+                        
+    parser.add_argument("--show-tables", help="Print translation tables and exit.\nDefault: False",default=False,dest='showtab', action='store_true')
     
     
-    parser.add_argument('infile', help='Fasta containing sequences',action="store")
+    parser.add_argument('infile', help='Fasta file with input DNA sequences',action="store",nargs="?")
     
     
     args = parser.parse_args()
     
-    infile=args.infile
+    
+    
+    if args.showtab:
+        print_tables()
+        sys.exit(0)
+        
+    infile=args.infile    
+    if not infile:
+        parser.print_help()
+        sys.exit(1)
     
     #parse args
     minlen=args.min
@@ -139,7 +166,7 @@ def main():
         #print("Temp dir is {}".format(tmpdir),file=sys.stderr)
     
     
-    print(args)
+    #print(args)
     #call main program    
     orfipy.findorfs.main(infile,minlen,maxlen,procs,single,chunk_size,strand,starts,stops,args.nested,args.partial3,args.partial5,args.longest,args.byframe,bed12,bed,dna,rna,pep,outdir)
     

@@ -39,12 +39,16 @@ def worker_map(arglist):
     #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, outputs,tmpdir]
     res=oc.start_search(*arglist[:-1])
     
-    #directly write to files
+    #directly write res to files
     
+    #first open file streams to write the results
+    #arglist[-2] is the list of output types
+    #for all true values in arglist[-2] open a files in tmp dir and write results
     file_streams=()
-    for x in range(len(arglist[-1])):
-        if arglist[-1][x]:
-            #open stream in tmp dir
+    
+    for x in range(len(arglist[-2])):
+        if arglist[-2][x]:
+            #open stream in tmpdir
             file_streams+=(open(os.path.join(arglist[-1],arglist[2]+'.orfipytmp_'+str(x)),'w'),)
         else:
             file_streams+=(None,)
@@ -277,7 +281,6 @@ def write_results_single(results,file_streams):
     all_none=True
     for i in range(len(file_streams)):
         if file_streams[i]:
-            #print('XXXXXXXXX:',results[i])            
             file_streams[i].write(results[i]+'\n')
             all_none=False
     #no output file specified, print bed results
@@ -308,7 +311,8 @@ def init_result_files(fileslist,tmp=""):
 def create_outdir(outlist,outdir):
     for f in outlist:
         if f:
-            os.makedirs(outdir)
+            if not os.path.exists(outdir):
+                os.makedirs(outdir)
             return
 
 def close_result_files(fstreams):
