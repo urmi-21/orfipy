@@ -168,7 +168,7 @@ def main():
     
     #print(args)
     #call main program    
-    orfipy.findorfs.main(infile,minlen,maxlen,procs,single,chunk_size,strand,starts,stops,args.nested,args.partial3,args.partial5,args.longest,args.byframe,bed12,bed,dna,rna,pep,outdir)
+    orfipy.findorfs.main(infile,minlen,maxlen,procs,single,chunk_size,strand,starts,stops,table['table'],args.nested,args.partial3,args.partial5,args.longest,args.byframe,bed12,bed,dna,rna,pep,outdir)
     
     
     

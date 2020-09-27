@@ -13,7 +13,7 @@ def get_rev_comp(seq):
     res=seq.replace('A','0').replace('T','A').replace('0','T').replace('G','0').replace('C','G').replace('0','C')[::-1]
     return res
 
-def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, out_opts):
+def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,nested, partial3, partial5, out_opts):
     
     
     
@@ -112,7 +112,7 @@ def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,nested, pa
     if rna:
         rnaresults=orfs_to_seq(combined_orfs,combined_seq,seqname,starts,stops,out='r')
     if pep:
-        pepresults=orfs_to_seq(combined_orfs,combined_seq,seqname,starts,stops,out='p')
+        pepresults=orfs_to_seq(combined_orfs,combined_seq,seqname,starts,stops,out='p',table=table)
         
     
     results.append(bedresults)
@@ -129,9 +129,15 @@ def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,nested, pa
 def transcribe_dna(dna):
     return dna.replace('T','U')
 
-def translate_dna(dna):    
-    #add space after 3 positions; #replace Cys,Gly,Tyr,Ala last
-    return " ".join(dna[i: i + 3] for i in range(0, len(dna), 3)).replace('TTT','F').replace('TTC','F').replace('TTA','L').replace('TTG','L').replace('CTT','L').replace('CTC','L').replace('CTA','L').replace('CTG','L').replace('ATT','I').replace('ATC','I').replace('ATA','I').replace('ATG','M').replace('GTT','V').replace('GTC','V').replace('GTA','V').replace('GTG','V').replace('TCT','S').replace('TCC','S').replace('TCA','S').replace('TCG','S').replace('CCT','P').replace('CCC','P').replace('CCA','P').replace('CCG','P').replace('TAT','Y').replace('TAC','Y').replace('TAA','.').replace('TAG','.').replace('CAT','H').replace('CAC','H').replace('CAA','Q').replace('CAG','Q').replace('AAT','N').replace('AAC','N').replace('AAA','K').replace('AAG','K').replace('GAT','D').replace('GAC','D').replace('GAA','E').replace('GAG','E').replace('TGA','.').replace('TGG','W').replace('CGT','R').replace('CGC','R').replace('CGA','R').replace('CGG','R').replace('AGA','R').replace('AGG','R').replace('AGT','S').replace('AGC','S').replace('TGT','0').replace('TGC','0').replace('ACT','1').replace('ACC','1').replace('ACA','1').replace('ACG','1').replace('GCT','2').replace('GCC','2').replace('GCA','2').replace('GCG','2').replace('GGT','3').replace('GGC','3').replace('GGA','3').replace('GGG','3').replace('0','C').replace('1','T').replace('2','A').replace('3','G').replace(' ','')
+def translate_dna(dna,table):    
+    #print(table)
+    #use default translation
+    if not table:
+        #add space after 3 positions; #replace Cys,Gly,Tyr,Ala last
+        return " ".join(dna[i: i + 3] for i in range(0, len(dna), 3)).replace('TTT','F').replace('TTC','F').replace('TTA','L').replace('TTG','L').replace('CTT','L').replace('CTC','L').replace('CTA','L').replace('CTG','L').replace('ATT','I').replace('ATC','I').replace('ATA','I').replace('ATG','M').replace('GTT','V').replace('GTC','V').replace('GTA','V').replace('GTG','V').replace('TCT','S').replace('TCC','S').replace('TCA','S').replace('TCG','S').replace('CCT','P').replace('CCC','P').replace('CCA','P').replace('CCG','P').replace('TAT','Y').replace('TAC','Y').replace('TAA','*').replace('TAG','*').replace('CAT','H').replace('CAC','H').replace('CAA','Q').replace('CAG','Q').replace('AAT','N').replace('AAC','N').replace('AAA','K').replace('AAG','K').replace('GAT','D').replace('GAC','D').replace('GAA','E').replace('GAG','E').replace('TGA','*').replace('TGG','W').replace('CGT','R').replace('CGC','R').replace('CGA','R').replace('CGG','R').replace('AGA','R').replace('AGG','R').replace('AGT','S').replace('AGC','S').replace('TGT','0').replace('TGC','0').replace('ACT','1').replace('ACC','1').replace('ACA','1').replace('ACG','1').replace('GCT','2').replace('GCC','2').replace('GCA','2').replace('GCG','2').replace('GGT','3').replace('GGC','3').replace('GGA','3').replace('GGG','3').replace('0','C').replace('1','T').replace('2','A').replace('3','G').replace(' ','')
+    
+    #if table is provided
+    return " ".join(dna[i: i + 3] for i in range(0, len(dna), 3)).replace('TTT',table['TTT']).replace('TTC',table['TTC']).replace('TTA',table['TTA']).replace('TTG',table['TTG']).replace('CTT',table['CTT']).replace('CTC',table['CTC']).replace('CTA',table['CTA']).replace('CTG',table['CTG']).replace('ATT',table['ATT']).replace('ATC',table['ATC']).replace('ATA',table['ATA']).replace('ATG',table['ATG']).replace('GTT',table['GTT']).replace('GTC',table['GTC']).replace('GTA',table['GTA']).replace('GTG',table['GTG']).replace('TCT',table['TCT']).replace('TCC',table['TCC']).replace('TCA',table['TCA']).replace('TCG',table['TCG']).replace('CCT',table['CCT']).replace('CCC',table['CCC']).replace('CCA',table['CCA']).replace('CCG',table['CCG']).replace('TAT',table['TAT']).replace('TAC',table['TAC']).replace('TAA',table['TAA']).replace('TAG',table['TAG']).replace('CAT',table['CAT']).replace('CAC',table['CAC']).replace('CAA',table['CAA']).replace('CAG',table['CAG']).replace('AAT',table['AAT']).replace('AAC',table['AAC']).replace('AAA',table['AAA']).replace('AAG',table['AAG']).replace('GAT',table['GAT']).replace('GAC',table['GAC']).replace('GAA',table['GAA']).replace('GAG',table['GAG']).replace('TGA',table['TGA']).replace('TGG',table['TGG']).replace('CGT',table['CGT']).replace('CGC',table['CGC']).replace('CGA',table['CGA']).replace('CGG',table['CGG']).replace('AGA',table['AGA']).replace('AGG',table['AGG']).replace('AGT',table['AGT']).replace('AGC',table['AGC']).replace('TGT',table['TGT']).replace('TGC',table['TGC']).replace('ACT',table['ACT']).replace('ACC',table['ACC']).replace('ACA',table['ACA']).replace('ACG',table['ACG']).replace('GCT',table['GCT']).replace('GCC',table['GCC']).replace('GCA',table['GCA']).replace('GCG',table['GCG']).replace('GGT',table['GGT']).replace('GGC',table['GGC']).replace('GGA',table['GGA']).replace('GGG',table['GGG']).replace(' ','')
     
 
 def format_fasta(seq,width=62):
@@ -203,7 +209,7 @@ def format_orf(pair,starts,stops):
     return (ostart,oend,frame,startcodon,stopcodon,strand,otype,olen)
     
     
-def orfs_to_seq(orfs_list,seq_list,seq_name,starts,stops,out='d'):
+def orfs_to_seq(orfs_list,seq_list,seq_name,starts,stops,out='d',table=None):
     if not len(orfs_list) == len(seq_list):
         print ("Error")
         return ''
@@ -221,7 +227,7 @@ def orfs_to_seq(orfs_list,seq_list,seq_name,starts,stops,out='d'):
         thisseq=seq_list[i]
         if out=='p':
             #convert to prot
-            thisseq=translate_dna(thisseq)
+            thisseq=translate_dna(thisseq,table)
         if out == 'r':
             #conver to RNA
             thisseq=transcribe_dna(thisseq)
@@ -431,57 +437,74 @@ def get_orfs(seq,
             
     #find orfs without a start codon            
     if partial5:
+
+        #get unused stop codons
         for orf in complete_orfs:
             used_stops.append(orf[1])
-        for s in stop_positions:
-            if s not in used_stops:
-                unused_stops.append(s)
-        #print('USC:',unused_stops)
-        #find a start position for unused stops
-        for sind in range(len(unused_stops)):
-            current_unused_stop_index=unused_stops[sind]
-            this_frame=current_unused_stop_index%3
-            
-            #find index of current unused stop_codon
-            index_current=stops_by_frame[this_frame].index(current_unused_stop_index)
-            if index_current > 0:
-                #start will be upstream stop+3
-                upstream_stop_index=stops_by_frame[this_frame][index_current-1]
-                current_start_index=upstream_stop_index+3
-                current_length=current_unused_stop_index-current_start_index #length excluding stop codon
-                #check length and add to complete ORFs
-                if current_length >= minlen and current_length <= maxlen:
-                    #start and stop codons
-                    this_stop_codon=seq[current_unused_stop_index:current_unused_stop_index+3]
-                    this_start_codon=seq[current_start_index:current_start_index+3]
-                    #Using 0 based coordinate, slice [current_start_index,current_stop_index] will yeild the ORF without the stop codon
-                    complete_orfs.append([current_start_index,
-                                          current_unused_stop_index,
-                                          this_frame,
-                                          this_start_codon,
-                                          this_stop_codon,
-                                          '5-prime-partial',
-                                          current_length]) 
-                    current_orf_seq = seq[current_start_index:current_unused_stop_index] #current seq
-                    complete_orfs_seq.append(current_orf_seq)
-            else:
-                #this is the first stop codon in sequence
-                current_start_index=this_frame
-                current_length=current_unused_stop_index-current_start_index #length excluding stop codon
-                if current_length >= minlen and current_length <= maxlen:
-                        this_stop_codon=seq[current_unused_stop_index:current_unused_stop_index+3]
-                        this_start_codon="NA"
-                        incomplete_orfs.append([-3,
-                                                current_unused_stop_index,
-                                                this_frame,
-                                                this_start_codon,
-                                                this_stop_codon,
-                                                '5-prime-partial',
-                                                current_length])
-                        current_orf_seq = seq[current_start_index:current_unused_stop_index] #current seq
-                        incomplete_orfs_seq.append(current_orf_seq)
-            
+        #convert to set
+        used_stopsset = set(used_stops)
         
+        
+        
+        #find orfs without start in 3 frames
+        for this_frame in [0,1,2]:
+            #for frame find index of unused stop codons
+            #print('start')
+            #unused_stops contains indices of unused stop positions in stops_by_frame[this_frame]
+            unused_stops=[]
+            for k in range(len(stops_by_frame[this_frame])):
+                #get current stop position
+                s=stops_by_frame[this_frame][k]
+                if s not in used_stopsset:
+                    unused_stops.append(k)
+            #print('done')
+            
+            #find a start position for unused stops
+            for sind in range(len(unused_stops)):
+                
+                #index of current unused stop_codon in stops_by_frame
+                index_current=unused_stops[sind]
+                current_unused_stop_position=stops_by_frame[this_frame][index_current]
+                
+                if index_current > 0:
+                    #start will be upstream stop+3
+                    upstream_stop_index=stops_by_frame[this_frame][index_current-1]
+                    current_start_position=upstream_stop_index+3
+                    current_length=current_unused_stop_position-current_start_position #length excluding stop codon
+                    #check length and add to complete ORFs
+                    if current_length >= minlen and current_length <= maxlen:
+                        #start and stop codons
+                        this_stop_codon=seq[current_unused_stop_position:current_unused_stop_position+3]
+                        this_start_codon=seq[current_start_position:current_start_position+3]
+                        #Using 0 based coordinate, slice [current_start_position,current_stop_index] will yeild the ORF without the stop codon
+                        complete_orfs.append([current_start_position,
+                                              current_unused_stop_position,
+                                              this_frame,
+                                              this_start_codon,
+                                              this_stop_codon,
+                                              '5-prime-partial',
+                                              current_length]) 
+                        current_orf_seq = seq[current_start_position:current_unused_stop_position] #current seq
+                        complete_orfs_seq.append(current_orf_seq)
+                else:
+                    #this is the first stop codon in current frame in the sequence
+                    current_start_position=this_frame
+                    current_length=current_unused_stop_position-current_start_position #length excluding stop codon
+                    if current_length >= minlen and current_length <= maxlen:
+                            this_stop_codon=seq[current_unused_stop_position:current_unused_stop_position+3]
+                            this_start_codon="NA"
+                            incomplete_orfs.append([-3,
+                                                    current_unused_stop_position,
+                                                    this_frame,
+                                                    this_start_codon,
+                                                    this_stop_codon,
+                                                    '5-prime-partial',
+                                                    current_length])
+                            current_orf_seq = seq[current_start_position:current_unused_stop_position] #current seq
+                            incomplete_orfs_seq.append(current_orf_seq)
+                            
+    ######################################END ORF search#######################################
+              
         
     #print('total orfs',len(complete_orfs))
     #print('total orfs',(complete_orfs))
