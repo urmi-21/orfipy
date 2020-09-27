@@ -7,6 +7,7 @@ Created on Thu Aug 13 20:01:56 2020
 """
 import re
 import time
+from collections import deque
 
 
 def get_rev_comp(seq):
@@ -299,13 +300,10 @@ def get_orfs2(seq,
     
     ###Start search
     #re is extremely fast
-    for c in starts:
-        start_positions.extend([m.start() for m in re.finditer(c,seq)])
     for c in stops:
         stop_positions.extend([m.start() for m in re.finditer(c,seq)])
     
     #sort start and stops
-    start_positions=sorted(start_positions)
     stop_positions=sorted(stop_positions)
     #pad stop positions to find ORFs without stop in sequence
     #e.g. if seq is AAAATGTTT stops in frame 1:[3] make this--> [-3,3,len(seq)]
@@ -314,51 +312,78 @@ def get_orfs2(seq,
     #divide stops by frames
     cdef list stops_by_frame=[[],[],[]]
     cdef list starts_by_frame=[[],[],[]]
+    
+    
+    
     cdef int this_frame
     for i in range(len(stop_positions)):
         this_frame=stop_positions[i]%3
         stops_by_frame[this_frame].append(stop_positions[i])
-    #divide starts by frames   
-    for i in range(len(start_positions)):
-        this_frame=start_positions[i]%3
-        starts_by_frame[this_frame].append(start_positions[i])
+    
         
-    #report seq between stop codons
-    result=find_orfs_between_stops(stops_by_frame)
-    if not find_bw_stops:
-        #add start positions in ORFs
-        result=find_starts_orfs(result,starts_by_frame)
-    else:
+        
+    if find_bw_stops:
+        #report seq between stop codons
+        #print('start1')
+        result=find_orfs_between_stops(stops_by_frame)
+        #print('end1')
         #set partial3 5 to true
         partial3=True
         partial5=True
+        
+    else:
+        for c in starts:
+            start_positions.extend([m.start() for m in re.finditer(c,seq)])
+        start_positions=sorted(start_positions)
+        #divide starts by frames   
+        for i in range(len(start_positions)):
+            this_frame=start_positions[i]%3
+            starts_by_frame[this_frame].append(start_positions[i])
+        #conver to dequeue
+        starts_by_frame[0]=deque(starts_by_frame[0])
+        starts_by_frame[1]=deque(starts_by_frame[1])
+        starts_by_frame[2]=deque(starts_by_frame[2])
+        #print(starts_by_frame)
+        #print(stops_by_frame)
+        #add start positions in ORFs
+        #result=find_starts_orfs(result,starts_by_frame)
+        #print('start')
+        result=find_orfs_between_stops(stops_by_frame,starts_by_frame)
+        #print('end')
+        #print(result)
+            
     
     #format results
+    #print('start loop')
     for pair in result:
         orf_type='complete'
         upstream_stop_index=pair[0]
-        if upstream_stop_index < 0:
-            orf_type='5-prime-partial'
+        #if upstream_stop_index < 0:
+        #    orf_type='5-prime-partial'
         current_start_index=upstream_stop_index+3
         this_start_codon=seq[current_start_index:current_start_index+3]
-        #if start_codon is not in startlist
-        if this_start_codon not in starts:
-            orf_type='5-prime-partial'
-            
+        
+        
         current_stop_index=pair[1]
         this_frame=current_stop_index%3
         #fix stop index if its out of sequence
-        if current_stop_index >= len(seq):
+        if current_stop_index >= seq_len:
             orf_type='3-prime-partial'
             this_stop_codon='NA'
             #get total len of ORF till end of seq
-            total_len_current=len(seq)-current_start_index
+            total_len_current=seq_len-current_start_index
             #len for multiple of 3
             required_len=total_len_current-total_len_current%3
             current_stop_index=current_start_index+required_len
+        
+        #if start_codon is not in startlist
+        if this_start_codon not in starts:
+            orf_type='5-prime-partial'
         #get stop codon if present
-        if '3-prime-partial' not in orf_type:
+        if not orf_type == '3-prime-partial':
             this_stop_codon=seq[current_stop_index:current_stop_index+3]
+            if len(this_stop_codon)<3:
+                this_stop_codon='NA'
         #check length            
         current_length=current_stop_index-current_start_index
         if current_length < minlen or current_length > maxlen:
@@ -380,12 +405,58 @@ def get_orfs2(seq,
                               orf_type,
                               current_length])
         
+    #print('end loop')
     if rev_com:
         complete_orfs=transform_to_sense(complete_orfs,seq_len)
         
     return (complete_orfs,complete_orfs_seq)
+
+def find_orfs_between_stops(stops_by_frame,starts_by_frame=None):
+    #result will contain pairs of ORFs [start,stop]
+    result=[]
+    #process for region between stop codons find a start downstream of upstream stop
+    last_start_position_index=[-1,-1,-1] #keep track of last start in frame 0,1,2
+    last_start=-99999
+    
+    #process for each frame
+    for frame in [0,1,2]:
+        #print('in frame:',frame)
+        stop_positions=stops_by_frame[frame]
+        for i, current_stop in enumerate(stop_positions):
+            #first po is -1,-2 or -3 ignore
+            if i == 0:
+                continue
+            #current_stop=stop_positions[i]
+            upstream_stop=stop_positions[i-1]
+            if not starts_by_frame:
+                result.append((upstream_stop,current_stop))
+            else:
+                #find  start downstream of upstream_stop_position in this_frame
+                #last_start_index=last_start_position_index[frame]
+                #for i in range(last_start_index+1,len(starts_by_frame[frame])):
+                #for i in starts_by_frame[frame]:
+                #if this stop is upstream of next available start
+                while starts_by_frame[frame]:
+                    if current_stop <= starts_by_frame[frame][0]:
+                        break
+                    this_start = starts_by_frame[frame].popleft()
+                    
+                    if  this_start >= upstream_stop:
+                        #found a start for current_stop_position
+                        #print('fount',upstream_stop,this_start,current_stop)
+                        #update upstream stop as start
+                        upstream_stop=this_start-3
+                        last_start=this_start
+                        break
+                #print('adding',upstream_stop,current_stop)
+                result.append([upstream_stop,current_stop])
             
-def find_starts_orfs(between_stop_regions,starts_by_frame):
+    #sort results by position?
+    return result
+    
+    
+    
+def oldfind_starts_orfs(between_stop_regions,starts_by_frame):
     #result will contain pairs of ORFs [start,stop]
     result=[]
     #process for region between stop codons find a start downstream of upstream stop
@@ -402,32 +473,13 @@ def find_starts_orfs(between_stop_regions,starts_by_frame):
             if  this_start >= upstream_stop_position:
                 #found a start for current_stop_position
                 #result.append((this_start-3,current_stop)) #subtract -3 to be consistent with stopcodon format
+                
                 upstream_stop_position=this_start-3
                 break
         #if no start found, it contains the upstream stop
         result.append((upstream_stop_position,current_stop_position))
     
     return result
-            
-
-def find_orfs_between_stops(stops_by_frame):
-    #result will contain pairs of ORFs [start,stop]
-    result=[]
-    #process for each frame
-    for frame in [0,1,2]:
-        stop_positions=stops_by_frame[frame]
-        for i in range(1,len(stop_positions)):
-            current_stop=stop_positions[i]
-            upstream_stop=stop_positions[i-1]
-            #current_start=upstream_stop+3
-            result.append((upstream_stop,current_stop))
-            
-    #sort results by position?
-    return result
-    
-    
-    
-
 
 def get_orfs(seq,
              seqname,
