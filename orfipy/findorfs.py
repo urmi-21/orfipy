@@ -118,7 +118,20 @@ def start_imap_unordered(poolargs,procs):
 
     
 
-def start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, stops, table,nested, partial3, partial5, file_streams,tmpdir):
+def start_multiprocs(seqs, 
+                     minlen, 
+                     maxlen, 
+                     procs,
+                     chunk_size, 
+                     strand, 
+                     starts,
+                     stops, 
+                     table,nested,
+                     partial3,
+                     partial5,
+                     bw_stops,
+                     file_streams,
+                     tmpdir):
     
     #outputs
     outputs=[]
@@ -160,7 +173,7 @@ def start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, st
         #print(s,total_read_bytes,this_read)
         
         #add to poolargs; if limit is reached this will be reset
-        poolargs.append([thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, table, nested, partial3, partial5, outputs,tmpdir])
+        poolargs.append([thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, table, nested, partial3, partial5, bw_stops, outputs,tmpdir])
         
         #if total_read_bytes is more than memory limit
         if total_read_bytes+1000000 >= _MEMLIMIT:
@@ -221,7 +234,7 @@ def start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, st
     print()
     
 
-def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,nested,partial3,partial5,file_streams,tmp):
+def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,nested,partial3,partial5,bw_stops,file_streams,tmp):
     """
     Perform sequential processing
 
@@ -271,7 +284,7 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,nested,partial3,p
         thisseq_rc=None
         if strand == 'b' or strand =='r':
             thisseq_rc=seqs[s][:].complement.reverse.seq
-        res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,table, nested, partial3, partial5, outputs)
+        res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,table, nested, partial3, partial5, bw_stops,outputs)
         write_results_single(res, file_streams)
 
 
@@ -347,7 +360,28 @@ def concat_resultfiles(fstreams,outdir):
     
 ##########main################
 #TODO: handle longest and byframe opts
-def main(infasta,minlen,maxlen,procs,single_mode,chunk_size,strand,starts,stops,table,nested,partial3,partial5,longest,byframe,bed12,bed,dna,rna,pep,outdir):
+def main(infasta,
+         minlen,
+         maxlen,
+         procs,
+         single_mode,
+         chunk_size,
+         strand,
+         starts,
+         stops,
+         table,
+         nested,
+         partial3,
+         partial5,
+         bw_stops,
+         longest,
+         byframe,
+         bed12,
+         bed,
+         dna,
+         rna,
+         pep,
+         outdir):
     
     """
     
@@ -429,10 +463,36 @@ def main(infasta,minlen,maxlen,procs,single_mode,chunk_size,strand,starts,stops,
     
     if single_mode:
         
-        worker_single(seqs, minlen, maxlen, strand, starts, stops, table, nested, partial3, partial5, file_streams, outdir)
+        worker_single(seqs,
+                      minlen,
+                      maxlen,
+                      strand,
+                      starts,
+                      stops,
+                      table,
+                      nested,
+                      partial3,
+                      partial5,
+                      bw_stops,
+                      file_streams,
+                      outdir)
         duration = time.time() - start
     else:
-        start_multiprocs(seqs, minlen, maxlen, procs, chunk_size, strand, starts, stops, table, nested,partial3,partial5, file_streams, outdir)
+        start_multiprocs(seqs, 
+                         minlen,
+                         maxlen,
+                         procs,
+                         chunk_size,
+                         strand,
+                         starts,
+                         stops,
+                         table, 
+                         nested,
+                         partial3,
+                         partial5,
+                         bw_stops,
+                         file_streams,
+                         outdir)
         duration = time.time() - start
              
                

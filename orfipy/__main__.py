@@ -79,6 +79,7 @@ def main():
     parser.add_argument("--nested", help="Output nested and overlapping ORFs in the same frame \nDefault: False",default=False,dest='nested', action='store_true')
     parser.add_argument("--partial-3", help="Output ORFs lacking a start codon\nDefault: False",default=False,dest='partial3', action='store_true')
     parser.add_argument("--partial-5", help="Output ORFs lacking a stop codon\nDefault: False",default=False,dest='partial5', action='store_true')
+    parser.add_argument("--between-stops", help="Output ORFs between stop codons. This will set --partial-3 and --partial-5 true.\nDefault: False",default=False,dest='bw_stops', action='store_true')
     parser.add_argument("--longest", help="Output only longest ORFs per sequence\nDefault: False",default=False,dest='longest', action='store_true')
     parser.add_argument("--byframe", help="Write ORFs output by frame\nDefault: False",default=False,dest='byframe', action='store_true')
     
@@ -168,7 +169,28 @@ def main():
     
     #print(args)
     #call main program    
-    orfipy.findorfs.main(infile,minlen,maxlen,procs,single,chunk_size,strand,starts,stops,table['table'],args.nested,args.partial3,args.partial5,args.longest,args.byframe,bed12,bed,dna,rna,pep,outdir)
+    orfipy.findorfs.main(infile,
+                         minlen,
+                         maxlen,
+                         procs,
+                         single,
+                         chunk_size,
+                         strand,
+                         starts,
+                         stops,
+                         table['table'],
+                         args.nested,
+                         args.partial3,
+                         args.partial5,
+                         args.bw_stops, 
+                         args.longest,
+                         args.byframe,
+                         bed12,
+                         bed,
+                         dna,
+                         rna,
+                         pep,
+                         outdir)
     
     
     

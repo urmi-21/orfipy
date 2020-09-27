@@ -13,7 +13,20 @@ def get_rev_comp(seq):
     res=seq.replace('A','0').replace('T','A').replace('0','T').replace('G','0').replace('C','G').replace('0','C')[::-1]
     return res
 
-def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,nested, partial3, partial5, out_opts):
+def start_search(seq,
+                 seq_rc,
+                 seqname,
+                 minlen,
+                 maxlen,
+                 strand,
+                 starts,
+                 stops,
+                 table,
+                 nested,
+                 partial3,
+                 partial5, 
+                 find_between_stops,
+                 out_opts):
     
     
     
@@ -61,21 +74,25 @@ def start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,nest
 
     if strand=='b':
         #run on fwd strand    
-        fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
+        #fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
+        fwd_res=get_orfs2(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops)
         #run of rev complemnt strand
-        rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
+        #rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
+        rev_res=get_orfs2(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops)
         combined_orfs=fwd_res[0]+rev_res[0]
         combined_seq=fwd_res[1]+rev_res[1]
         
     elif strand == 'f':
         #run on only fwd strand
-        fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
+        #fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
+        fwd_res=get_orfs2(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops)
         combined_orfs=fwd_res[0]
         combined_seq=fwd_res[1]
         
     elif strand == 'r':
         #run on only rev comp strand
-        rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
+        #rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
+        rev_res=get_orfs2(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops)
         combined_orfs=rev_res[0]
         combined_seq=rev_res[1]
         
@@ -255,8 +272,163 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen,starts,stops):
     return '\n'.join(result)
         
             
+def get_orfs2(seq,
+             seqname,
+             minlen,
+             maxlen,
+             starts=['ATG'],
+             stops=['TAA','TAG','TGA'],
+             nested=False, 
+             partial3=False, 
+             partial5=False,
+             find_bw_stops=False,
+             rev_com=False):    
+    
+    #set minlen
+    if minlen < 3:
+        minlen=3
+    starts=set(starts)
+    stops=set(stops)
+    cdef int seq_len=len(seq)   
+    #get start and stop positions
+    cdef list start_positions=[]
+    cdef list stop_positions=[]
+    #to store found ORFs
+    cdef list complete_orfs=[]
+    cdef list complete_orfs_seq=[]
+    
+    ###Start search
+    #re is extremely fast
+    for c in starts:
+        start_positions.extend([m.start() for m in re.finditer(c,seq)])
+    for c in stops:
+        stop_positions.extend([m.start() for m in re.finditer(c,seq)])
+    
+    #sort start and stops
+    start_positions=sorted(start_positions)
+    stop_positions=sorted(stop_positions)
+    #pad stop positions to find ORFs without stop in sequence
+    #e.g. if seq is AAAATGTTT stops in frame 1:[3] make this--> [-3,3,len(seq)]
+    stop_positions=[-3,-2,-1]+stop_positions+[seq_len,seq_len+1,seq_len+2]
+        
+    #divide stops by frames
+    cdef list stops_by_frame=[[],[],[]]
+    cdef list starts_by_frame=[[],[],[]]
+    cdef int this_frame
+    for i in range(len(stop_positions)):
+        this_frame=stop_positions[i]%3
+        stops_by_frame[this_frame].append(stop_positions[i])
+    #divide starts by frames   
+    for i in range(len(start_positions)):
+        this_frame=start_positions[i]%3
+        starts_by_frame[this_frame].append(start_positions[i])
+        
+    #report seq between stop codons
+    result=find_orfs_between_stops(stops_by_frame)
+    if not find_bw_stops:
+        #add start positions in ORFs
+        result=find_starts_orfs(result,starts_by_frame)
+    else:
+        #set partial3 5 to true
+        partial3=True
+        partial5=True
+    
+    #format results
+    for pair in result:
+        orf_type='complete'
+        upstream_stop_index=pair[0]
+        if upstream_stop_index < 0:
+            orf_type='5-prime-partial'
+        current_start_index=upstream_stop_index+3
+        this_start_codon=seq[current_start_index:current_start_index+3]
+        #if start_codon is not in startlist
+        if this_start_codon not in starts:
+            orf_type='5-prime-partial'
+            
+        current_stop_index=pair[1]
+        this_frame=current_stop_index%3
+        #fix stop index if its out of sequence
+        if current_stop_index >= len(seq):
+            orf_type='3-prime-partial'
+            this_stop_codon='NA'
+            #get total len of ORF till end of seq
+            total_len_current=len(seq)-current_start_index
+            #len for multiple of 3
+            required_len=total_len_current-total_len_current%3
+            current_stop_index=current_start_index+required_len
+        #get stop codon if present
+        if '3-prime-partial' not in orf_type:
+            this_stop_codon=seq[current_stop_index:current_stop_index+3]
+        #check length            
+        current_length=current_stop_index-current_start_index
+        if current_length < minlen or current_length > maxlen:
+            continue
+        
+        #add orfs to results
+        if (not partial3) and (orf_type == '3-prime-partial'):
+            continue
+        if (not partial5) and (orf_type == '5-prime-partial'):
+            continue
+        
+        current_orf_seq = seq[current_start_index:current_stop_index] #current seq
+        complete_orfs_seq.append(current_orf_seq)
+        complete_orfs.append([current_start_index,
+                              current_stop_index,
+                              this_frame,
+                              this_start_codon,
+                              this_stop_codon,
+                              orf_type,
+                              current_length])
+        
+    if rev_com:
+        complete_orfs=transform_to_sense(complete_orfs,seq_len)
+        
+    return (complete_orfs,complete_orfs_seq)
+            
+def find_starts_orfs(between_stop_regions,starts_by_frame):
+    #result will contain pairs of ORFs [start,stop]
+    result=[]
+    #process for region between stop codons find a start downstream of upstream stop
+    last_start_position_index=[-1,-1,-1] #keep track of last start in frame 0,1,2
+    for pair in between_stop_regions:
+        upstream_stop_position=pair[0]
+        current_stop_position=pair[1]
+        this_frame=current_stop_position%3
+        #find  start downstream of upstream_stop_position in this_frame
+        last_start_index=last_start_position_index[this_frame]
+        for i in range(last_start_index+1,len(starts_by_frame[this_frame])):
+            this_start = starts_by_frame[this_frame][i]
+            last_start_position_index[this_frame]=i
+            if  this_start >= upstream_stop_position:
+                #found a start for current_stop_position
+                #result.append((this_start-3,current_stop)) #subtract -3 to be consistent with stopcodon format
+                upstream_stop_position=this_start-3
+                break
+        #if no start found, it contains the upstream stop
+        result.append((upstream_stop_position,current_stop_position))
+    
+    return result
+            
 
-#TODO: implement maxlen, nested,partial3 options
+def find_orfs_between_stops(stops_by_frame):
+    #result will contain pairs of ORFs [start,stop]
+    result=[]
+    #process for each frame
+    for frame in [0,1,2]:
+        stop_positions=stops_by_frame[frame]
+        for i in range(1,len(stop_positions)):
+            current_stop=stop_positions[i]
+            upstream_stop=stop_positions[i-1]
+            #current_start=upstream_stop+3
+            result.append((upstream_stop,current_stop))
+            
+    #sort results by position?
+    return result
+    
+    
+    
+
+
 def get_orfs(seq,
              seqname,
              minlen,
