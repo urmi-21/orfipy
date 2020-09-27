@@ -1,22 +1,28 @@
 # Introduction
 orfipy is a python package to extract ORFs in extremely fast and flexible manner.
 
-## Stability
-Experimental
 
 ## Installation
 Install from source
 
 ```
-git clone 
-pip install -e <path to orfipy>
+git clone https://github.com/urmi-21/orfipy.git
+cd orfipy
+pip install .
 ```
 
 ## Examples
 
 Extract ORF sequences and write ORF sequences in orfs.fa file
+
 ```
-orfipy input.fasta --dna orfs.fa --min 10 --max 10000 --procs 4 --table 1
+orfipy input.fasta --dna orfs.fa --min 10 --max 10000 --procs 4 --table 1 --outdir orfs_out
+```
+
+Use [standard codon table](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=cgencodes)  but use only ATG as start codon
+
+```
+orfipy input.fasta --dna orfs.fa --start ATG
 ```
 
 Extract ORF BED file
@@ -29,4 +35,10 @@ orfipy input.fasta --min 50 --procs 4 > orfs.bed
 Extract peptides
 ```
 orfipy input.fasta --pep orfs_peptides.fa --min 50 --procs 4
+```
+
+See available codon tables
+```
+orfipy --show-table
+
 ```
