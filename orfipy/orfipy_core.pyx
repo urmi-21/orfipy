@@ -250,8 +250,11 @@ def orfs_to_seq(orfs_list,seq_list,seq_name,starts,stops,out='d',table=None):
             #for all codons
             pepseq=''
             for s in [thisseq[i: i + 3] for i in range(0, len(thisseq), 3)]:
-                pepseq+=table[s]
-                
+                try:
+                    pepseq+=table[s]
+                except KeyError as error:
+                   #print("Error unknown codon:"+s+"...translating to x",file=sys.stderr)
+                     pepseq+='X' 
             thisseq=pepseq
 
             
