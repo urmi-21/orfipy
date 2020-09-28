@@ -10,7 +10,6 @@ import sys
 import os
 import orfipy.translation_tables
 import orfipy.findorfs
-from collections import defaultdict
 
 def validate_codons(starts,stops):
     validalphabets=['A','C','T','G']
@@ -138,8 +137,7 @@ def main():
     table=orfipy.translation_tables.translation_tables_dict[tablenum]
     starts=table['start']
     stops=table['stop']
-    #convert table to default dict
-    newtable=defaultdict(int,table['table'])
+
     #if start and stop are provided, override
     if args.start:
         starts=args.start
@@ -181,7 +179,7 @@ def main():
                          strand,
                          starts,
                          stops,
-                         newtable,
+                         table['table'],
                          args.nested,
                          args.partial3,
                          args.partial5,
