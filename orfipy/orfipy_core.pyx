@@ -144,9 +144,10 @@ def start_search(seq,
     
     
 
-def transcribe_dna(dna):
-    return dna.replace('T','U')
+#def transcribe_dna(dna):
+#    return dna.replace('T','U')
 
+"""
 def translate_dna(dna,table):    
     #print(table)
     #use default translation
@@ -156,7 +157,7 @@ def translate_dna(dna,table):
     
     #if table is provided
     return " ".join(dna[i: i + 3] for i in range(0, len(dna), 3)).replace('TTT',table['TTT']).replace('TTC',table['TTC']).replace('TTA',table['TTA']).replace('TTG',table['TTG']).replace('CTT',table['CTT']).replace('CTC',table['CTC']).replace('CTA',table['CTA']).replace('CTG',table['CTG']).replace('ATT',table['ATT']).replace('ATC',table['ATC']).replace('ATA',table['ATA']).replace('ATG',table['ATG']).replace('GTT',table['GTT']).replace('GTC',table['GTC']).replace('GTA',table['GTA']).replace('GTG',table['GTG']).replace('TCT',table['TCT']).replace('TCC',table['TCC']).replace('TCA',table['TCA']).replace('TCG',table['TCG']).replace('CCT',table['CCT']).replace('CCC',table['CCC']).replace('CCA',table['CCA']).replace('CCG',table['CCG']).replace('TAT',table['TAT']).replace('TAC',table['TAC']).replace('TAA',table['TAA']).replace('TAG',table['TAG']).replace('CAT',table['CAT']).replace('CAC',table['CAC']).replace('CAA',table['CAA']).replace('CAG',table['CAG']).replace('AAT',table['AAT']).replace('AAC',table['AAC']).replace('AAA',table['AAA']).replace('AAG',table['AAG']).replace('GAT',table['GAT']).replace('GAC',table['GAC']).replace('GAA',table['GAA']).replace('GAG',table['GAG']).replace('TGA',table['TGA']).replace('TGG',table['TGG']).replace('CGT',table['CGT']).replace('CGC',table['CGC']).replace('CGA',table['CGA']).replace('CGG',table['CGG']).replace('AGA',table['AGA']).replace('AGG',table['AGG']).replace('AGT',table['AGT']).replace('AGC',table['AGC']).replace('TGT',table['TGT']).replace('TGC',table['TGC']).replace('ACT',table['ACT']).replace('ACC',table['ACC']).replace('ACA',table['ACA']).replace('ACG',table['ACG']).replace('GCT',table['GCT']).replace('GCC',table['GCC']).replace('GCA',table['GCA']).replace('GCG',table['GCG']).replace('GGT',table['GGT']).replace('GGC',table['GGC']).replace('GGA',table['GGA']).replace('GGG',table['GGG']).replace(' ','')
-    
+"""    
 
 def format_fasta(seq,width=62):
     """
@@ -245,13 +246,22 @@ def orfs_to_seq(orfs_list,seq_list,seq_name,starts,stops,out='d',table=None):
         thisseq=seq_list[i]
         if out=='p':
             #convert to prot
-            thisseq=translate_dna(thisseq,table)
+            #thisseq=translate_dna(thisseq,table)
+            #for all codons
+            pepseq=''
+            for s in [thisseq[i: i + 3] for i in range(0, len(thisseq), 3)]:
+                pepseq+=table[s]
+                
+            thisseq=pepseq
+
+            
         if out == 'r':
             #conver to RNA
-            thisseq=transcribe_dna(thisseq)
+            thisseq=thisseq.replace('T','U')
         result.append('>'+thisorfid+'\n'+format_fasta(thisseq))
         #print('>'+thisorfid+'\n'+seq_list[i])
     return '\n'.join(result)
+
 
 #compile results in bed12
 def orfs_to_bed12(orfs_list,seq_name,seqlen,starts,stops):
