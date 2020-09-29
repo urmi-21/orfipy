@@ -72,49 +72,51 @@ def start_search(seq,
         4 peptide
     """
     #print('getting res')
+    #out opts
+    bed12=out_opts[0]
+    bed=out_opts[1]
+    dna=out_opts[2]
+    rna=out_opts[3]
+    pep=out_opts[4]
+    #get sequence to write or not
+    get_seq=False
+    if dna or pep or rna:
+        get_seq=True
 
     if strand=='b':
         #run on fwd strand    
         #fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
-        fwd_res=get_orfs2(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops)
+        fwd_res=get_orfs2(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
         #run of rev complemnt strand
         #rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
-        rev_res=get_orfs2(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops)
+        rev_res=get_orfs2(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
         combined_orfs=fwd_res[0]+rev_res[0]
         combined_seq=fwd_res[1]+rev_res[1]
         
     elif strand == 'f':
         #run on only fwd strand
         #fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
-        fwd_res=get_orfs2(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops)
+        fwd_res=get_orfs2(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
         combined_orfs=fwd_res[0]
         combined_seq=fwd_res[1]
         
     elif strand == 'r':
         #run on only rev comp strand
         #rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
-        rev_res=get_orfs2(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops)
+        rev_res=get_orfs2(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
         combined_orfs=rev_res[0]
         combined_seq=rev_res[1]
         
     
-    #out opts
     
-    bed=out_opts[0]
-    bed12=out_opts[1]
-    dna=out_opts[2]
-    rna=out_opts[3]
-    pep=out_opts[4]
     
     #if no output specified only return bed
     if not (bed or bed12 or dna or rna or pep):
         #print('stdout')
-        bedresults=orfs_to_bed12(combined_orfs,seqname,len(seq),starts,stops)
+        bedresults=orfs_to_bed(combined_orfs,seqname,len(seq),starts,stops)
         return [bedresults,[],[],[],[]]
     
     #compile results to return
-    results=[]
-    
     bedresults=[]
     bed12results=[]
     dnaresults=[]
@@ -122,7 +124,7 @@ def start_search(seq,
     pepresults=[]
     
     if bed:
-        bedresults=orfs_to_bed12(combined_orfs,seqname,len(seq),starts,stops)
+        bedresults=orfs_to_bed(combined_orfs,seqname,len(seq),starts,stops)
     if bed12:
         bed12results=orfs_to_bed12(combined_orfs,seqname,len(seq),starts,stops)
     if dna:
@@ -132,15 +134,16 @@ def start_search(seq,
     if pep:
         pepresults=orfs_to_seq(combined_orfs,combined_seq,seqname,starts,stops,out='p',table=table)
         
+    #dont change the order of results
     
-    results.append(bedresults)
-    results.append(bed12results)
-    results.append(dnaresults)
-    results.append(rnaresults)
-    results.append(pepresults)
+    #results.append(bed12results)
+    ##results.append(bedresults)
+    #results.append(dnaresults)
+    #results.append(rnaresults)
+    #results.append(pepresults)
     
     
-    return results
+    return [bed12results,bedresults,dnaresults,rnaresults,pepresults]
     
     
 
@@ -176,7 +179,7 @@ def format_fasta(seq,width=62):
     """
     return "\n".join(seq[i: i + width] for i in range(0, len(seq), width))
     
-def format_orf(pair,starts,stops):   
+def oldformat_orf(pair,starts,stops):   
     #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon,orftype,seqlen]
     ostart=pair[0]
     oend=pair[1]
@@ -226,6 +229,8 @@ def format_orf(pair,starts,stops):
     
     
     return (ostart,oend,frame,startcodon,stopcodon,strand,otype,olen)
+
+
     
     
 def orfs_to_seq(orfs_list,seq_list,seq_name,starts,stops,out='d',table=None):
@@ -241,7 +246,18 @@ def orfs_to_seq(orfs_list,seq_list,seq_name,starts,stops,out='d',table=None):
         pair=orfs_list[i]
         ind+=1
         #infer strand len etc...
-        ostart,oend,frame,startcodon,stopcodon,strand,otype,olen=format_orf(pair,starts,stops)        
+        #ostart,oend,frame,startcodon,stopcodon,strand,otype,olen=format_orf(pair,starts,stops)        
+        ostart=pair[0]
+        oend=pair[1]
+        frame=pair[2]
+        strand='+'
+        if frame < 0:
+            strand='-'
+        startcodon=pair[3]
+        stopcodon=pair[4]
+        otype=pair[5]
+        olen=pair[6]
+        
         thisorfid=seq_name+"_ORF."+str(ind)+' ['+str(ostart)+'-'+str(oend)+']('+strand+') type:'+otype+' length:'+str(olen)+' frame:'+str(frame)+' start:'+startcodon+' stop:'+stopcodon
         thisseq=seq_list[i]
         if out=='p':
@@ -265,6 +281,36 @@ def orfs_to_seq(orfs_list,seq_list,seq_name,starts,stops,out='d',table=None):
         #print('>'+thisorfid+'\n'+seq_list[i])
     return '\n'.join(result)
 
+#compile results in bed
+def orfs_to_bed(orfs_list,seq_name,seqlen,starts,stops):
+    #print(orfs_list)
+    result=[]
+    ind=0
+    for pair in orfs_list:
+        ind+=1
+        #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon,orftype,seqlen]
+        #infer strand len etc...
+        #ostart,oend,frame,startcodon,stopcodon,strand,otype,olen=format_orf(pair,starts,stops)
+        ostart=pair[0]
+        oend=pair[1]
+        frame=pair[2]
+        strand='+'
+        if frame < 0:
+            strand='-'
+        startcodon=pair[3]
+        stopcodon=pair[4]
+        otype=pair[5]
+        olen=pair[6]
+        
+        
+        
+        thisorfid=seq_name+"_ORF."+str(ind)
+        oid= 'ID='+thisorfid+';ORF_type='+otype+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
+        thisorf=seq_name+'\t'+str(ostart)+'\t'+str(oend)+'\t'+oid+'\t'+'0'+'\t'+strand
+        #print(thisorf)
+        result.append(thisorf)
+    #return as string    
+    return '\n'.join(result)
 
 #compile results in bed12
 def orfs_to_bed12(orfs_list,seq_name,seqlen,starts,stops):
@@ -275,7 +321,19 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen,starts,stops):
         ind+=1
         #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon,orftype,seqlen]
         #infer strand len etc...
-        ostart,oend,frame,startcodon,stopcodon,strand,otype,olen=format_orf(pair,starts,stops)
+        #ostart,oend,frame,startcodon,stopcodon,strand,otype,olen=format_orf(pair,starts,stops)
+        ostart=pair[0]
+        oend=pair[1]
+        frame=pair[2]
+        strand='+'
+        if frame < 0:
+            strand='-'
+        startcodon=pair[3]
+        stopcodon=pair[4]
+        otype=pair[5]
+        olen=pair[6]
+        
+        
         
         thisorfid=seq_name+"_ORF."+str(ind)
         oid= 'ID='+thisorfid+';ORF_type='+otype+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
@@ -296,6 +354,7 @@ def get_orfs2(seq,
              partial3=False, 
              partial5=False,
              find_bw_stops=False,
+             return_seqs=False,
              rev_com=False):    
     
     #set minlen
@@ -352,7 +411,7 @@ def get_orfs2(seq,
         for i in range(len(start_positions)):
             this_frame=start_positions[i]%3
             starts_by_frame[this_frame].append(start_positions[i])
-        #conver to dequeue
+        #conver to dequeue for faster pop operation
         starts_by_frame[0]=deque(starts_by_frame[0])
         starts_by_frame[1]=deque(starts_by_frame[1])
         starts_by_frame[2]=deque(starts_by_frame[2])
@@ -399,6 +458,11 @@ def get_orfs2(seq,
                 this_stop_codon='NA'
         #check length            
         current_length=current_stop_index-current_start_index
+        if not current_length%3 == 0:
+            print('Length ErrorXXXXX',current_start_index,current_stop_index,this_frame,
+                              this_start_codon,
+                              this_stop_codon,
+                              orf_type,current_length)
         if current_length < minlen or current_length > maxlen:
             continue
         
@@ -407,24 +471,32 @@ def get_orfs2(seq,
             continue
         if (not partial5) and (orf_type == '5-prime-partial'):
             continue
-        
-        current_orf_seq = seq[current_start_index:current_stop_index] #current seq
-        complete_orfs_seq.append(current_orf_seq)
+        #add seq if required
+        if return_seqs:
+            current_orf_seq = seq[current_start_index:current_stop_index] #current seq
+            complete_orfs_seq.append(current_orf_seq)
+        framenum=this_frame+1
+        if rev_com:
+            temp=current_start_index
+            current_start_index=seq_len-current_stop_index
+            current_stop_index=seq_len-temp
+            framenum=-1*framenum
         complete_orfs.append([current_start_index,
                               current_stop_index,
-                              this_frame,
+                              framenum,
                               this_start_codon,
                               this_stop_codon,
                               orf_type,
                               current_length])
         
     #print('end loop')
-    if rev_com:
-        complete_orfs=transform_to_sense(complete_orfs,seq_len)
+    #if rev_com:
+    #    complete_orfs=transform_to_sense(complete_orfs,seq_len)
         
     return (complete_orfs,complete_orfs_seq)
 
 def find_orfs_between_stops(stops_by_frame,starts_by_frame=None):
+    #print('in func')
     #result will contain pairs of ORFs [start,stop]
     result=[]
     #process for region between stop codons find a start downstream of upstream stop
@@ -442,6 +514,7 @@ def find_orfs_between_stops(stops_by_frame,starts_by_frame=None):
             #current_stop=stop_positions[i]
             upstream_stop=stop_positions[i-1]
             if not starts_by_frame:
+                #print('adding',upstream_stop,current_stop)
                 result.append((upstream_stop,current_stop))
             else:
                 #find  start downstream of upstream_stop_position in this_frame
@@ -757,11 +830,28 @@ def get_orfs(seq,
     return (allorfs,allorfs_seq)
     #return allorfs
         
-        
 def transform_to_sense(orfs_list,total_len):
+    
+    #subtract 1
+    #total_len-=1
+    
+    
+    for orf in orfs_list:
+        #print('process',orf)
+        #temp=orf[0]
+        orf[0]=total_len-orf[0]
+        orf[1]=total_len-orf[1]
+        #print("PR",orf)    
+    
+    return orfs_list
+            
+            
+def oldtransform_to_sense(orfs_list,total_len):
+    print('process',)
     #subtract 1
     total_len-=1
     for orf in orfs_list:
+        print('process',orf)
         if orf[0] >= 0:
             orf[0]=total_len-orf[0]
         else:
@@ -771,6 +861,7 @@ def transform_to_sense(orfs_list,total_len):
             orf[1]=total_len-orf[1]
         else:
             orf[1]=-9
+        print('process res',orf)
     return orfs_list    
     
 
