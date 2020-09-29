@@ -15,7 +15,7 @@ import sys
 import os
 
 N="5"
-minlen="30"
+minlen="100"
 outdir="times_out"
 if not os.path.exists(outdir):
     os.makedirs(outdir)
