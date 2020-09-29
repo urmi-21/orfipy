@@ -1,0 +1,18 @@
+##compare orfipy, getorf and orfm dna and pep sequences
+orfipy --min 3 --dna d --pep p --outdir orfipy_testout --between-stop testseq.fa
+orfm -m 3 -t orfm_d testseq.fa > orfm_p
+getorf -find 0 -minlen 3 -outseq getorf_p -sequence testseq.fa
+getorf -find 2 -min 3 -outseq getorf_d -sequence testseq.fa
+
+#compare seqs
+python compare_fasta_files.py ../testdata/getorf_d ../testdata/orfm_d ../testdata/orfipy_testout/d
+python compare_fasta_files.py ../testdata/getorf_p ../testdata/orfm_p ../testdata/orfipy_testout/p
+
+
+###Compare orfipy and getorf -3 option
+orfipy --min 3 --dna 3_d --pep 3_p --outdir orfipy_testout --start ATG --partial-3 testseq.fa
+getorf -find 3 -min 3 -outseq getorf3_d -sequence testseq.fa
+getorf -find 1 -min 3 -outseq getorf3_p -sequence testseq.fa
+
+python compare_fasta_files.py ../testdata/getorf3_p ../testdata/orfipy_testout/3_p
+python compare_fasta_files.py ../testdata/getorf3_d ../testdata/orfipy_testout/3_d

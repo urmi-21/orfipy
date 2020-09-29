@@ -452,7 +452,7 @@ def main(infasta,
     if (dna or rna or pep) and (chunk_size > 1000):
         chunk_size=1000
     
-    #check py < 3.8; if yes max chunk size can be 2000 other wise error is reported
+    #check py < 3.8; if yes max chunk size can be 2000 otherwise error is reported
     if sys.version_info[1] < 8 and chunk_size > 2000:
         chunk_size = 1900
                 
@@ -461,7 +461,7 @@ def main(infasta,
     
     #read fasta file
     seqs = Fasta(infasta)
-    #totalseqs=len(seqs.keys())
+    
     
     
     if single_mode:
