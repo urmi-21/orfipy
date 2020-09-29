@@ -359,6 +359,7 @@ def get_orfs2(seq,
     #set minlen
     if minlen < 3:
         minlen=3
+        
     starts=set(starts)
     stops=set(stops)
     cdef int seq_len=len(seq)   
@@ -457,11 +458,7 @@ def get_orfs2(seq,
                 this_stop_codon='NA'
         #check length            
         current_length=current_stop_index-current_start_index
-        if not current_length%3 == 0:
-            print('Length ErrorXXXXX',current_start_index,current_stop_index,this_frame,
-                              this_start_codon,
-                              this_stop_codon,
-                              orf_type,current_length)
+        
         if current_length < minlen or current_length > maxlen:
             continue
         
