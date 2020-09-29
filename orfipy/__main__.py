@@ -149,7 +149,7 @@ def main():
     if not validate_codons(starts,stops):
         print('Please check start/stop codon list again')
         sys.exit(1)
-    print('Using translation table:',table['name'],'start:',starts,'stop:',stops)
+    print('Using translation table:',table['name'],'start:',starts,'stop:',stops,file=sys.stderr)
         
     
     strand=args.strand

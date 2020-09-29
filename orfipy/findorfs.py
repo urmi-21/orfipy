@@ -333,7 +333,6 @@ def close_result_files(fstreams):
     for f in fstreams:
         if f:
             f.close()
-    print('closed all')
     
 def concat_resultfiles(fstreams,outdir):
     """
@@ -449,9 +448,9 @@ def main(infasta,
         chunk_size=int(total_mem_MB/(procs*4))
     else:
         chunk_size=int(chunk_size)
-    #check py < 3.8; if yes max chunk size can be 2000 other wise error is reported
-    #if sys.version_info[1] < 8 and chunk_size > 2000:
-    #    chunk_size = 1900
+    #limit chunk size to 1000 this works best
+    if chunk_size > 1000:
+        chunk_size=1000
                 
     print("Setting chunk size {} MB".format(chunk_size),file=sys.stderr)
     
