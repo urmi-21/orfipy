@@ -439,7 +439,7 @@ def main(infasta,
     
     
     if not procs:
-        procs=multiprocessing.cpu_count()
+        procs=int(multiprocessing.cpu_count()/2)+1
     
     #estimate chunk_size
     if not chunk_size:
