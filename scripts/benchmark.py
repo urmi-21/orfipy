@@ -12,10 +12,14 @@ arguments[1]<-input_fasta_file
 
 from pyrpipe import pyrpipe_engine as pe
 import sys
+import os
 
 N="5"
-minlen="3"
+minlen="30"
 outdir="times_out"
+if not os.path.exists(outdir):
+    os.makedirs(outdir)
+
 testseq=sys.argv[1]
 #compare orfipy, orfm, getorf
 orfipy_cmd=["bash", "run_orfipy.sh",testseq,outdir,minlen,N]
