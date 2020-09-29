@@ -1,5 +1,8 @@
 testdata/
 tests/testout/
+scripts/times_out/
+scripts/tmp/
+scripts/pyrpipe_logs/
 
 *.swp
 *.fasta*
