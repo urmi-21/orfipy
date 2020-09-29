@@ -19,17 +19,11 @@ outdir="times_out"
 testseq=sys.argv[1]
 #compare orfipy, orfm, getorf
 orfipy_cmd=["bash", "run_orfipy.sh",testseq,outdir,minlen,N]
-
 orfm_cmd=["bash", "run_orfm.sh",testseq,outdir,minlen,N]
-
 getorf_cmd=["bash", "run_getorf.sh",testseq,outdir,minlen,N]
-
-#for i in range(N):
-pe.execute_command(getorf_cmd,objectid=testseq,command_name="getorf")
-pe.execute_command(orfipy_cmd,objectid=testseq,command_name="orfipy")
-pe.execute_command(orfm_cmd,objectid=testseq,command_name="orfm")
-
-
+pe.execute_command(getorf_cmd,objectid="test",command_name="getorf")
+pe.execute_command(orfipy_cmd,objectid="test",command_name="orfipy")
+pe.execute_command(orfm_cmd,objectid="test",command_name="orfm")
 
 #compare seqs
 #python compare_fasta_files.py ../testdata/getorf_d ../testdata/orfm_d ../testdata/orfipy_testout/d
@@ -37,12 +31,9 @@ pe.execute_command(orfm_cmd,objectid=testseq,command_name="orfm")
 
 
 ###Compare orfipy and getorf -3 option
-#orfipy --min 3 --dna 3_d --pep 3_p --outdir orfipy_testout --start ATG --partial-3 testseq.fa
-#getorf -find 3 -min 3 -outseq getorf3_d -sequence testseq.fa
-#getorf -find 1 -min 3 -outseq getorf3_p -sequence testseq.fa
+orfipy_cmd=["bash", "run_orfipy_3.sh",testseq,outdir,minlen,N]
+getorf_cmd=["bash", "run_getorf_3.sh",testseq,outdir,minlen,N]
+pe.execute_command(getorf_cmd,objectid="test",command_name="getorf_3")
+pe.execute_command(orfipy_cmd,objectid="test",command_name="orfipy_3")
 
-#python compare_fasta_files.py ../testdata/getorf3_p ../testdata/orfipy_testout/3_p
-#python compare_fasta_files.py ../testdata/getorf3_d ../testdata/orfipy_testout/3_d
-
-
-
+###pyrpipe_diagnostic.py benchmark pyrpipe_logs/2020-09-29-16_31_25_pyrpipe.log
