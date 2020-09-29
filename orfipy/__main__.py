@@ -76,10 +76,11 @@ def main():
     parser.add_argument("--min", help="Minimum length of ORF, excluding stop codon (nucleotide)\nDefault: 30",default=30)
     parser.add_argument("--max", help="Maximum length of ORF, excluding stop codon (nucleotide)\nDefault: inf",default=100000000000000)
     parser.add_argument("--strand", help="Strands to find ORFs [(f)orward,(r)everse,(b)oth]\nDefault: b",default='b',choices=['f', 'r', 'b'])
-    parser.add_argument("--nested", help="Output nested and overlapping ORFs in the same frame \nDefault: False",default=False,dest='nested', action='store_true')
+    #parser.add_argument("--nested", help="Output nested and overlapping ORFs in the same frame \nDefault: False",default=False,dest='nested', action='store_true')
     parser.add_argument("--partial-3", help="Output ORFs lacking a start codon\nDefault: False",default=False,dest='partial3', action='store_true')
     parser.add_argument("--partial-5", help="Output ORFs lacking a stop codon\nDefault: False",default=False,dest='partial5', action='store_true')
     parser.add_argument("--between-stops", help="Output ORFs between stop codons. This will set --partial-3 and --partial-5 true.\nDefault: False",default=False,dest='bw_stops', action='store_true')
+    parser.add_argument("--include-stop", help="Include stop codon in the results, if a stop codon exists.\nDefault: False",default=False,dest='include_stop', action='store_true')
     parser.add_argument("--longest", help="Output only longest ORFs per sequence\nDefault: False",default=False,dest='longest', action='store_true')
     parser.add_argument("--byframe", help="Write ORFs output by frame\nDefault: False",default=False,dest='byframe', action='store_true')
     
@@ -180,7 +181,7 @@ def main():
                          starts,
                          stops,
                          table['table'],
-                         args.nested,
+                         args.include_stop,
                          args.partial3,
                          args.partial5,
                          args.bw_stops, 

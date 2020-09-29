@@ -36,7 +36,7 @@ def worker_map(arglist):
     start worker
     """
     #call orf function
-    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,nested, partial3, partial5, outputs,tmpdir]
+    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,include_stop, partial3, partial5, outputs,tmpdir]
     res=oc.start_search(*arglist[:-1])
     
     #directly write res to files
@@ -87,7 +87,7 @@ def worker_imap(arglist):
     """
     start worker
     """
-    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, table, nested, partial3, partial5, outputs,tmpdir]
+    #poolargs contains [thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, table, include_stop, partial3, partial5, outputs,tmpdir]
     #call orf function
     #res=oc.start_search(arglist[0],arglist[1],arglist[2],arglist[3],arglist[4],arglist[5],arglist[6],arglist[7])
     #pass all but last argument
@@ -126,7 +126,7 @@ def start_multiprocs(seqs,
                      strand, 
                      starts,
                      stops, 
-                     table,nested,
+                     table,include_stop,
                      partial3,
                      partial5,
                      bw_stops,
@@ -173,7 +173,7 @@ def start_multiprocs(seqs,
         #print(s,total_read_bytes,this_read)
         
         #add to poolargs; if limit is reached this will be reset
-        poolargs.append([thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, table, nested, partial3, partial5, bw_stops, outputs,tmpdir])
+        poolargs.append([thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, table, include_stop, partial3, partial5, bw_stops, outputs,tmpdir])
         
         #if total_read_bytes is more than memory limit
         if total_read_bytes+1000000 >= _MEMLIMIT:
@@ -234,7 +234,7 @@ def start_multiprocs(seqs,
     print()
     
 
-def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,nested,partial3,partial5,bw_stops,file_streams,tmp):
+def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,partial3,partial5,bw_stops,file_streams,tmp):
     """
     Perform sequential processing
 
@@ -284,7 +284,7 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,nested,partial3,p
         thisseq_rc=None
         if strand == 'b' or strand =='r':
             thisseq_rc=seqs[s][:].complement.reverse.seq
-        res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,table, nested, partial3, partial5, bw_stops,outputs)
+        res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,table, include_stop, partial3, partial5, bw_stops,outputs)
         write_results_single(res, file_streams)
 
 
@@ -369,7 +369,7 @@ def main(infasta,
          starts,
          stops,
          table,
-         nested,
+         include_stop,
          partial3,
          partial5,
          bw_stops,
@@ -473,7 +473,7 @@ def main(infasta,
                       starts,
                       stops,
                       table,
-                      nested,
+                      include_stop,
                       partial3,
                       partial5,
                       bw_stops,
@@ -490,7 +490,7 @@ def main(infasta,
                          starts,
                          stops,
                          table, 
-                         nested,
+                         include_stop,
                          partial3,
                          partial5,
                          bw_stops,
