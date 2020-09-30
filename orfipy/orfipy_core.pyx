@@ -285,7 +285,7 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen,starts,stops):
         
         thisorfid=seq_name+"_ORF."+str(ind)
         oid= 'ID='+thisorfid+';ORF_type='+otype+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
-        thisorf=seq_name+'\t'+str(0)+'\t'+str(seqlen-1)+'\t'+oid+'\t'+strand+'\t'+str(ostart)+'\t'+str(oend)+'\t'+str(0)+'\t'+str(seqlen-1)+'\t'+str(0)
+        thisorf=seq_name+'\t'+str(0)+'\t'+str(seqlen)+'\t'+oid+'\t'+'0'+strand+'\t'+str(ostart)+'\t'+str(oend)+'\t'+'0'+'\t'+str(seqlen)+'\t'+str(0)
         #print(thisorf)
         result.append(thisorf)
     #return as string    
