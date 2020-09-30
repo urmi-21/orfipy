@@ -34,7 +34,7 @@ orfipy input.fasta --min 50 --procs 4 > orfs.bed
 
 Extract ORF BED12 file
 
-Note: Add `--include-stop` for orfipy output to be consistent with Transdecoder.Predict output .bed file
+**Note**: Add `--include-stop` for orfipy output to be consistent with Transdecoder.Predict output .bed file
 
 ```
 orfipy testseq.fa --min 100 --bed12 of.bed --partial-5 --partial-3 --include-stop
