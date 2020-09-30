@@ -7,6 +7,7 @@ Created on Thu Aug 13 20:01:56 2020
 """
 import re
 from collections import deque
+from operator import itemgetter
 
 
 def get_rev_comp(seq):
@@ -178,58 +179,6 @@ def format_fasta(seq,width=62):
     """
     return "\n".join(seq[i: i + width] for i in range(0, len(seq), width))
     
-def oldformat_orf(pair,starts,stops):   
-    #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon,orftype,seqlen]
-    ostart=pair[0]
-    oend=pair[1]
-    frame=pair[2]+1
-    startcodon=pair[3]
-    stopcodon=pair[4]
-    otype=pair[5]
-    olen=pair[6]
-    #determine strand
-    strand='+'
-    if ostart > oend and oend >= 0 and ostart >=0:
-        #reverse frame
-        strand='-'
-        #swap start end values
-        temp=ostart
-        ostart=oend
-        oend=temp
-        
-    if oend == -9 and ostart >= 0:
-        strand='-'
-        oend='NA'
-    elif oend==-1 and ostart >= 0:
-        strand='+'
-        oend='NA'
-    #handle 3primepartial
-    if ostart == -7 and oend >= 0:
-        strand='-'
-        ostart='NA'
-    elif ostart == -3 and oend >= 0:
-        strand='+'
-        ostart='NA'
-        
-    #compute len
-    #if oend == 'NA':
-    #    olen='NA'
-        #otype='5-prime-partial'
-    #elif ostart == 'NA':
-    #    olen='NA'
-        #otype='3-prime-partial'
-    #else:
-    #    olen=oend-ostart+1
-        #otype='complete'
-        
-    #special case for otype if start codon not in starts
-    #if startcodon not in starts:
-    #    otype='3-prime-partial'
-    
-    
-    return (ostart,oend,frame,startcodon,stopcodon,strand,otype,olen)
-
-
     
     
 def orfs_to_seq(orfs_list,seq_list,seq_name,starts,stops,out='d',table=None):
@@ -480,17 +429,16 @@ def get_orfs2(seq,
             current_start_index=seq_len-current_stop_index
             current_stop_index=seq_len-temp
             framenum=-1*framenum
-        complete_orfs.append([current_start_index,
+        #add ORF details
+        complete_orfs.append((current_start_index,
                               current_stop_index,
                               framenum,
                               this_start_codon,
                               this_stop_codon,
                               orf_type,
-                              current_length])
+                              current_length))
         
-    #print('end loop')
-    #if rev_com:
-    #    complete_orfs=transform_to_sense(complete_orfs,seq_len)
+    
         
     return (complete_orfs,complete_orfs_seq)
 
@@ -536,332 +484,13 @@ def find_orfs_between_stops(stops_by_frame,starts_by_frame=None):
                 #print('adding',upstream_stop,current_stop)
                 result.append([upstream_stop,current_stop])
             
-    #sort results by position?
+    #sort results by position
+    result=sorted(result, key=itemgetter(0))
     return result
     
     
     
-def oldfind_starts_orfs(between_stop_regions,starts_by_frame):
-    #result will contain pairs of ORFs [start,stop]
-    result=[]
-    #process for region between stop codons find a start downstream of upstream stop
-    last_start_position_index=[-1,-1,-1] #keep track of last start in frame 0,1,2
-    for pair in between_stop_regions:
-        upstream_stop_position=pair[0]
-        current_stop_position=pair[1]
-        this_frame=current_stop_position%3
-        #find  start downstream of upstream_stop_position in this_frame
-        last_start_index=last_start_position_index[this_frame]
-        for i in range(last_start_index+1,len(starts_by_frame[this_frame])):
-            this_start = starts_by_frame[this_frame][i]
-            last_start_position_index[this_frame]=i
-            if  this_start >= upstream_stop_position:
-                #found a start for current_stop_position
-                #result.append((this_start-3,current_stop)) #subtract -3 to be consistent with stopcodon format
-                
-                upstream_stop_position=this_start-3
-                break
-        #if no start found, it contains the upstream stop
-        result.append((upstream_stop_position,current_stop_position))
-    
-    return result
 
-def get_orfs(seq,
-             seqname,
-             minlen,
-             maxlen,
-             starts=['ATG'],
-             stops=['TAA','TAG','TGA'],
-             nested=False, 
-             partial3=False, 
-             partial5=False, 
-             rev_com=False):
-    """
 
-    Parameters
-    ----------
-    seq : TYPE
-        DESCRIPTION.
-    seqname : TYPE
-        DESCRIPTION.
-    minlen : TYPE
-        DESCRIPTION.
-    starts : TYPE, optional
-        DESCRIPTION. The default is ['ATG'].
-    stops : TYPE, optional
-        DESCRIPTION. The default is ['TAA','TAG','TGA'].
-    report_incomplete : TYPE, optional
-        DESCRIPTION. The default is True.
-    rev_com : TYPE, optional
-        DESCRIPTION. The default is False.
-
-    Returns
-    -------
-    return ORF positions, sequence
-    allorfs : TYPE
-        DESCRIPTION.
-    allorfs_seq : TYPE
-        DESCRIPTION.
-
-    """
-    
-    cdef int seq_len=len(seq)   
-    #get start and stop positions
-    cdef list start_positions=[]
-    cdef list stop_positions=[]
-    
-    #re is extremely fast
-    for c in starts:
-        start_positions.extend([m.start() for m in re.finditer(c,seq)])
-    for c in stops:
-        stop_positions.extend([m.start() for m in re.finditer(c,seq)])
-    
-    #sort start and stops
-    start_positions=sorted(start_positions)
-    stop_positions=sorted(stop_positions)
-    #divide stops by frames
-    cdef list stops_by_frame=[[],[],[]]
-    cdef int this_frame
-    for i in range(len(stop_positions)):
-        this_frame=stop_positions[i]%3
-        stops_by_frame[this_frame].append(stop_positions[i])
-    #print('SP',start_positions)
-    #print('STF',stops_by_frame)
-    
-    #will contain orfs[start,end,frame]
-    cdef list complete_orfs=[]
-    cdef list incomplete_orfs=[]
-    cdef list complete_orfs_seq=[]
-    cdef list incomplete_orfs_seq=[]
-    #lists to track used stop codons
-    cdef list unused_stops=[]
-    cdef list used_stops=[]
-    
-    #Starts_found point to start codons
-    #cdef int starts_found[3]
-    #starts_found[:]=[-1,-1,-1]#indices of starts found in frame 1 2 3
-    
-    #last_stop[i] store index of last stop codon in ith frame
-    cdef int last_stop[3]
-    last_stop[:]=[-1,-1,-1]
-    cdef int current_start_index
-    cdef int current_stop_index
-    cdef int last_stop_index
-    cdef int current_length
-    
-    #if an incomplete ORF is found in a frame all upstream start codons in that frame should be ignored
-    cdef int incomplete_found[3]
-    incomplete_found[:]=[-1,-1,-1]
-    
-    for i in range(len(start_positions)):
-        current_start_index=start_positions[i]
-        current_orf_type='complete'
-        #print('examinig',current_start_index)
-        this_frame=current_start_index%3
-        last_stop_index=last_stop[this_frame]
-        current_stop_found=False
-        #print('lsi',last_stop_index)
-        
-        #if current_start is contained in prev ORF then ignore: means this start codon lies in another ORF in same frame
-        if last_stop_index >=0 and current_start_index < stops_by_frame[this_frame][last_stop_index]:
-            #if nested option is on keep this start position
-            if nested:
-                #print('inside',current_start_index,last_stop_index)
-                #use the last stop codon for current start
-                #e.g. ATG AAA ATG TTT TAG CCC CCC TAG
-                #desired output
-                #orf1: ATG AAA ATG TTT TAG
-                #orf2: ATG TTT TAG
-                last_stop_index-=1
-                current_orf_type='nested'
-            else:
-                #ignore current start codon
-                continue
-        
-                
-        for j in range(last_stop_index+1,len(stops_by_frame[this_frame])):
-            #print('running',current_start_index)
-            current_stop_index=stops_by_frame[this_frame][j]
-            last_stop[this_frame]=j
-            if current_stop_index > current_start_index:
-                #found ORF!! in this_frame
-                current_stop_found=True
-                current_length=current_stop_index-current_start_index #length excluding stop codon
-                #print('CL',current_length,'SI now',current_start_index)
-                if current_length >= minlen and current_length <= maxlen:
-                    #start and stop codons
-                    this_stop_codon=seq[current_stop_index:current_stop_index+3]
-                    this_start_codon=seq[current_start_index:current_start_index+3]
-                    #Using 0 based coordinate, slice [current_start_index,current_stop_index] will yeild the ORF without the stop codon
-                    current_orf_seq = seq[current_start_index:current_stop_index] #current seq
-                    complete_orfs_seq.append(current_orf_seq)
-                    complete_orfs.append([current_start_index,
-                                          current_stop_index,
-                                          this_frame,
-                                          this_start_codon,
-                                          this_stop_codon,
-                                          current_orf_type,
-                                          current_length]) 
-                    
-                    break
-                else:
-                    #break and forget about the ORF with smaller length
-                    break
-            
-            
-        #failed to find a stop after searching list of stops
-        #if no stops left: ORF has start codon but no downstream in-frame stop codon
-        if not current_stop_found:
-            
-            #print('No stops for',current_start_index)
-            #this means a start codon upstream already codes for an incomplete ORF
-            if incomplete_found[this_frame] < 0 or nested:
-                current_orf_type='3-prime-partial'
-                #this orf is contained in another orf without stop codon in same frame
-                if incomplete_found[this_frame] >= 0:
-                    current_orf_type='nested'
-                #print('Adding',current_start_index)
-                incomplete_found[this_frame]=1
-                #ORFs without a stop
-                if partial3:
-                    current_orf_seq=seq[current_start_index:]
-                    #if seq isnt multiple of 3
-                    current_length=len(current_orf_seq)
-                    endind=current_length-(current_length%3)
-                    current_orf_seq=current_orf_seq[0:endind]
-                    current_length=len(current_orf_seq)
-                    #print('Addeding IC',current_start_index,' Len of IC is',current_length,'seqlen',len(current_orf_seq),current_orf_seq)
-                    if current_length >= minlen and current_length <= maxlen:
-                        this_stop_codon="NA"
-                        this_start_codon=seq[current_start_index:current_start_index+3]
-                        incomplete_orfs.append([current_start_index,
-                                                -1,
-                                                this_frame,
-                                                this_start_codon,
-                                                this_stop_codon,
-                                                current_orf_type,
-                                                current_length])
-                        incomplete_orfs_seq.append(current_orf_seq)
-                        #print('Addeding IC',current_start_index)
-            
-    #find orfs without a start codon            
-    if partial5:
-
-        #get unused stop codons
-        for orf in complete_orfs:
-            used_stops.append(orf[1])
-        #convert to set
-        used_stopsset = set(used_stops)
-        
-        
-        
-        #find orfs without start in 3 frames
-        for this_frame in [0,1,2]:
-            #for frame find index of unused stop codons
-            #print('start')
-            #unused_stops contains indices of unused stop positions in stops_by_frame[this_frame]
-            unused_stops=[]
-            for k in range(len(stops_by_frame[this_frame])):
-                #get current stop position
-                s=stops_by_frame[this_frame][k]
-                if s not in used_stopsset:
-                    unused_stops.append(k)
-            #print('done')
-            
-            #find a start position for unused stops
-            for sind in range(len(unused_stops)):
-                
-                #index of current unused stop_codon in stops_by_frame
-                index_current=unused_stops[sind]
-                current_unused_stop_position=stops_by_frame[this_frame][index_current]
-                
-                if index_current > 0:
-                    #start will be upstream stop+3
-                    upstream_stop_index=stops_by_frame[this_frame][index_current-1]
-                    current_start_position=upstream_stop_index+3
-                    current_length=current_unused_stop_position-current_start_position #length excluding stop codon
-                    #check length and add to complete ORFs
-                    if current_length >= minlen and current_length <= maxlen:
-                        #start and stop codons
-                        this_stop_codon=seq[current_unused_stop_position:current_unused_stop_position+3]
-                        this_start_codon=seq[current_start_position:current_start_position+3]
-                        #Using 0 based coordinate, slice [current_start_position,current_stop_index] will yeild the ORF without the stop codon
-                        complete_orfs.append([current_start_position,
-                                              current_unused_stop_position,
-                                              this_frame,
-                                              this_start_codon,
-                                              this_stop_codon,
-                                              '5-prime-partial',
-                                              current_length]) 
-                        current_orf_seq = seq[current_start_position:current_unused_stop_position] #current seq
-                        complete_orfs_seq.append(current_orf_seq)
-                else:
-                    #this is the first stop codon in current frame in the sequence
-                    current_start_position=this_frame
-                    current_length=current_unused_stop_position-current_start_position #length excluding stop codon
-                    if current_length >= minlen and current_length <= maxlen:
-                            this_stop_codon=seq[current_unused_stop_position:current_unused_stop_position+3]
-                            this_start_codon="NA"
-                            incomplete_orfs.append([-3,
-                                                    current_unused_stop_position,
-                                                    this_frame,
-                                                    this_start_codon,
-                                                    this_stop_codon,
-                                                    '5-prime-partial',
-                                                    current_length])
-                            current_orf_seq = seq[current_start_position:current_unused_stop_position] #current seq
-                            incomplete_orfs_seq.append(current_orf_seq)
-                            
-    ######################################END ORF search#######################################
-              
-        
-    #print('total orfs',len(complete_orfs))
-    #print('total orfs',(complete_orfs))
-    #print('ic orfs',incomplete_orfs)
-    allorfs=complete_orfs+incomplete_orfs
-    allorfs_seq=complete_orfs_seq+incomplete_orfs_seq
-    #is seq was reverce complemented, invert the coordinates
-    #print('all orfs',allorfs)
-    if rev_com:
-        allorfs=transform_to_sense(allorfs,seq_len)
-        
-    #print('all orfs',allorfs)
-    return (allorfs,allorfs_seq)
-    #return allorfs
-        
-def transform_to_sense(orfs_list,total_len):
-    
-    #subtract 1
-    #total_len-=1
-    
-    
-    for orf in orfs_list:
-        #print('process',orf)
-        #temp=orf[0]
-        orf[0]=total_len-orf[0]
-        orf[1]=total_len-orf[1]
-        #print("PR",orf)    
-    
-    return orfs_list
-            
-            
-def oldtransform_to_sense(orfs_list,total_len):
-    print('process',)
-    #subtract 1
-    total_len-=1
-    for orf in orfs_list:
-        print('process',orf)
-        if orf[0] >= 0:
-            orf[0]=total_len-orf[0]
-        else:
-            orf[0]=-7
-            
-        if orf[1]>=0:
-            orf[1]=total_len-orf[1]
-        else:
-            orf[1]=-9
-        print('process res',orf)
-    return orfs_list    
-    
 
 
