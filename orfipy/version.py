@@ -5,4 +5,4 @@ Created on Wed Aug 12 18:58:11 2020
 
 @author: usingh
 """
-__version=0.0.1
+0.0.1
