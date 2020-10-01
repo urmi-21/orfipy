@@ -82,8 +82,8 @@ def main():
     parser.add_argument("--partial-5", help="Output ORFs lacking a stop codon\nDefault: False",default=False,dest='partial5', action='store_true')
     parser.add_argument("--between-stops", help="Output ORFs between stop codons. This will set --partial-3 and --partial-5 true.\nDefault: False",default=False,dest='bw_stops', action='store_true')
     parser.add_argument("--include-stop", help="Include stop codon in the results, if a stop codon exists.\nDefault: False",default=False,dest='include_stop', action='store_true')
-    parser.add_argument("--longest", help="Output only longest ORFs per sequence\nDefault: False",default=False,dest='longest', action='store_true')
-    parser.add_argument("--byframe", help="Write ORFs output by frame\nDefault: False",default=False,dest='byframe', action='store_true')
+    parser.add_argument("--longest", help="Output a separate BED file for longest ORFs per sequence. Requires bed option.\nDefault: False",default=False,dest='longest', action='store_true')
+    parser.add_argument("--by-frame", help="Output a separate BED files for ORFs by frame. Requires bed option.\nDefault: False",default=False,dest='byframe', action='store_true')
     
     
     
@@ -181,7 +181,12 @@ def main():
     if not outdir:
         outdir="orfipy_"+os.path.basename(infile)+'_out'
         #print("Temp dir is {}".format(tmpdir),file=sys.stderr)
-    
+        
+    #if longest of byframe is specified make sure bed format is on
+    if args.longest or args.byframe:
+        if not bed:
+            print('Please specify the bed output option if providing --longest or --byframe')
+            sys.exit(1)
     
     #print(args)
     #call main program    

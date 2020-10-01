@@ -336,7 +336,7 @@ def close_result_files(fstreams):
     
 def concat_resultfiles(fstreams,outdir):
     """
-    Merge any temporary files, if created
+    Merge any temporary files, if created. uses subprocess and shell
     """
     #os.chdir(outdir)    
     for f in fstreams:
@@ -351,8 +351,58 @@ def concat_resultfiles(fstreams,outdir):
             cmd='rm '+outdir+'/*.orfipytmp_'+str(x)
             proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             out,err = proc.communicate()
-    
 
+
+def filter_bed_longest(bedfile):
+    res={}
+    with open(bedfile) as f:
+        for ind, l in enumerate(f):
+            temp=l.split('\t')
+            thisname=temp[0]
+            thislen=int(temp[3].split(';')[2].split('=')[-1])
+            if thisname in res:
+                prevlen=res[thisname][0]
+                if thislen > prevlen:
+                    res[thisname]=[thislen,l]
+            else:
+                res[thisname]=[thislen,l]
+    
+    #write to file
+    outfile=os.path.splitext(bedfile)[0]+"_longest"+os.path.splitext(bedfile)[1]
+    f=open(outfile,'w')
+    for k in res.keys():
+        f.write(res[k][1])
+    f.close()
+
+def group_bed_frame(bedfile):
+    basename=os.path.splitext(bedfile)[0]
+    ext=os.path.splitext(bedfile)[1]
+    fp1=open(basename+"_+1"+ext,'w')
+    fp2=open(basename+"_+2"+ext,'w')
+    fp3=open(basename+"_+3"+ext,'w')
+    fp4=open(basename+"_-1"+ext,'w')
+    fp5=open(basename+"_-2"+ext,'w')
+    fp6=open(basename+"_-3"+ext,'w')
+    streams={"1":fp1,"2":fp2,"3":fp3,"-1":fp4,"-2":fp5,"-3":fp6}
+    with open(bedfile) as f:
+        for ind, l in enumerate(f):
+            thisframe=l.split('\t')[3].split(';')[3].split('=')[-1]
+            streams[thisframe].write(l)
+    for k in streams.keys():
+        streams[k].close()
+    return streams
+        
+    
+    
+def group_by_frame_length(bed,bed12,longest,byframe):
+    if longest:
+        filter_bed_longest(bed)
+    if byframe:
+        files_frame=group_bed_frame(bed)
+        if longest:
+            for k in files_frame.keys():
+                filter_bed_longest(files_frame[k].name)
+            
 
     
     
@@ -505,6 +555,12 @@ def main(infasta,
     concat_resultfiles(file_streams,outdir)
     
     #after writing all files, write additional file for longest and bystrand
+    if longest or byframe:
+        bedfile=os.path.join(outdir,bed)
+        bed12file=''
+        if bed12:
+           bed12file=os.path.join(outdir,bed12)
+        group_by_frame_length(bedfile,bed12file,longest,byframe)
         
     print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
 
