@@ -13,6 +13,7 @@ from contextlib import closing
 import gc
 import psutil
 import pyximport; pyximport.install()
+import orfipy
 import orfipy.orfipy_core as oc
 from pyfaidx import Fasta
 import subprocess
