@@ -10,6 +10,7 @@ import sys
 import os
 import orfipy.translation_tables
 import orfipy.findorfs
+import json
 
 def validate_codons(starts,stops):
     validalphabets=['A','C','T','G']
@@ -62,7 +63,7 @@ def main():
     parser.add_argument("--procs", help="Num processes\nDefault:mp.cpu_count()")
     parser.add_argument("--single-mode", help="Run in single mode i.e. no parallel processing (SLOWER). If supplied with procs, this is ignored. \nDefault: False", dest='single', action='store_true',default=False)
 
-    parser.add_argument("--table", help="<int> The codon table to use\nDefault: 1\nLits of codon tables at https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=cgencodes",default="1")
+    parser.add_argument("--table", help="The codon table number to use or path to .json file with codon table\nDefault: 1\nUse --show-tables to see available tables compiled from: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=cgencodes",default="1")
     parser.add_argument("--start", help="Comma-separated list of start-codons. This will override start codons described in translation table\nDefault: Derived from the translation table selected")
     parser.add_argument("--stop", help="Comma-separated list of stop codons. This will override stop codons described in translation table\nDefault: Derived from the translation table selected")
     
@@ -135,9 +136,22 @@ def main():
         
     #init translation table
     tablenum=args.table
-    table=orfipy.translation_tables.translation_tables_dict[tablenum]
-    starts=table['start']
-    stops=table['stop']
+    #check if file is specified as table
+    if tablenum.isnumeric:
+        table=orfipy.translation_tables.translation_tables_dict[tablenum]
+        starts=table['start']
+        stops=table['stop']
+    else:
+        if not os.path.exists(tablenum):
+            print('Invalid Table Provided:',tablenum)
+            sys.exit(1)
+        #load table
+        with open(tablenum) as f:
+            table = json.load(f)
+            starts=table['start']
+            stops=table['stop']
+
+        
 
     #if start and stop are provided, override
     if args.start:
