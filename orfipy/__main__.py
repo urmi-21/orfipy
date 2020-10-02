@@ -137,7 +137,7 @@ def main():
     #init translation table
     tablenum=args.table
     #check if file is specified as table
-    if tablenum.isnumeric:
+    if tablenum.isnumeric():
         table=orfipy.translation_tables.translation_tables_dict[tablenum]
         starts=table['start']
         stops=table['stop']
