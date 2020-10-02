@@ -28,7 +28,7 @@ for f in sys.argv[1:]:
 
 #compare length
 length0 = len(inseqs[0])
-print(length0)
+print('Total seqs:',length0)
 if any(len(seqs) != length0 for seqs in inseqs):
     failed=True
     print('Lens failed')
@@ -38,8 +38,8 @@ if any(len(seqs) != length0 for seqs in inseqs):
 #for seqs in inseqs:
 seq0=collections.Counter(inseqs[0])
 if all(collections.Counter(seqs) == seq0 for seqs in inseqs):
-    print('Passed')
+    print('Passed. Seqs are same...')
     sys.exit(0)
 else:
-    print('Seqs failed')
+    print('Failed. Seqs are different')
     sys.exit(2)
