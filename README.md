@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/urmi-21/orfipy.svg?branch=master)](https://travis-ci.org/urmi-21/orfipy)
+
 # Introduction
 orfipy is a python package to extract ORFs in extremely fast and flexible manner.
 
