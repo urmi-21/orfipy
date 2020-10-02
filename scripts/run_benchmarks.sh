@@ -11,7 +11,9 @@ set -e
 python benchmark.py $1 $2 $3 $4
 
 #test all sequences match
+echo "Comparing nucleotide sequences"
 python compare_fasta_files.py $2/getorf_d $2/orfm_d $2/orfipy_d
+echo "Comparing peptide sequences"
 python compare_fasta_files.py $2/getorf_p $2/orfm_p $2/orfipy_p
 
 #get pyrpipelog file
