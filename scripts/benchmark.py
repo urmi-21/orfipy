@@ -7,7 +7,8 @@ Created on Tue Sep 29 15:43:24 2020
 
 Use this script to benchmark runtimes of different tools
 
-arguments[1]<-input_fasta_file
+args[1]<-input_fasta_file
+args[2]<-out dir
 """
 
 from pyrpipe import pyrpipe_engine as pe
@@ -16,7 +17,7 @@ import os
 
 N="5"
 minlen="100"
-outdir="times_out"
+outdir=sys.argv[2]
 if not os.path.exists(outdir):
     os.makedirs(outdir)
 

@@ -1,5 +1,6 @@
 testdata/
 tests/testout/
+scripts/*/
 scripts/times_out/
 scripts/tmp/
 scripts/pyrpipe_logs/
