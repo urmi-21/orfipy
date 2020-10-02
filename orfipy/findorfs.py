@@ -304,6 +304,7 @@ def write_results_single(results,file_streams):
 def write_results_multiple(results,file_streams):
     #results is a generator; each item in result is a list of n lists.
     #file_streams contain n file_streams for each list in a result item
+    #print(results)
     for reslist in results:
         write_results_single(reslist, file_streams)
     return

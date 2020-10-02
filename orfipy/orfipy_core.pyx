@@ -8,6 +8,7 @@ Created on Thu Aug 13 20:01:56 2020
 import re
 from collections import deque
 from operator import itemgetter
+#from ctypes import *
 
 
 def get_rev_comp(seq):
@@ -162,7 +163,7 @@ def translate_dna(dna,table):
     return " ".join(dna[i: i + 3] for i in range(0, len(dna), 3)).replace('TTT',table['TTT']).replace('TTC',table['TTC']).replace('TTA',table['TTA']).replace('TTG',table['TTG']).replace('CTT',table['CTT']).replace('CTC',table['CTC']).replace('CTA',table['CTA']).replace('CTG',table['CTG']).replace('ATT',table['ATT']).replace('ATC',table['ATC']).replace('ATA',table['ATA']).replace('ATG',table['ATG']).replace('GTT',table['GTT']).replace('GTC',table['GTC']).replace('GTA',table['GTA']).replace('GTG',table['GTG']).replace('TCT',table['TCT']).replace('TCC',table['TCC']).replace('TCA',table['TCA']).replace('TCG',table['TCG']).replace('CCT',table['CCT']).replace('CCC',table['CCC']).replace('CCA',table['CCA']).replace('CCG',table['CCG']).replace('TAT',table['TAT']).replace('TAC',table['TAC']).replace('TAA',table['TAA']).replace('TAG',table['TAG']).replace('CAT',table['CAT']).replace('CAC',table['CAC']).replace('CAA',table['CAA']).replace('CAG',table['CAG']).replace('AAT',table['AAT']).replace('AAC',table['AAC']).replace('AAA',table['AAA']).replace('AAG',table['AAG']).replace('GAT',table['GAT']).replace('GAC',table['GAC']).replace('GAA',table['GAA']).replace('GAG',table['GAG']).replace('TGA',table['TGA']).replace('TGG',table['TGG']).replace('CGT',table['CGT']).replace('CGC',table['CGC']).replace('CGA',table['CGA']).replace('CGG',table['CGG']).replace('AGA',table['AGA']).replace('AGG',table['AGG']).replace('AGT',table['AGT']).replace('AGC',table['AGC']).replace('TGT',table['TGT']).replace('TGC',table['TGC']).replace('ACT',table['ACT']).replace('ACC',table['ACC']).replace('ACA',table['ACA']).replace('ACG',table['ACG']).replace('GCT',table['GCT']).replace('GCC',table['GCC']).replace('GCA',table['GCA']).replace('GCG',table['GCG']).replace('GGT',table['GGT']).replace('GGC',table['GGC']).replace('GGA',table['GGA']).replace('GGG',table['GGG']).replace(' ','')
 """    
 
-def format_fasta(seq,width=62):
+def format_fasta(seq,int width=62):
     """
     Parameters
     ----------
@@ -177,6 +178,7 @@ def format_fasta(seq,width=62):
         DESCRIPTION.
 
     """
+    
     return "\n".join(seq[i: i + width] for i in range(0, len(seq), width))
     
     
@@ -291,7 +293,7 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen,starts,stops):
     #return as string    
     return '\n'.join(result)
         
-            
+#TODO: Write in C
 def get_orfs(seq,
              seqname,
              minlen,
@@ -442,8 +444,8 @@ def get_orfs(seq,
         
     return (complete_orfs,complete_orfs_seq)
 
-def find_orfs_between_stops(stops_by_frame,starts_by_frame=None):
-    #print('in func')
+cdef find_orfs_between_stops(stops_by_frame,starts_by_frame=None):
+
     #result will contain pairs of ORFs [start,stop]
     result=[]
     #process for region between stop codons find a start downstream of upstream stop
