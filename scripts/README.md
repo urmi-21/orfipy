@@ -7,8 +7,8 @@ Important scripts are:
     1. input fasta files to run the tools on
     2. output directory
     3. Num trials to run each tool
-    4. Min size of ORF to find (must be multiple of 3 or OrfM fails to run).
+    4. Min size of ORF to find (must be multiple of 3 or OrfM fails to run). This parameter is important for `compare_fasta_files.py` as it loads all the ORFs found in memory to check if the sequences are same. To avoid using a lot of memory do not set min size too low for bigger fasta files.
 
-    Example: To run benchmarks `bash run_benchmarks.sh infasta.fa outdir 5 30`
+    Example: To run benchmarks `bash run_benchmarks.sh infasta.fa outdir 5 300`
 
     **Note**: `run_benchmarks.sh` requires [`pyrpipe` package](https://github.com/urmi-21/pyrpipe/) which could be installed via pip or bioconda.
