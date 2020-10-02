@@ -86,24 +86,24 @@ def start_search(seq,
     if strand=='b':
         #run on fwd strand    
         #fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
-        fwd_res=get_orfs2(seq,seqname,minlen,maxlen,starts=starts,stops=stops,include_stop=include_stop, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
+        fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,include_stop=include_stop, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
         #run of rev complemnt strand
         #rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
-        rev_res=get_orfs2(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,include_stop=include_stop, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
+        rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,include_stop=include_stop, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
         combined_orfs=fwd_res[0]+rev_res[0]
         combined_seq=fwd_res[1]+rev_res[1]
         
     elif strand == 'f':
         #run on only fwd strand
         #fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
-        fwd_res=get_orfs2(seq,seqname,minlen,maxlen,starts=starts,stops=stops,include_stop=include_stop, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
+        fwd_res=get_orfs(seq,seqname,minlen,maxlen,starts=starts,stops=stops,include_stop=include_stop, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
         combined_orfs=fwd_res[0]
         combined_seq=fwd_res[1]
         
     elif strand == 'r':
         #run on only rev comp strand
         #rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,nested=nested, partial3=partial3, partial5=partial5)
-        rev_res=get_orfs2(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,include_stop=include_stop, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
+        rev_res=get_orfs(seq_rc,seqname,minlen,maxlen,rev_com=True,starts=starts,stops=stops,include_stop=include_stop, partial3=partial3, partial5=partial5,find_bw_stops=find_between_stops,return_seqs=get_seq)
         combined_orfs=rev_res[0]
         combined_seq=rev_res[1]
         
@@ -292,7 +292,7 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen,starts,stops):
     return '\n'.join(result)
         
             
-def get_orfs2(seq,
+def get_orfs(seq,
              seqname,
              minlen,
              maxlen,
