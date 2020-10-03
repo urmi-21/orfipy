@@ -12,12 +12,25 @@ from ctypes import *
 import time
 #from libcpp cimport bool
 
+   
+    
+cdef struct ORF:
+    int start_index
+    int stop_index
+    int framenum
+    int orf_type
+    int length
+    #char* start_codon
+    #char* stop_codon
+    #char* seq
+        
+
 
 def get_rev_comp(seq):
     res=seq.replace('A','0').replace('T','A').replace('0','T').replace('G','0').replace('C','G').replace('0','C')[::-1]
     return res
 
-def start_search(seq,
+cpdef start_search(seq,
                  seq_rc,
                  seqname,
                  minlen,
@@ -296,7 +309,7 @@ def orfs_to_bed12(orfs_list,seq_name,seqlen,starts,stops):
     return '\n'.join(result)
         
 #TODO: Write in C
-def get_orfs(seq,
+cdef get_orfs(seq,
              seqname,
              minlen,
              maxlen,
@@ -338,7 +351,10 @@ def get_orfs(seq,
     cdef list stops_by_frame=[[],[],[]]
     cdef list starts_by_frame=[[],[],[]]
     
-    
+    #create struct
+    cdef ORF thisORF
+    cdef int orf_type
+    #cdef bytes this_start_codon
     
     cdef int this_frame
     for i in range(len(stop_positions)):
@@ -364,34 +380,15 @@ def get_orfs(seq,
         for i in range(len(start_positions)):
             this_frame=start_positions[i]%3
             starts_by_frame[this_frame].append(start_positions[i])
-        #print(starts_by_frame)
-        #print(stops_by_frame)
-        #add start positions in ORFs
-        #result=find_starts_orfs(result,starts_by_frame)
-        #print('start')
-        
-        s=time.time()
-        result2=find_orfs_between_stops_c(stops_by_frame,starts_by_frame)
-        print('Time2:',time.time()-s)
-        
-        
-        #s=time.time()
-        #result=find_orfs_between_stops(stops_by_frame,starts_by_frame)
-        #print('Time1:',time.time()-s)
-        #print('s')
-        
-        #print('e')
-        #print('end')
-        #print('XXXXXXXXXXXXXX')
-        #print(result)
-        #print('XXXXXXXXXXXXXX')
-        #print(result2)
-            
+    
+        result=find_orfs_between_stops(stops_by_frame,starts_by_frame)
+                    
     
     #format results
     #print('start loop')
     for pair in result:
-        orf_type='complete'
+        #orf_type='complete'
+        orf_type=0
         upstream_stop_index=pair[0]
         #if upstream_stop_index < 0:
         #    orf_type='5-prime-partial'
@@ -403,7 +400,8 @@ def get_orfs(seq,
         this_frame=current_stop_index%3
         #fix stop index if its out of sequence
         if current_stop_index >= seq_len:
-            orf_type='3-prime-partial'
+            #orf_type='3-prime-partial'
+            orf_type=1
             this_stop_codon='NA'
             #get total len of ORF till end of seq
             total_len_current=seq_len-current_start_index
@@ -413,9 +411,10 @@ def get_orfs(seq,
         
         #if start_codon is not in startlist
         if this_start_codon not in starts:
-            orf_type='5-prime-partial'
+            #orf_type='5-prime-partial'
+            orf_type=2
         #get stop codon if present
-        if not orf_type == '3-prime-partial':
+        if not orf_type == 1:
             this_stop_codon=seq[current_stop_index:current_stop_index+3]
             if len(this_stop_codon)<3:
                 this_stop_codon='NA'
@@ -444,6 +443,7 @@ def get_orfs(seq,
             current_stop_index=seq_len-temp
             framenum=-1*framenum
         #add ORF details
+        '''
         complete_orfs.append((current_start_index,
                               current_stop_index,
                               framenum,
@@ -451,7 +451,15 @@ def get_orfs(seq,
                               this_stop_codon,
                               orf_type,
                               current_length))
+        '''
         
+        thisORF.start_index=current_start_index
+        thisORF.stop_index=current_stop_index
+        thisORF.framenum=framenum
+        thisORF.orf_type=orf_type
+        thisORF.length=current_length
+        #thisORF.seq=current_orf_seq
+        #print(thisORF)
     
         
     return (complete_orfs,complete_orfs_seq)
@@ -505,6 +513,9 @@ cdef find_orfs_between_stops(stops_by_frame,starts_by_frame=None):
     #sort results by position
     result=sorted(result, key=itemgetter(0))
     return result
+
+
+
 '''
 cdef caller_c(stops_by_frame,starts_by_frame):
     #starts0=NULL
