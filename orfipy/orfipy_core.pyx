@@ -279,9 +279,6 @@ cdef get_orfsc(list start_positions,
         
         framenum=this_frame+1
         if rev_com:
-        #    temp=current_start_index
-        #    current_start_index=seq_len-current_stop_index
-        #    current_stop_index=seq_len-temp
             framenum=-1*framenum
         #add ORF details
                 
@@ -421,15 +418,21 @@ cdef orfs_to_seq(list orfs_struct_list, str seq, str seq_rc, str seq_name, int s
         else :
             #nostop
             startcodon=current_seq[ostart:ostart+3]
-        
         #if include stop add 3 to stop pos
-        if otype==0 and include_stop:
+        if (otype==0 or otype==1) and include_stop:
             oend+=3
+        #get seq
+        thisseq_dna=current_seq[ostart:oend]
+        
+        #if rev complement reverse coordinates
+        if frame < 0:
+            temp=ostart
+            ostart=seqlen-oend
+            oend=seqlen-temp
                        
         thisorfid=seq_name+"_ORF."+str(ind)+' ['+str(ostart)+'-'+str(oend)+']('+strand+') type:'+orf_type+' length:'+str(olen)+' frame:'+str(frame)+' start:'+startcodon+' stop:'+stopcodon
         
-        #get seq
-        thisseq_dna=current_seq[ostart:oend]
+        
         if out_types[0]:
             result[0].append('>'+thisorfid+'\n'+format_fasta(thisseq_dna))
         if out_types[2]:
@@ -498,9 +501,15 @@ cdef orfs_to_bed(list orfs_struct_list,str seq,str seq_rc,str seq_name, int seql
             startcodon=current_seq[ostart:ostart+3]
         
         #if include stop add 3 to stop pos
-        if otype==0 and include_stop:
+        if (otype==0 or otype==1) and include_stop:
+            print(oend,oend+3)
             oend+=3
         
+        #if rev complement reverse coordinates
+        if frame < 0:
+            temp=ostart
+            ostart=seqlen-oend
+            oend=seqlen-temp
         
         
         thisorfid=seq_name+"_ORF."+str(ind)
@@ -559,9 +568,15 @@ cdef orfs_to_bed12(list orfs_struct_list,str seq,str seq_rc, str seq_name, int s
             startcodon=current_seq[ostart:ostart+3]
         
         #if include stop add 3 to stop pos
-        if otype==0 and include_stop:
+        if (otype==0 or otype==1) and include_stop:
             oend+=3
                       
+        #if rev complement reverse coordinates
+        if frame < 0:
+            temp=ostart
+            ostart=seqlen-oend
+            oend=seqlen-temp
+            
         thisorfid=seq_name+"_ORF."+str(ind)
         oid= 'ID='+thisorfid+';ORF_type='+orf_type+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
         thisorf=seq_name+'\t'+str(0)+'\t'+str(seqlen)+'\t'+oid+'\t'+'0'+'\t'+strand+'\t'+str(ostart)+'\t'+str(oend)+'\t'+'0'+'\t'+'1'+'\t'+str(seqlen)+'\t'+str(0)
