@@ -284,7 +284,9 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,part
         thisseq_rc=None
         if strand == 'b' or strand =='r':
             thisseq_rc=seqs[s][:].complement.reverse.seq
+        
         res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,table, include_stop, partial3, partial5, bw_stops,outputs)
+        
         write_results_single(res, file_streams)
 
 
