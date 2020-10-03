@@ -75,7 +75,7 @@ def main():
     parser.add_argument("--rna", help="fasta (RNA) out file\nDefault: None")
     parser.add_argument("--pep", help="fasta (peptide) out file\nDefault: None")
     parser.add_argument("--min", help="Minimum length of ORF, excluding stop codon (nucleotide)\nDefault: 30",default=30)
-    parser.add_argument("--max", help="Maximum length of ORF, excluding stop codon (nucleotide)\nDefault: inf",default=100000000000000)
+    parser.add_argument("--max", help="Maximum length of ORF, excluding stop codon (nucleotide)\nDefault: inf",default=1000000000)
     parser.add_argument("--strand", help="Strands to find ORFs [(f)orward,(r)everse,(b)oth]\nDefault: b",default='b',choices=['f', 'r', 'b'])
     #parser.add_argument("--nested", help="Output nested and overlapping ORFs in the same frame \nDefault: False",default=False,dest='nested', action='store_true')
     parser.add_argument("--partial-3", help="Output ORFs lacking a start codon\nDefault: False",default=False,dest='partial3', action='store_true')
@@ -125,7 +125,7 @@ def main():
     if maxlen:
         maxlen=int(maxlen)
     else:
-        maxlen=1000000000000
+        maxlen=1000000000
     
     
     single=args.single
