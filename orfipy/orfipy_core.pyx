@@ -8,7 +8,9 @@ Created on Thu Aug 13 20:01:56 2020
 import re
 from collections import deque
 from operator import itemgetter
-#from ctypes import *
+from ctypes import *
+import time
+#from libcpp cimport bool
 
 
 def get_rev_comp(seq):
@@ -362,18 +364,24 @@ def get_orfs(seq,
         for i in range(len(start_positions)):
             this_frame=start_positions[i]%3
             starts_by_frame[this_frame].append(start_positions[i])
-        #conver to dequeue for faster pop operation
-        starts_by_frame[0]=deque(starts_by_frame[0])
-        starts_by_frame[1]=deque(starts_by_frame[1])
-        starts_by_frame[2]=deque(starts_by_frame[2])
         #print(starts_by_frame)
         #print(stops_by_frame)
         #add start positions in ORFs
         #result=find_starts_orfs(result,starts_by_frame)
         #print('start')
+        s=time.time()
         result=find_orfs_between_stops(stops_by_frame,starts_by_frame)
+        print('Time1:',time.time()-s)
+        #print('s')
+        s=time.time()
+        result2=caller_c(stops_by_frame,starts_by_frame)
+        print('Time2:',time.time()-s)
+        #print('e')
         #print('end')
+        #print('XXXXXXXXXXXXXX')
         #print(result)
+        #print('XXXXXXXXXXXXXX')
+        #print(result2)
             
     
     #format results
@@ -445,7 +453,11 @@ def get_orfs(seq,
     return (complete_orfs,complete_orfs_seq)
 
 cdef find_orfs_between_stops(stops_by_frame,starts_by_frame=None):
-
+    if starts_by_frame:
+        #conver to dequeue for faster pop operation
+        starts_by_frame[0]=deque(starts_by_frame[0])
+        starts_by_frame[1]=deque(starts_by_frame[1])
+        starts_by_frame[2]=deque(starts_by_frame[2])
     #result will contain pairs of ORFs [start,stop]
     result=[]
     #process for region between stop codons find a start downstream of upstream stop
@@ -489,8 +501,86 @@ cdef find_orfs_between_stops(stops_by_frame,starts_by_frame=None):
     #sort results by position
     result=sorted(result, key=itemgetter(0))
     return result
+
+cdef caller_c(stops_by_frame,starts_by_frame):
+    #starts0=NULL
+    #starts1=NULL
+    #starts2=NULL
+    #stops0=NULL
+    #stops1=NULL
+    #stops2=NULL
+    #cdef bint isstart = False
+    s=time.time()
+    if starts_by_frame:
+        isstart=True
+        starts0 = (c_int * len(starts_by_frame[0]))(*starts_by_frame[0])
+        starts1 = (c_int * len(starts_by_frame[1]))(*starts_by_frame[1])
+        starts2 = (c_int * len(starts_by_frame[2]))(*starts_by_frame[2])
+    stops0 = (c_int * len(stops_by_frame[0]))(*stops_by_frame[0])
+    stops1 = (c_int * len(stops_by_frame[1]))(*stops_by_frame[1])
+    stops2 = (c_int * len(stops_by_frame[2]))(*stops_by_frame[2])
+    print('Time1xx:',time.time()-s)
+    
+    #return None
+    return find_orfs_between_stops_c([stops0,stops1,stops2],[starts0,starts1,starts2])
     
     
+#cdef find_orfs_between_stops_c(stops0,stops1,stops2,starts0,starts1,starts2,isstart):
+cdef find_orfs_between_stops_c(stops_by_frame,starts_by_frame):
+    
+    #result will contain pairs of ORFs [start,stop]
+    result=[]
+    #process for region between stop codons find a start downstream of upstream stop
+    cdef int last_start_position_index[3]
+    last_start_position_index[:] = [-1, -1, -1]
+    cdef int allframes[3]
+    allframes[:]=[0,1,2]
+    #last_start_position_index=[-1,-1,-1] #keep track of last start in frame 0,1,2
+    cdef int last_start=-99999
+    cdef int this_start=-1
+    cdef int current_stop=-1
+    cdef int upstream_stop=-1
+    
+    #process for each frame
+    for frame in allframes:
+        #print('in frame:',frame)
+        stop_positions=stops_by_frame[frame]
+        for i, current_stop in enumerate(stop_positions):
+            #first po is -1,-2 or -3 ignore
+            if i == 0:
+                continue
+            #current_stop=stop_positions[i]
+            upstream_stop=stop_positions[i-1]
+            if not starts_by_frame:
+                #print('adding',upstream_stop,current_stop)
+                result.append((upstream_stop,current_stop))
+            else:
+                #find  start downstream of upstream_stop_position in this_frame
+                last_start_index=last_start_position_index[frame]
+                for i in range(last_start_index+1,len(starts_by_frame[frame])):
+                #for i in starts_by_frame[frame]:
+                #if this stop is upstream of next available start
+                #while starts_by_frame[frame]:
+                    #if current_stop <= starts_by_frame[frame][0]:
+                    this_start=starts_by_frame[frame][i]
+                    last_start_position_index[frame]+=1
+                    if current_stop <= starts_by_frame[frame][i]:
+                        break
+                    #this_start = starts_by_frame[frame].popleft()
+                    
+                    if  this_start >= upstream_stop:
+                        #found a start for current_stop_position
+                        #print('fount',upstream_stop,this_start,current_stop)
+                        #update upstream stop as start
+                        upstream_stop=this_start-3
+                        last_start=this_start
+                        break
+                #print('adding',upstream_stop,current_stop)
+                result.append([upstream_stop,current_stop])
+            
+    #sort results by position
+    result=sorted(result, key=itemgetter(0))
+    return result
     
 
 
