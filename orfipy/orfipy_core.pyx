@@ -369,13 +369,17 @@ def get_orfs(seq,
         #add start positions in ORFs
         #result=find_starts_orfs(result,starts_by_frame)
         #print('start')
+        
         s=time.time()
-        result=find_orfs_between_stops(stops_by_frame,starts_by_frame)
-        print('Time1:',time.time()-s)
-        #print('s')
-        s=time.time()
-        result2=caller_c(stops_by_frame,starts_by_frame)
+        result2=find_orfs_between_stops_c(stops_by_frame,starts_by_frame)
         print('Time2:',time.time()-s)
+        
+        
+        #s=time.time()
+        #result=find_orfs_between_stops(stops_by_frame,starts_by_frame)
+        #print('Time1:',time.time()-s)
+        #print('s')
+        
         #print('e')
         #print('end')
         #print('XXXXXXXXXXXXXX')
@@ -501,7 +505,7 @@ cdef find_orfs_between_stops(stops_by_frame,starts_by_frame=None):
     #sort results by position
     result=sorted(result, key=itemgetter(0))
     return result
-
+'''
 cdef caller_c(stops_by_frame,starts_by_frame):
     #starts0=NULL
     #starts1=NULL
@@ -511,23 +515,24 @@ cdef caller_c(stops_by_frame,starts_by_frame):
     #stops2=NULL
     #cdef bint isstart = False
     s=time.time()
-    if starts_by_frame:
-        isstart=True
-        starts0 = (c_int * len(starts_by_frame[0]))(*starts_by_frame[0])
-        starts1 = (c_int * len(starts_by_frame[1]))(*starts_by_frame[1])
-        starts2 = (c_int * len(starts_by_frame[2]))(*starts_by_frame[2])
-    stops0 = (c_int * len(stops_by_frame[0]))(*stops_by_frame[0])
-    stops1 = (c_int * len(stops_by_frame[1]))(*stops_by_frame[1])
-    stops2 = (c_int * len(stops_by_frame[2]))(*stops_by_frame[2])
+    #if starts_by_frame:
+    #    isstart=True
+    #    starts0 = (c_int * len(starts_by_frame[0]))(*starts_by_frame[0])
+    #    starts1 = (c_int * len(starts_by_frame[1]))(*starts_by_frame[1])
+    #    starts2 = (c_int * len(starts_by_frame[2]))(*starts_by_frame[2])
+    #stops0 = (c_int * len(stops_by_frame[0]))(*stops_by_frame[0])
+    #stops1 = (c_int * len(stops_by_frame[1]))(*stops_by_frame[1])
+    #stops2 = (c_int * len(stops_by_frame[2]))(*stops_by_frame[2])
     print('Time1xx:',time.time()-s)
     
     #return None
-    return find_orfs_between_stops_c([stops0,stops1,stops2],[starts0,starts1,starts2])
-    
+    #return find_orfs_between_stops_c([stops0,stops1,stops2],[starts0,starts1,starts2])
+    return find_orfs_between_stops_c(stops_by_frame,starts_by_frame)
+'''   
     
 #cdef find_orfs_between_stops_c(stops0,stops1,stops2,starts0,starts1,starts2,isstart):
 cdef find_orfs_between_stops_c(stops_by_frame,starts_by_frame):
-    
+    #s=time.time()
     #result will contain pairs of ORFs [start,stop]
     result=[]
     #process for region between stop codons find a start downstream of upstream stop
@@ -577,9 +582,10 @@ cdef find_orfs_between_stops_c(stops_by_frame,starts_by_frame):
                         break
                 #print('adding',upstream_stop,current_stop)
                 result.append([upstream_stop,current_stop])
-            
+    
     #sort results by position
     result=sorted(result, key=itemgetter(0))
+    #print('Time2xx:',time.time()-s)
     return result
     
 
