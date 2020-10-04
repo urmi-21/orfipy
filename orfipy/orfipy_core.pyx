@@ -26,8 +26,7 @@ cdef struct ORF:
         
 
 cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,include_stop,partial3,partial5,find_between_stops,out_opts):
-    #print('xxx')
-
+    
     cdef int seq_len=len(seq)
     cdef bint search_rev=False
     cdef bint search_fwd=False
@@ -375,7 +374,8 @@ cpdef find_orfs_between_stopsc(list stops_by_frame, list starts_by_frame,bint fi
                 #other wise is stop is in seq but no start otype is 5'partial else complete
                 #0 complete; 1: 5 partial; 2: 3 partial; 3: no start no stop
                 if (not start_found) and i==stop_size[frame]: #no start no stop
-                    otype=3
+                    #otype=3
+                    continue
                 elif start_found and i==stop_size[frame]:
                 # start but no stop
                     otype=2
@@ -384,10 +384,10 @@ cpdef find_orfs_between_stopsc(list stops_by_frame, list starts_by_frame,bint fi
                 else:
                     otype=0
                 
-               
+                result.append((upstream_stop,current_stop,otype))
                 #print('adding',upstream_stop,current_stop,otype,start_found)
-                if not otype ==3:
-                    result.append((upstream_stop,current_stop,otype))
+                #if not otype ==3:
+                #    result.append((upstream_stop,current_stop,otype))
             
     #sort results by position
     result=sorted(result, key=itemgetter(0))
