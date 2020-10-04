@@ -11,6 +11,8 @@ from operator import itemgetter
 #from ctypes import *
 import time
 import ahocorasick
+#import numpy as np
+import itertools
 
    
     
@@ -75,11 +77,13 @@ cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,in
     
     #search fwd strand
     if search_fwd:    
+        s=time.time()
         #search stop positions
         A = ahocorasick.Automaton()
         for idx, key in enumerate(stops):
             A.add_word(key, (idx, key))
         A.make_automaton()
+        #print('tt:',time.time()-s)
         stop_positions=[end_index-3+1 for end_index, (insert_order, original_value) in A.iter(seq)]
         #pad stop positions to find ORFs without stop in sequence
         #e.g. if seq is AAAATGTTT stops in frame 1:[3] make this--> [-3,3,len(seq)]
@@ -173,25 +177,6 @@ cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,in
     #return [[],[],[],[],[]]
     
 
-'''
-cdef testloop(list lint1):
-    
-    cdef list lint=lint1
-    s=time.time()
-    for i in range(len(lint)):
-        t=lint[i]
-        pass
-    print('t2',time.time()-s)
-    
-    
-    #this is faster
-    s=time.time()
-    for i in lint:
-        t=i
-        pass
-    print('t1',time.time()-s)
-'''  
-    
     
 
 cdef get_orfsc(list start_positions,
@@ -229,24 +214,53 @@ cdef get_orfsc(list start_positions,
     #split by frame
     stops_by_frame=[[],[],[]]
     for stop in stop_positions:
-         stops_by_frame[stop%3].append(stop)
+         stops_by_frame[stop%3].append(stop) #vectorize?
     #print('stops_by_frame',stops_by_frame)
-    #if search between start and stop
-    if not find_between_stops:
-        starts_by_frame=[[],[],[]]
-        for start in start_positions:
-            starts_by_frame[start%3].append(start)
-        #print('SBF',starts_by_frame)
+    
     
     #s=time.time()
     #print('start search')
-    start_stop_pairs=find_orfs_between_stopsc(stops_by_frame,starts_by_frame,find_between_stops)
+    if find_between_stops:
+        
+        #s=time.time()
+        start_stop_pairs=list(map(find_between_stops_v,stops_by_frame))
+        #print('total time3:',time.time()-s,len(mres),len(mres[0]))
+        
+        '''s=time.time()
+        vectfunc = np.vectorize(find_between_stops_v,otypes=[list],cache=False)
+        print('vectime:',time.time()-s)
+        vres=list(vectfunc(stops_by_frame))
+        print('total time2:',time.time()-s,len(vres),len(vres[0]))
+        
+        s=time.time()
+        start_stop_pairs=find_orfs_between_stopsc(stops_by_frame,starts_by_frame,find_between_stops)
+        print('total time4:',time.time()-s,len(start_stop_pairs))
+        
+        s=time.time()
+        totalres=[find_between_stops_v(stops_by_frame[0]),find_between_stops_v(stops_by_frame[1]),find_between_stops_v(stops_by_frame[2])]
+        print('time reg:',time.time()-s,len(totalres),len(totalres[0]))
+        s=time.time()
+        totalres=[find_between_stops_v(x) for x in stops_by_frame]
+        print('time lc:',time.time()-s,len(totalres),len(totalres[0]))
+        #start_stop_pairs=totalres[0]'''
+        
+    else:
+        #if search between start and stop
+        starts_by_frame=[[],[],[]]
+        for start in start_positions:
+            starts_by_frame[start%3].append(start)
+            
+        s=time.time()
+        start_stop_pairs=list(map(find_between_start_stop_v,starts_by_frame,stops_by_frame))
+        #mres=list(itertools.chain.from_iterable(mres))
+        print('time map:',time.time()-s,len(start_stop_pairs))
+        
     #print('search done:',time.time()-s)
         
     #format results
     #print('len start loop',len(start_stop_pairs))
-    
-    for pair in start_stop_pairs:
+    s=time.time()
+    for pair in list(itertools.chain.from_iterable(start_stop_pairs)):
         #orf_type='complete'
         #orf_type=0
         orf_type=pair[2]
@@ -254,7 +268,6 @@ cdef get_orfsc(list start_positions,
         #if upstream_stop_index < 0:
         #    orf_type=1
         current_start_index=upstream_stop_index+3
-        
         
         current_stop_index=pair[1]
         this_frame=current_stop_index%3
@@ -296,9 +309,88 @@ cdef get_orfsc(list start_positions,
         #print(thisORF.start_index)
         result.append(thisORF)
     
+    #print('looptime',time.time()-s)
+    
+   
+    
+    
     #print('res,len,3p,5p',len(result))
     #print(result)
     return (result)
+
+
+    
+cpdef find_between_stops_v(list stop_positions):
+    #find regions between stops
+    cdef list result=[]
+    cdef int upstream_stop
+    cdef int current_stop
+    cdef int otype=0
+    otypes={True:0,False:2}
+    cdef int total_stops=len(stop_positions)
+    for i in range(1,total_stops):
+        upstream_stop=stop_positions[i-1]
+        current_stop=stop_positions[i]
+        #if i == total_stops-1:
+        #    otype=2
+        otype=otypes[bool(total_stops-1-i)] #is false at last index
+        result.append((upstream_stop,current_stop,otype))
+    return result
+    
+cpdef find_between_start_stop_v(start_positions,  list stop_positions):
+    #result will contain pairs of ORFs [start,stop]
+    cdef list result=[]
+    cdef int upstream_stop
+    cdef int this_start
+    cdef bint start_found=False
+    cdef int otype=0
+    cdef int total_stops=len(stop_positions)
+    
+    #convert to dequeue for faster pop operation
+    start_positions=deque(start_positions)
+
+    
+    #first stop pos is -1,-2 or -3 ignore
+    for i in range(1,total_stops):
+        upstream_stop=stop_positions[i-1]
+        current_stop=stop_positions[i]
+        #if this stop is upstream of next available start
+        start_found=False
+        while start_positions:
+            if current_stop <= start_positions[0]:
+                break
+            this_start = start_positions.popleft()
+            
+            if  this_start >= upstream_stop:
+                #found a start for current_stop_position
+                #print('fount',upstream_stop,this_start,current_stop)
+                #update upstream stop as start
+                upstream_stop=this_start-3
+                #last_start=this_start
+                #this is complete orf
+                start_found=True
+                #print('Found strt',otype,start_found)
+                break
+        
+            
+        #other wise is stop is in seq but no start otype is 5'partial else complete
+        #0 complete; 1: 5 partial; 2: 3 partial; 3: no start no stop
+        if (not start_found) and i==total_stops-1: #no start no stop
+            #otype=3
+            continue
+        elif start_found and i==total_stops-1:
+         #start but no stop
+            otype=2
+        elif not start_found:
+            otype=1
+        else:
+            otype=0
+        
+        result.append((upstream_stop,current_stop,otype))
+    return result
+    
+    
+    
     
 
 cpdef find_orfs_between_stopsc(list stops_by_frame, list starts_by_frame,bint find_between_stops):
@@ -313,12 +405,7 @@ cpdef find_orfs_between_stopsc(list stops_by_frame, list starts_by_frame,bint fi
     stop_size[1]=len(stops_by_frame[1])-1
     stop_size[2]=len(stops_by_frame[2])-1
     cdef int otype=0
-    
-    if not find_between_stops:
-        #convert to dequeue for faster pop operation
-        starts_by_frame[0]=deque(starts_by_frame[0])
-        starts_by_frame[1]=deque(starts_by_frame[1])
-        starts_by_frame[2]=deque(starts_by_frame[2])
+        
         
     
     
@@ -377,18 +464,18 @@ cpdef find_orfs_between_stopsc(list stops_by_frame, list starts_by_frame,bint fi
                     #otype=3
                     continue
                 elif start_found and i==stop_size[frame]:
-                # start but no stop
+                 #start but no stop
                     otype=2
                 elif not start_found:
                     otype=1
                 else:
                     otype=0
-                
-                result.append((upstream_stop,current_stop,otype))
-                #print('adding',upstream_stop,current_stop,otype,start_found)
-                #if not otype ==3:
-                #    result.append((upstream_stop,current_stop,otype))
             
+            result.append((upstream_stop,current_stop,otype))
+            #print('adding',upstream_stop,current_stop,otype,start_found)
+            #if not otype ==3:
+            #    result.append((upstream_stop,current_stop,otype))
+        
     #sort results by position
     result=sorted(result, key=itemgetter(0))
     #print('returnlen',len(result))
