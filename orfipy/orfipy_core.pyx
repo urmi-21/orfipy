@@ -253,7 +253,7 @@ cdef get_orfsc(list start_positions,
         s=time.time()
         start_stop_pairs=list(map(find_between_start_stop_v,starts_by_frame,stops_by_frame))
         #mres=list(itertools.chain.from_iterable(mres))
-        print('time map:',time.time()-s,len(start_stop_pairs))
+        #print('time map:',time.time()-s,len(start_stop_pairs))
         
     #print('search done:',time.time()-s)
         
