@@ -190,7 +190,7 @@ def main():
     
     #print(args)
     #call main program    
-    print('VersionXXXXX')
+    #print('VersionXXXXX')
     orfipy.findorfs.main(infile,
                          minlen,
                          maxlen,

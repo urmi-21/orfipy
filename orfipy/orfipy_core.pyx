@@ -27,8 +27,7 @@ cdef struct ORF:
 
 cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,include_stop,partial3,partial5,find_between_stops,out_opts):
     #print('xxx')
-    print('xxx')
-    print(seq_rc)
+
     cdef int seq_len=len(seq)
     cdef bint search_rev=False
     cdef bint search_fwd=False
@@ -101,7 +100,8 @@ cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,in
              minlen,
              maxlen,
              partial3, 
-             partial5))
+             partial5,
+             find_between_stops))
         #tlist=[i for i in range(1000000)]
         #testloop(tlist)
         
@@ -123,6 +123,7 @@ cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,in
             A.make_automaton()
             start_positions=[end_index-3+1 for end_index, (insert_order, original_value) in A.iter(seq_rc)]
             
+            
         #call search
         orfs_as_struct.extend(get_orfsc(start_positions,
              stop_positions,
@@ -130,7 +131,9 @@ cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,in
              minlen,
              maxlen,
              partial3, 
-             partial5,True))
+             partial5,
+             find_between_stops,
+             True))
     
         
       
@@ -199,6 +202,7 @@ cdef get_orfsc(list start_positions,
              int maxlen, 
              bint partial3=False, 
              bint partial5=False,
+             bint find_between_stops=False,
              bint rev_com=False):    
     #set minlen
     if minlen < 3:
@@ -229,15 +233,15 @@ cdef get_orfsc(list start_positions,
          stops_by_frame[stop%3].append(stop)
     #print('stops_by_frame',stops_by_frame)
     #if search between start and stop
-    if start_positions:
+    if not find_between_stops:
         starts_by_frame=[[],[],[]]
         for start in start_positions:
             starts_by_frame[start%3].append(start)
-        #print(starts_by_frame)
+        #print('SBF',starts_by_frame)
     
     #s=time.time()
     #print('start search')
-    start_stop_pairs=find_orfs_between_stopsc(stops_by_frame,starts_by_frame)
+    start_stop_pairs=find_orfs_between_stopsc(stops_by_frame,starts_by_frame,find_between_stops)
     #print('search done:',time.time()-s)
         
     #format results
@@ -245,10 +249,11 @@ cdef get_orfsc(list start_positions,
     
     for pair in start_stop_pairs:
         #orf_type='complete'
-        orf_type=0
+        #orf_type=0
+        orf_type=pair[2]
         upstream_stop_index=pair[0]
-        if upstream_stop_index < 0:
-            orf_type=1
+        #if upstream_stop_index < 0:
+        #    orf_type=1
         current_start_index=upstream_stop_index+3
         
         
@@ -257,7 +262,7 @@ cdef get_orfsc(list start_positions,
         #fix stop index if its out of sequence
         if current_stop_index >= seq_len:
             #orf_type='3-prime-partial'
-            orf_type=2
+            #orf_type=2
             #get total len of ORF till end of seq
             total_len_current=seq_len-current_start_index
             #len for multiple of 3
@@ -281,7 +286,7 @@ cdef get_orfsc(list start_positions,
         if rev_com:
             framenum=-1*framenum
         #add ORF details
-                
+        #print('otypes',pair[2],orf_type)
         thisORF.start_index=current_start_index
         thisORF.stop_index=current_stop_index
         thisORF.framenum=framenum
@@ -297,18 +302,25 @@ cdef get_orfsc(list start_positions,
     return (result)
     
 
-cpdef find_orfs_between_stopsc(list stops_by_frame, list starts_by_frame):
+cpdef find_orfs_between_stopsc(list stops_by_frame, list starts_by_frame,bint find_between_stops):
     #result will contain pairs of ORFs [start,stop]
     cdef list result=[]
     cdef int upstream_stop
     cdef int this_start
+    cdef bint start_found=False
     
+    cdef list stop_size=[0,0,0]
+    stop_size[0]=len(stops_by_frame[0])-1
+    stop_size[1]=len(stops_by_frame[1])-1
+    stop_size[2]=len(stops_by_frame[2])-1
+    cdef int otype=0
     
-    if starts_by_frame:
-        #conver to dequeue for faster pop operation
+    if not find_between_stops:
+        #convert to dequeue for faster pop operation
         starts_by_frame[0]=deque(starts_by_frame[0])
         starts_by_frame[1]=deque(starts_by_frame[1])
         starts_by_frame[2]=deque(starts_by_frame[2])
+        
     
     
     #for region between stop codons find a start downstream of upstream stop
@@ -322,17 +334,27 @@ cpdef find_orfs_between_stopsc(list stops_by_frame, list starts_by_frame):
             #first po is -1,-2 or -3 ignore
             if i == 0:
                 continue
-            #current_stop=stop_positions[i]
+            elif i==stop_size[frame]:
+                #this is last stop (out of seq) --> all orfs using this are lacking a stop codon
+                #print('reached last',otype)
+                otype=2
             upstream_stop=stop_positions[i-1]
-            if not starts_by_frame:
+            #print('usinc XXXXXXXXXX',starts_by_frame)
+            if find_between_stops:
+                #if searching only by stop codons orfs can be either complete or 3'partial(lacking stop codon)
+                #if orf is not 3'partial make it complete
                 #print('adding',upstream_stop,current_stop)
-                result.append((upstream_stop,current_stop))
+                if not otype==2:
+                    otype=0
+                result.append((upstream_stop,current_stop,otype))
             else:
+                #print('starts_by_frame',starts_by_frame)
                 #find  start downstream of upstream_stop_position in this_frame
                 #last_start_index=last_start_position_index[frame]
                 #for i in range(last_start_index+1,len(starts_by_frame[frame])):
                 #for i in starts_by_frame[frame]:
                 #if this stop is upstream of next available start
+                start_found=False
                 while starts_by_frame[frame]:
                     if current_stop <= starts_by_frame[frame][0]:
                         break
@@ -344,9 +366,28 @@ cpdef find_orfs_between_stopsc(list stops_by_frame, list starts_by_frame):
                         #update upstream stop as start
                         upstream_stop=this_start-3
                         #last_start=this_start
+                        #this is complete orf
+                        start_found=True
+                        #print('Found strt',otype,start_found)
                         break
-                #print('adding',upstream_stop,current_stop)
-                result.append([upstream_stop,current_stop])
+                
+                
+                #other wise is stop is in seq but no start otype is 5'partial else complete
+                #0 complete; 1: 5 partial; 2: 3 partial; 3: no start no stop
+                if (not start_found) and i==stop_size[frame]: #no start no stop
+                    otype=3
+                elif start_found and i==stop_size[frame]:
+                # start but no stop
+                    otype=2
+                elif not start_found:
+                    otype=1
+                else:
+                    otype=0
+                
+               
+                #print('adding',upstream_stop,current_stop,otype,start_found)
+                if not otype ==3:
+                    result.append((upstream_stop,current_stop,otype))
             
     #sort results by position
     result=sorted(result, key=itemgetter(0))
