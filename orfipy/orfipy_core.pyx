@@ -22,9 +22,6 @@ cdef struct ORF:
     int framenum
     int orf_type
     int length
-    #char* start_codon
-    #char* stop_codon
-    #char* seq
         
 
 cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,include_stop,partial3,partial5,find_between_stops,out_opts):
@@ -192,7 +189,7 @@ cdef get_orfsc(list start_positions,
     if minlen < 3:
         minlen=3   
     
-    #create struct
+    #create struct obj
     cdef ORF thisORF
     
     cdef list result=[]
@@ -207,8 +204,7 @@ cdef get_orfsc(list start_positions,
     cdef int current_start_index
     
    
-       
-    #print('ARGSSS',partial3,partial5,minlen,maxlen)
+      
     
     #start search
     #split by frame
@@ -259,7 +255,7 @@ cdef get_orfsc(list start_positions,
         
     #format results
     #print('len start loop',len(start_stop_pairs))
-    s=time.time()
+    #s=time.time()
     for pair in list(itertools.chain.from_iterable(start_stop_pairs)):
         #orf_type='complete'
         #orf_type=0

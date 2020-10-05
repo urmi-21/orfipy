@@ -18,7 +18,7 @@ orfs_seq1=['ATGTTTATGAAA', 'TGTTTA', 'GTTTATGAAATAGAACTAAATGCCCAT', 'AATAGAACTAA
 
 
 def test_orf_search():
-    result=oc.get_orfs(seq,"seq1",0,10000,rev_com=False, partial3=True, partial5=True,return_seqs=True)
+    result=oc.get_orfsc(seq,"seq1",0,10000,rev_com=False, partial3=True, partial5=True,return_seqs=True)
     print(result)
     assert result[0]==orfs_pos1
     assert result[1]==orfs_seq1

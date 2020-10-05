@@ -11,6 +11,8 @@ install:
   - pip install .
   - pip install coveralls
   - pip install coverage
+  - wget ftp://emboss.open-bio.org/pub/EMBOSS/emboss-latest.tar.gz -O /tmp/emboss.tar.gz
+  - tar -xvzf /tmp/emboss.tar.gz
   
   
 # command to run tests
