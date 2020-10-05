@@ -6,9 +6,18 @@ Created on Thu Aug 13 11:46:36 2020
 @author: usingh
 """
 import setuptools
-import os
+#import os
 import sys
+#from distutils.core import setup
+from distutils.extension import Extension
 
+#try cython
+try:
+    from Cython.Distutils import build_ext
+    from Cython.Build import cythonize
+except:
+    print("You don't have Cython installed. Please run 'pip install cython' to install cython first.")
+    sys.exit(1)
 
 #exit if python 2
 if sys.version_info.major != 3:
@@ -17,6 +26,12 @@ if sys.version_info.major != 3:
 #read description
 with open("README.md", "r") as fh:
     long_description = fh.read()
+    
+    
+extensions=[
+    Extension("orfipy_core",
+              ["orfipy/orfipy_core.pyx"]) 
+]
 
 setuptools.setup(
     name="orfipy",
@@ -35,8 +50,7 @@ setuptools.setup(
     scripts=[],
     entry_points={
             'console_scripts': [
-                    'orfipy = orfipy.__main__:main'
-                    
+                    'orfipy = orfipy.__main__:main'                    
                     ]
             },
     install_requires=[line.rstrip() for line in open("requirements.txt", "rt")],
@@ -47,4 +61,6 @@ setuptools.setup(
         "Operating System :: Unix",
     ],
     python_requires='>=3.5',
+    cmdclass = {"build_ext": build_ext},
+    ext_modules = cythonize(extensions)
 )

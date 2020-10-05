@@ -12,8 +12,8 @@ import multiprocessing
 from contextlib import closing
 import gc
 import psutil
-import pyximport; pyximport.install()
-import orfipy.orfipy_core as oc
+#import pyximport; pyximport.install()
+import orfipy_core as oc
 from pyfaidx import Fasta
 import subprocess
 
