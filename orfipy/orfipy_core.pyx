@@ -60,10 +60,7 @@ cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,in
     dna=out_opts[2]
     rna=out_opts[3]
     pep=out_opts[4]
-    #get sequence to write or not
-    get_seq=False
-    if dna or pep or rna:
-        get_seq=True
+    
     
        
     #search fwd strand
