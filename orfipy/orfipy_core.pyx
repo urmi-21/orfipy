@@ -277,6 +277,7 @@ cpdef list find_between_stops_v(list stop_positions):
         #if i == total_stops-1:
         #    otype=2
         otype=otypes[bool(total_stops-1-i)] #is false at last index
+        
         result.append((upstream_stop,current_stop,otype))
     return result
     

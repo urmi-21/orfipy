@@ -284,11 +284,11 @@ def write_results_single(results,file_streams):
     all_none=True
     for i in range(len(file_streams)):
         if file_streams[i]:
-            if len(results[i])>0:
+            if results[i]>0:
                 file_streams[i].write(results[i]+'\n')
             all_none=False
     #no output file specified, print bed results
-    if all_none:
+    if all_none and results[0]>0:
         print(results[0])
 
 def write_results_multiple(results,file_streams):
@@ -479,7 +479,7 @@ def main(infasta,
     file_streams=init_result_files((bed12, bed, dna, rna, pep),tmp=outdir)    
     
     if not procs:
-        procs=int(multiprocessing.cpu_count()/2)+1
+        procs=int(multiprocessing.cpu_count()*.7)
     
     #estimate chunk_size
     if not chunk_size:
@@ -496,7 +496,7 @@ def main(infasta,
     if sys.version_info[1] < 8 and chunk_size > 2000:
         chunk_size = 1900
                 
-    print("Setting chunk size {} MB".format(chunk_size),file=sys.stderr)
+    print("Setting chunk size {} MB. Procs {}".format(chunk_size,procs),file=sys.stderr)
     
     
     #read fasta file
