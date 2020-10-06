@@ -2,4 +2,3 @@ cython
 psutil
 pyfaidx
 pyahocorasick
-pyrpipe
