@@ -13,11 +13,24 @@ install:
   - pip install coverage
   - wget ftp://emboss.open-bio.org/pub/EMBOSS/emboss-latest.tar.gz -O /tmp/emboss.tar.gz
   - tar -xvzf /tmp/emboss.tar.gz
+  - cd EMBOSS-6.6.0
+  - ./configure --without-x
+  - make
+  - cd ..
+  - export PATH=$PATH:$PWD/EMBOSS-6.6.0/emboss
   
   
 # command to run tests
 script:
   - ls
+  - #run getorf comparison
+  - getorf -h
+  - getorf -find 3 -outseq ec3.fa -sequence tests/testseq/ecoli.fa -min 12
+  - getorf -find 2 -outseq ec.fa -sequence tests/testseq/ecoli.fa -min 12
+  - orfipy --partial-3 --start ATG --min 12 --outdir ofout --dna d3 tests/testseq/ecoli.fa
+  - orfipy --between-stops --min 12 --outdir ofout --dna d tests/testseq/ecoli.fa
+  - python scripts/compare_fasta_files.py ec3.fa ofout/d3
+  - python scripts/compare_fasta_files.py ec.fa ofout/d
   - coverage run -m pytest tests/
   - coverage report --show-missing  
 after_success:
