@@ -17,19 +17,7 @@ import orfipy_core as oc
 from pyfaidx import Fasta
 import subprocess
 
-
-'''
-def start_workers(poolargs,procs):
-    
-    #if large seqs start map
-    if len(poolargs) < procs-2:
-        #print('starting map')
-        start_map(poolargs,procs)
-        
-    else:            
-        #print('starting Imap')
-        results=start_imap_unordered(poolargs, procs)
-'''       
+   
     
 def worker_map(arglist):
     """
@@ -489,7 +477,6 @@ def main(infasta,
     
          
     file_streams=init_result_files((bed12, bed, dna, rna, pep),tmp=outdir)    
-    
     
     if not procs:
         procs=int(multiprocessing.cpu_count()/2)+1

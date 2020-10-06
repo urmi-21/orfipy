@@ -5,7 +5,7 @@
 """
 import orfipy
 import orfipy.findorfs as fo
-import orfipy.orfipy_core as oc
+import orfipy_core as oc
 
 seq='ATGTTTATGAAATAGAACTAAATGCCCATG'
 orfs_pos1=[(0, 12, 1, 'ATG', 'TAG', 'complete', 12), 
