@@ -284,11 +284,11 @@ def write_results_single(results,file_streams):
     all_none=True
     for i in range(len(file_streams)):
         if file_streams[i]:
-            if results[i]>0:
+            if results[i]:
                 file_streams[i].write(results[i]+'\n')
             all_none=False
     #no output file specified, print bed results
-    if all_none and results[0]>0:
+    if all_none and results[0]:
         print(results[0])
 
 def write_results_multiple(results,file_streams):
