@@ -92,8 +92,7 @@ cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,in
              partial3, 
              partial5,
              find_between_stops))
-        #tlist=[i for i in range(1000000)]
-        #testloop(tlist)
+        
         
     if search_rev:
         #search stop positions
@@ -145,7 +144,7 @@ cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,in
     
        
     #dont change the order of retrn list
-        
+    
     return [bed12results,bedresults,seqresults[0],seqresults[1],seqresults[2]]
     
     
@@ -418,13 +417,16 @@ cdef list orfs_to_seq(list orfs_struct_list, str seq, str seq_rc, str seq_name, 
             #convert to prot
             #for all codons
             thisseq_pep=''
+            
             for s in [thisseq_dna[i: i + 3] for i in range(0, len(thisseq_dna), 3)]:
                 try:
                     thisseq_pep+=table[s]
                 except KeyError as error:
                    #print("Error unknown codon:"+s+"...translating to x",file=sys.stderr)
                      thisseq_pep+='X' 
+                    
             result[2].append('>'+thisorfid+'\n'+format_fasta(thisseq_pep))
+            
         if out_types[1]:
             #conver to RNA
             thisseq_rna=thisseq_dna.replace('T','U')
@@ -432,7 +434,9 @@ cdef list orfs_to_seq(list orfs_struct_list, str seq, str seq_rc, str seq_name, 
     
     #print('return',result)
     return ['\n'.join(res) for res in result] #return a list ofstrings
-    #return '\n'.join(result)
+
+    
+
 
 #compile results in bed
 cdef str orfs_to_bed(list orfs_struct_list,str seq,str seq_rc,str seq_name, int seqlen, bint include_stop):
