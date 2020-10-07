@@ -25,11 +25,15 @@ script:
   - ls
   - #run getorf comparison
   - getorf -find 3 -outseq ec3.fa -sequence tests/testseq/ecoli.fa -min 120
+  - getorf -find 1 -outseq ecp3.fa -sequence tests/testseq/ecoli.fa -min 120
   - getorf -find 2 -outseq ec.fa -sequence tests/testseq/ecoli.fa -min 120
-  - orfipy --single --partial-3 --start ATG --min 120 --outdir ofout --dna d3 tests/testseq/ecoli.fa
-  - orfipy --single --between-stops --min 120 --outdir ofout --dna d tests/testseq/ecoli.fa
+  - getorf -find 0 -outseq ecp.fa -sequence tests/testseq/ecoli.fa -min 120
+  - orfipy --single --partial-3 --start ATG --min 120 --outdir ofout --dna d3 --pep p3 tests/testseq/ecoli.fa
+  - orfipy --single --between-stops --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa
   - python scripts/compare_fasta_files.py ec3.fa ofout/d3
+  - python scripts/compare_fasta_files.py ecp3.fa ofout/p3
   - python scripts/compare_fasta_files.py ec.fa ofout/d
+  - python scripts/compare_fasta_files.py ecp.fa ofout/p
   - coverage run -m pytest tests/
   - coverage report --show-missing  
 after_success:

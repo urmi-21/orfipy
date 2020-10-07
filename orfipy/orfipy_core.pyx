@@ -427,6 +427,7 @@ cdef list orfs_to_seq(list orfs_struct_list, str seq, str seq_rc, str seq_name, 
                     
             result[2].append('>'+thisorfid+'\n'+format_fasta(thisseq_pep))
             
+            
         if out_types[1]:
             #conver to RNA
             thisseq_rna=thisseq_dna.replace('T','U')
