@@ -479,7 +479,7 @@ def main(infasta,
     file_streams=init_result_files((bed12, bed, dna, rna, pep),tmp=outdir)    
     
     if not procs:
-        procs=int(multiprocessing.cpu_count()*.7)
+        procs=int(multiprocessing.cpu_count()*.7)+1
     
     #estimate chunk_size
     if not chunk_size:
