@@ -11,6 +11,12 @@ orfipy	Human (370 MB)	PC	42.33
 orfipy	Human (370 MB)	HPC	16.66
 orfipy	Bac (1.5 GB)	PC	152
 orfipy	Bac (1.5 GB)	HPC	79.33
+orfipy_bed	A. thal (120 MB)	PC	10.6
+orfipy_bed	A. thal (120 MB)	HPC	4.9
+orfipy_bed	Human (370 MB)	PC	21.40
+orfipy_bed	Human (370 MB)	HPC	12.04
+orfipy_bed	Bac (1.5 GB)	PC	89.56
+orfipy_bed	Bac (1.5 GB)	HPC	41.05
 orfm	A. thal (120 MB)	PC	2.67
 orfm	A. thal (120 MB)	HPC	2.67
 orfm	Human (370 MB)	PC	37.33
