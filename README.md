@@ -60,7 +60,7 @@ orfipy --show-table
 
 ## Comparison with Getorf and OrfM
 
-![alt text](https://raw.githubusercontent.com/urmi-21/orfipy/master/scripts/benchmarks.png)
+![alt text](https://raw.githubusercontent.com/urmi-21/orfipy/master/scripts/benchmarks_withbed.png)
 
 
 
