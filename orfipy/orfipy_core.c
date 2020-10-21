@@ -865,7 +865,7 @@ struct __pyx_opt_args_11orfipy_core_get_orfsc {
   int rev_com;
 };
 
-/* "orfipy_core.pyx":335
+/* "orfipy_core.pyx":338
  * 
  * 
  * cdef str format_fasta(seq):             # <<<<<<<<<<<<<<
@@ -879,7 +879,7 @@ struct __pyx_obj_11orfipy_core___pyx_scope_struct____pyx_f_11orfipy_core_format_
 };
 
 
-/* "orfipy_core.pyx":351
+/* "orfipy_core.pyx":354
  *     """
  *     cdef int width=62
  *     return "\n".join(seq[i: i + width] for i in range(0, len(seq), width))             # <<<<<<<<<<<<<<
@@ -5751,8 +5751,8 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  * 
  *     #convert to dequeue for faster pop operation
  *     start_positions=deque(start_positions)             # <<<<<<<<<<<<<<
- * 
- * 
+ *     #print('S',start_positions)
+ *     #print('T',stop_positions)
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_deque); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -5774,7 +5774,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
   __Pyx_DECREF_SET(__pyx_v_start_positions, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "orfipy_core.pyx":295
+  /* "orfipy_core.pyx":297
  * 
  *     #first stop pos is -1,-2 or -3 ignore
  *     for i in range(1,total_stops):             # <<<<<<<<<<<<<<
@@ -5786,7 +5786,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
   for (__pyx_t_7 = 1; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
 
-    /* "orfipy_core.pyx":296
+    /* "orfipy_core.pyx":298
  *     #first stop pos is -1,-2 or -3 ignore
  *     for i in range(1,total_stops):
  *         upstream_stop=stop_positions[i-1]             # <<<<<<<<<<<<<<
@@ -5795,16 +5795,16 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
     if (unlikely(__pyx_v_stop_positions == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 296, __pyx_L1_error)
+      __PYX_ERR(0, 298, __pyx_L1_error)
     }
     __pyx_t_8 = (__pyx_v_i - 1);
-    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_stop_positions, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_stop_positions, __pyx_t_8, long, 1, __Pyx_PyInt_From_long, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 298, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_upstream_stop = __pyx_t_9;
 
-    /* "orfipy_core.pyx":297
+    /* "orfipy_core.pyx":299
  *     for i in range(1,total_stops):
  *         upstream_stop=stop_positions[i-1]
  *         current_stop=stop_positions[i]             # <<<<<<<<<<<<<<
@@ -5813,14 +5813,14 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
     if (unlikely(__pyx_v_stop_positions == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 297, __pyx_L1_error)
+      __PYX_ERR(0, 299, __pyx_L1_error)
     }
-    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_stop_positions, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 297, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_stop_positions, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_current_stop, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "orfipy_core.pyx":299
+    /* "orfipy_core.pyx":301
  *         current_stop=stop_positions[i]
  *         #if this stop is upstream of next available start
  *         start_found=False             # <<<<<<<<<<<<<<
@@ -5829,7 +5829,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
     __pyx_v_start_found = 0;
 
-    /* "orfipy_core.pyx":300
+    /* "orfipy_core.pyx":302
  *         #if this stop is upstream of next available start
  *         start_found=False
  *         while start_positions:             # <<<<<<<<<<<<<<
@@ -5837,25 +5837,25 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  *                 break
  */
     while (1) {
-      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_start_positions); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 300, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_v_start_positions); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 302, __pyx_L1_error)
       if (!__pyx_t_10) break;
 
-      /* "orfipy_core.pyx":301
+      /* "orfipy_core.pyx":303
  *         start_found=False
  *         while start_positions:
  *             if current_stop <= start_positions[0]:             # <<<<<<<<<<<<<<
  *                 break
  *             this_start = start_positions.popleft()
  */
-      __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_start_positions, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_start_positions, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = PyObject_RichCompare(__pyx_v_current_stop, __pyx_t_1, Py_LE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 301, __pyx_L1_error)
+      __pyx_t_3 = PyObject_RichCompare(__pyx_v_current_stop, __pyx_t_1, Py_LE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 303, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 301, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 303, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (__pyx_t_10) {
 
-        /* "orfipy_core.pyx":302
+        /* "orfipy_core.pyx":304
  *         while start_positions:
  *             if current_stop <= start_positions[0]:
  *                 break             # <<<<<<<<<<<<<<
@@ -5864,7 +5864,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
         goto __pyx_L6_break;
 
-        /* "orfipy_core.pyx":301
+        /* "orfipy_core.pyx":303
  *         start_found=False
  *         while start_positions:
  *             if current_stop <= start_positions[0]:             # <<<<<<<<<<<<<<
@@ -5873,14 +5873,14 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
       }
 
-      /* "orfipy_core.pyx":303
+      /* "orfipy_core.pyx":305
  *             if current_stop <= start_positions[0]:
  *                 break
  *             this_start = start_positions.popleft()             # <<<<<<<<<<<<<<
  * 
  *             if  this_start >= upstream_stop:
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_start_positions, __pyx_n_s_popleft); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_start_positions, __pyx_n_s_popleft); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 305, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -5894,14 +5894,14 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
       }
       __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 303, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 305, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 303, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 305, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_v_this_start = __pyx_t_9;
 
-      /* "orfipy_core.pyx":305
+      /* "orfipy_core.pyx":307
  *             this_start = start_positions.popleft()
  * 
  *             if  this_start >= upstream_stop:             # <<<<<<<<<<<<<<
@@ -5911,7 +5911,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
       __pyx_t_10 = ((__pyx_v_this_start >= __pyx_v_upstream_stop) != 0);
       if (__pyx_t_10) {
 
-        /* "orfipy_core.pyx":309
+        /* "orfipy_core.pyx":311
  *                 #print('fount',upstream_stop,this_start,current_stop)
  *                 #update upstream stop as start
  *                 upstream_stop=this_start-3             # <<<<<<<<<<<<<<
@@ -5920,7 +5920,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
         __pyx_v_upstream_stop = (__pyx_v_this_start - 3);
 
-        /* "orfipy_core.pyx":312
+        /* "orfipy_core.pyx":314
  *                 #last_start=this_start
  *                 #this is complete orf
  *                 start_found=True             # <<<<<<<<<<<<<<
@@ -5929,7 +5929,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
         __pyx_v_start_found = 1;
 
-        /* "orfipy_core.pyx":314
+        /* "orfipy_core.pyx":316
  *                 start_found=True
  *                 #print('Found strt',otype,start_found)
  *                 break             # <<<<<<<<<<<<<<
@@ -5938,7 +5938,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
         goto __pyx_L6_break;
 
-        /* "orfipy_core.pyx":305
+        /* "orfipy_core.pyx":307
  *             this_start = start_positions.popleft()
  * 
  *             if  this_start >= upstream_stop:             # <<<<<<<<<<<<<<
@@ -5949,7 +5949,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
     }
     __pyx_L6_break:;
 
-    /* "orfipy_core.pyx":318
+    /* "orfipy_core.pyx":320
  *         #other wise is stop is in seq but no start otype is 5'partial else complete
  *         #0 complete; 1: 5 partial; 2: 3 partial; 3: no start no stop
  *         if (not start_found) and i==total_stops-1: #no start no stop             # <<<<<<<<<<<<<<
@@ -5967,7 +5967,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
     __pyx_L10_bool_binop_done:;
     if (__pyx_t_10) {
 
-      /* "orfipy_core.pyx":320
+      /* "orfipy_core.pyx":322
  *         if (not start_found) and i==total_stops-1: #no start no stop
  *             #otype=3
  *             continue             # <<<<<<<<<<<<<<
@@ -5976,7 +5976,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
       goto __pyx_L3_continue;
 
-      /* "orfipy_core.pyx":318
+      /* "orfipy_core.pyx":320
  *         #other wise is stop is in seq but no start otype is 5'partial else complete
  *         #0 complete; 1: 5 partial; 2: 3 partial; 3: no start no stop
  *         if (not start_found) and i==total_stops-1: #no start no stop             # <<<<<<<<<<<<<<
@@ -5985,7 +5985,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
     }
 
-    /* "orfipy_core.pyx":321
+    /* "orfipy_core.pyx":323
  *             #otype=3
  *             continue
  *         elif start_found and i==total_stops-1:             # <<<<<<<<<<<<<<
@@ -6003,7 +6003,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
     __pyx_L12_bool_binop_done:;
     if (__pyx_t_10) {
 
-      /* "orfipy_core.pyx":323
+      /* "orfipy_core.pyx":325
  *         elif start_found and i==total_stops-1:
  *          #start but no stop
  *             otype=2             # <<<<<<<<<<<<<<
@@ -6012,7 +6012,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
       __pyx_v_otype = 2;
 
-      /* "orfipy_core.pyx":321
+      /* "orfipy_core.pyx":323
  *             #otype=3
  *             continue
  *         elif start_found and i==total_stops-1:             # <<<<<<<<<<<<<<
@@ -6022,7 +6022,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
       goto __pyx_L9;
     }
 
-    /* "orfipy_core.pyx":324
+    /* "orfipy_core.pyx":326
  *          #start but no stop
  *             otype=2
  *         elif not start_found:             # <<<<<<<<<<<<<<
@@ -6032,7 +6032,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
     __pyx_t_10 = ((!(__pyx_v_start_found != 0)) != 0);
     if (__pyx_t_10) {
 
-      /* "orfipy_core.pyx":325
+      /* "orfipy_core.pyx":327
  *             otype=2
  *         elif not start_found:
  *             otype=1             # <<<<<<<<<<<<<<
@@ -6041,7 +6041,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
  */
       __pyx_v_otype = 1;
 
-      /* "orfipy_core.pyx":324
+      /* "orfipy_core.pyx":326
  *          #start but no stop
  *             otype=2
  *         elif not start_found:             # <<<<<<<<<<<<<<
@@ -6051,7 +6051,7 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
       goto __pyx_L9;
     }
 
-    /* "orfipy_core.pyx":327
+    /* "orfipy_core.pyx":329
  *             otype=1
  *         else:
  *             otype=0             # <<<<<<<<<<<<<<
@@ -6063,18 +6063,18 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
     }
     __pyx_L9:;
 
-    /* "orfipy_core.pyx":329
+    /* "orfipy_core.pyx":331
  *             otype=0
  * 
  *         result.append((upstream_stop,current_stop,otype))             # <<<<<<<<<<<<<<
+ *     #print('XXX',result)
  *     return result
- * 
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_upstream_stop); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 329, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_upstream_stop); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 331, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_otype); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 329, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_otype); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 329, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 331, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
@@ -6085,14 +6085,14 @@ static PyObject *__pyx_f_11orfipy_core_find_between_start_stop_v(PyObject *__pyx
     PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_1);
     __pyx_t_3 = 0;
     __pyx_t_1 = 0;
-    __pyx_t_12 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_4); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 329, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyList_Append(__pyx_v_result, __pyx_t_4); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 331, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_L3_continue:;
   }
 
-  /* "orfipy_core.pyx":330
- * 
+  /* "orfipy_core.pyx":333
  *         result.append((upstream_stop,current_stop,otype))
+ *     #print('XXX',result)
  *     return result             # <<<<<<<<<<<<<<
  * 
  * 
@@ -6222,7 +6222,7 @@ static PyObject *__pyx_pf_11orfipy_core_4find_between_start_stop_v(CYTHON_UNUSED
 }
 static PyObject *__pyx_gb_11orfipy_core_12format_fasta_2generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "orfipy_core.pyx":351
+/* "orfipy_core.pyx":354
  *     """
  *     cdef int width=62
  *     return "\n".join(seq[i: i + width] for i in range(0, len(seq), width))             # <<<<<<<<<<<<<<
@@ -6242,7 +6242,7 @@ static PyObject *__pyx_pf_11orfipy_core_12format_fasta_genexpr(PyObject *__pyx_s
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_11orfipy_core___pyx_scope_struct_1_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 351, __pyx_L1_error)
+    __PYX_ERR(0, 354, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -6250,7 +6250,7 @@ static PyObject *__pyx_pf_11orfipy_core_12format_fasta_genexpr(PyObject *__pyx_s
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_11orfipy_core_12format_fasta_2generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_format_fasta_locals_genexpr, __pyx_n_s_orfipy_core); if (unlikely(!gen)) __PYX_ERR(0, 351, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_11orfipy_core_12format_fasta_2generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_format_fasta_locals_genexpr, __pyx_n_s_orfipy_core); if (unlikely(!gen)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -6287,19 +6287,19 @@ static PyObject *__pyx_gb_11orfipy_core_12format_fasta_2generator(__pyx_Coroutin
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 351, __pyx_L1_error)
-  __pyx_r = PyList_New(0); if (unlikely(!__pyx_r)) __PYX_ERR(0, 351, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 354, __pyx_L1_error)
+  __pyx_r = PyList_New(0); if (unlikely(!__pyx_r)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seq)) { __Pyx_RaiseClosureNameError("seq"); __PYX_ERR(0, 351, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seq)) { __Pyx_RaiseClosureNameError("seq"); __PYX_ERR(0, 354, __pyx_L1_error) }
   __pyx_t_1 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_seq;
   __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_width); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_width); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -6310,16 +6310,16 @@ static PyObject *__pyx_gb_11orfipy_core_12format_fasta_2generator(__pyx_Coroutin
   PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_3);
   __pyx_t_1 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
     __pyx_t_4 = __pyx_t_3; __Pyx_INCREF(__pyx_t_4); __pyx_t_2 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 351, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 351, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 354, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   for (;;) {
@@ -6327,17 +6327,17 @@ static PyObject *__pyx_gb_11orfipy_core_12format_fasta_2generator(__pyx_Coroutin
       if (likely(PyList_CheckExact(__pyx_t_4))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 351, __pyx_L1_error)
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 354, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 351, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 354, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -6347,7 +6347,7 @@ static PyObject *__pyx_gb_11orfipy_core_12format_fasta_2generator(__pyx_Coroutin
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 351, __pyx_L1_error)
+          else __PYX_ERR(0, 354, __pyx_L1_error)
         }
         break;
       }
@@ -6357,16 +6357,16 @@ static PyObject *__pyx_gb_11orfipy_core_12format_fasta_2generator(__pyx_Coroutin
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_i, __pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_3);
     __pyx_t_3 = 0;
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seq)) { __Pyx_RaiseClosureNameError("seq"); __PYX_ERR(0, 351, __pyx_L1_error) }
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_width); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seq)) { __Pyx_RaiseClosureNameError("seq"); __PYX_ERR(0, 354, __pyx_L1_error) }
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_width); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyNumber_Add(__pyx_cur_scope->__pyx_v_i, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_Add(__pyx_cur_scope->__pyx_v_i, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_GetSlice(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seq, 0, 0, &__pyx_cur_scope->__pyx_v_i, &__pyx_t_1, NULL, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetSlice(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seq, 0, 0, &__pyx_cur_scope->__pyx_v_i, &__pyx_t_1, NULL, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(__Pyx_ListComp_Append(__pyx_r, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 351, __pyx_L1_error)
+    if (unlikely(__Pyx_ListComp_Append(__pyx_r, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 354, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -6391,7 +6391,7 @@ static PyObject *__pyx_gb_11orfipy_core_12format_fasta_2generator(__pyx_Coroutin
   return __pyx_r;
 }
 
-/* "orfipy_core.pyx":335
+/* "orfipy_core.pyx":338
  * 
  * 
  * cdef str format_fasta(seq):             # <<<<<<<<<<<<<<
@@ -6413,7 +6413,7 @@ static PyObject *__pyx_f_11orfipy_core_format_fasta(PyObject *__pyx_v_seq) {
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_11orfipy_core___pyx_scope_struct____pyx_f_11orfipy_core_format_fasta *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 335, __pyx_L1_error)
+    __PYX_ERR(0, 338, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -6421,7 +6421,7 @@ static PyObject *__pyx_f_11orfipy_core_format_fasta(PyObject *__pyx_v_seq) {
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_seq);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_seq);
 
-  /* "orfipy_core.pyx":350
+  /* "orfipy_core.pyx":353
  * 
  *     """
  *     cdef int width=62             # <<<<<<<<<<<<<<
@@ -6430,7 +6430,7 @@ static PyObject *__pyx_f_11orfipy_core_format_fasta(PyObject *__pyx_v_seq) {
  */
   __pyx_cur_scope->__pyx_v_width = 62;
 
-  /* "orfipy_core.pyx":351
+  /* "orfipy_core.pyx":354
  *     """
  *     cdef int width=62
  *     return "\n".join(seq[i: i + width] for i in range(0, len(seq), width))             # <<<<<<<<<<<<<<
@@ -6438,19 +6438,19 @@ static PyObject *__pyx_f_11orfipy_core_format_fasta(PyObject *__pyx_v_seq) {
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_pf_11orfipy_core_12format_fasta_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_11orfipy_core_12format_fasta_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyUnicode_Join(__pyx_kp_u__2, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_1 = PyUnicode_Join(__pyx_kp_u__2, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "orfipy_core.pyx":335
+  /* "orfipy_core.pyx":338
  * 
  * 
  * cdef str format_fasta(seq):             # <<<<<<<<<<<<<<
@@ -6471,7 +6471,7 @@ static PyObject *__pyx_f_11orfipy_core_format_fasta(PyObject *__pyx_v_seq) {
   return __pyx_r;
 }
 
-/* "orfipy_core.pyx":355
+/* "orfipy_core.pyx":358
  * 
  * 
  * cdef list orfs_to_seq(list orfs_struct_list, str seq, str seq_rc, str seq_name, int seqlen, bint include_stop,out_types,dict table):             # <<<<<<<<<<<<<<
@@ -6535,20 +6535,20 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("orfs_to_seq", 0);
 
-  /* "orfipy_core.pyx":359
+  /* "orfipy_core.pyx":362
  *     cdef int ostart
  *     cdef int oend
  *     cdef list result=[[],[],[]]             # <<<<<<<<<<<<<<
  *     cdef int ind=0
  *     #out_types is array of bool [0] --> out seq as nuc; 1-->RNA; 2-->peptide
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 359, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 362, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 359, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 362, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 359, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 362, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 359, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 362, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_1);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
@@ -6562,7 +6562,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
   __pyx_v_result = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "orfipy_core.pyx":360
+  /* "orfipy_core.pyx":363
  *     cdef int oend
  *     cdef list result=[[],[],[]]
  *     cdef int ind=0             # <<<<<<<<<<<<<<
@@ -6571,7 +6571,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
   __pyx_v_ind = 0;
 
-  /* "orfipy_core.pyx":363
+  /* "orfipy_core.pyx":366
  *     #out_types is array of bool [0] --> out seq as nuc; 1-->RNA; 2-->peptide
  * 
  *     for orf in orfs_struct_list:             # <<<<<<<<<<<<<<
@@ -6580,22 +6580,22 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
   if (unlikely(__pyx_v_orfs_struct_list == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 363, __pyx_L1_error)
+    __PYX_ERR(0, 366, __pyx_L1_error)
   }
   __pyx_t_4 = __pyx_v_orfs_struct_list; __Pyx_INCREF(__pyx_t_4); __pyx_t_5 = 0;
   for (;;) {
     if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_4)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_3); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 363, __pyx_L1_error)
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_3); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 366, __pyx_L1_error)
     #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 363, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 366, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
-    __pyx_t_6 = __pyx_convert__from_py_struct____pyx_t_11orfipy_core_ORF(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 363, __pyx_L1_error)
+    __pyx_t_6 = __pyx_convert__from_py_struct____pyx_t_11orfipy_core_ORF(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 366, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_orf = __pyx_t_6;
 
-    /* "orfipy_core.pyx":367
+    /* "orfipy_core.pyx":370
  *         #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon,orftype,seqlen]
  *         #struct is thisORF.start_index,thisORF.stop_index,thisORF.framenum, thisORF.orf_type, thisORF.length
  *         ind+=1             # <<<<<<<<<<<<<<
@@ -6604,7 +6604,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
     __pyx_v_ind = (__pyx_v_ind + 1);
 
-    /* "orfipy_core.pyx":369
+    /* "orfipy_core.pyx":372
  *         ind+=1
  * 
  *         ostart=orf.start_index             # <<<<<<<<<<<<<<
@@ -6614,7 +6614,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     __pyx_t_7 = __pyx_v_orf.start_index;
     __pyx_v_ostart = __pyx_t_7;
 
-    /* "orfipy_core.pyx":370
+    /* "orfipy_core.pyx":373
  * 
  *         ostart=orf.start_index
  *         oend=orf.stop_index             # <<<<<<<<<<<<<<
@@ -6624,19 +6624,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     __pyx_t_7 = __pyx_v_orf.stop_index;
     __pyx_v_oend = __pyx_t_7;
 
-    /* "orfipy_core.pyx":371
+    /* "orfipy_core.pyx":374
  *         ostart=orf.start_index
  *         oend=orf.stop_index
  *         frame=orf.framenum             # <<<<<<<<<<<<<<
  *         strand='+'
  *         current_seq=seq
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.framenum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 371, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.framenum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 374, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_frame, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":372
+    /* "orfipy_core.pyx":375
  *         oend=orf.stop_index
  *         frame=orf.framenum
  *         strand='+'             # <<<<<<<<<<<<<<
@@ -6646,7 +6646,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     __Pyx_INCREF(__pyx_kp_u__3);
     __Pyx_XDECREF_SET(__pyx_v_strand, __pyx_kp_u__3);
 
-    /* "orfipy_core.pyx":373
+    /* "orfipy_core.pyx":376
  *         frame=orf.framenum
  *         strand='+'
  *         current_seq=seq             # <<<<<<<<<<<<<<
@@ -6656,19 +6656,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     __Pyx_INCREF(__pyx_v_seq);
     __Pyx_XDECREF_SET(__pyx_v_current_seq, __pyx_v_seq);
 
-    /* "orfipy_core.pyx":374
+    /* "orfipy_core.pyx":377
  *         strand='+'
  *         current_seq=seq
  *         if frame < 0:             # <<<<<<<<<<<<<<
  *             strand='-'
  *             current_seq=seq_rc
  */
-    __pyx_t_3 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 374, __pyx_L1_error)
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 374, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 377, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 377, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_8) {
 
-      /* "orfipy_core.pyx":375
+      /* "orfipy_core.pyx":378
  *         current_seq=seq
  *         if frame < 0:
  *             strand='-'             # <<<<<<<<<<<<<<
@@ -6678,7 +6678,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       __Pyx_INCREF(__pyx_kp_u__4);
       __Pyx_DECREF_SET(__pyx_v_strand, __pyx_kp_u__4);
 
-      /* "orfipy_core.pyx":376
+      /* "orfipy_core.pyx":379
  *         if frame < 0:
  *             strand='-'
  *             current_seq=seq_rc             # <<<<<<<<<<<<<<
@@ -6688,7 +6688,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       __Pyx_INCREF(__pyx_v_seq_rc);
       __Pyx_DECREF_SET(__pyx_v_current_seq, __pyx_v_seq_rc);
 
-      /* "orfipy_core.pyx":374
+      /* "orfipy_core.pyx":377
  *         strand='+'
  *         current_seq=seq
  *         if frame < 0:             # <<<<<<<<<<<<<<
@@ -6697,7 +6697,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
     }
 
-    /* "orfipy_core.pyx":378
+    /* "orfipy_core.pyx":381
  *             current_seq=seq_rc
  * 
  *         otype=orf.orf_type             # <<<<<<<<<<<<<<
@@ -6707,7 +6707,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     __pyx_t_7 = __pyx_v_orf.orf_type;
     __pyx_v_otype = __pyx_t_7;
 
-    /* "orfipy_core.pyx":379
+    /* "orfipy_core.pyx":382
  * 
  *         otype=orf.orf_type
  *         orf_type=''             # <<<<<<<<<<<<<<
@@ -6717,7 +6717,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     __Pyx_INCREF(__pyx_kp_u_);
     __Pyx_XDECREF_SET(__pyx_v_orf_type, __pyx_kp_u_);
 
-    /* "orfipy_core.pyx":380
+    /* "orfipy_core.pyx":383
  *         otype=orf.orf_type
  *         orf_type=''
  *         if otype==0:             # <<<<<<<<<<<<<<
@@ -6727,7 +6727,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     switch (__pyx_v_otype) {
       case 0:
 
-      /* "orfipy_core.pyx":381
+      /* "orfipy_core.pyx":384
  *         orf_type=''
  *         if otype==0:
  *             orf_type='complete'             # <<<<<<<<<<<<<<
@@ -6737,7 +6737,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       __Pyx_INCREF(__pyx_n_u_complete);
       __Pyx_DECREF_SET(__pyx_v_orf_type, __pyx_n_u_complete);
 
-      /* "orfipy_core.pyx":380
+      /* "orfipy_core.pyx":383
  *         otype=orf.orf_type
  *         orf_type=''
  *         if otype==0:             # <<<<<<<<<<<<<<
@@ -6747,7 +6747,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       break;
       case 1:
 
-      /* "orfipy_core.pyx":383
+      /* "orfipy_core.pyx":386
  *             orf_type='complete'
  *         elif otype==1:
  *             orf_type='5-prime-partial'             # <<<<<<<<<<<<<<
@@ -6757,7 +6757,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       __Pyx_INCREF(__pyx_kp_u_5_prime_partial);
       __Pyx_DECREF_SET(__pyx_v_orf_type, __pyx_kp_u_5_prime_partial);
 
-      /* "orfipy_core.pyx":382
+      /* "orfipy_core.pyx":385
  *         if otype==0:
  *             orf_type='complete'
  *         elif otype==1:             # <<<<<<<<<<<<<<
@@ -6767,7 +6767,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       break;
       default:
 
-      /* "orfipy_core.pyx":385
+      /* "orfipy_core.pyx":388
  *             orf_type='5-prime-partial'
  *         else:
  *             orf_type='3-prime-partial'             # <<<<<<<<<<<<<<
@@ -6779,19 +6779,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       break;
     }
 
-    /* "orfipy_core.pyx":386
+    /* "orfipy_core.pyx":389
  *         else:
  *             orf_type='3-prime-partial'
  *         olen=orf.length             # <<<<<<<<<<<<<<
  * 
  *         startcodon="NA"
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.length); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 386, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.length); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 389, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_olen, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":388
+    /* "orfipy_core.pyx":391
  *         olen=orf.length
  * 
  *         startcodon="NA"             # <<<<<<<<<<<<<<
@@ -6801,7 +6801,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     __Pyx_INCREF(__pyx_n_u_NA);
     __Pyx_XDECREF_SET(__pyx_v_startcodon, __pyx_n_u_NA);
 
-    /* "orfipy_core.pyx":389
+    /* "orfipy_core.pyx":392
  * 
  *         startcodon="NA"
  *         stopcodon="NA"             # <<<<<<<<<<<<<<
@@ -6811,7 +6811,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     __Pyx_INCREF(__pyx_n_u_NA);
     __Pyx_XDECREF_SET(__pyx_v_stopcodon, __pyx_n_u_NA);
 
-    /* "orfipy_core.pyx":390
+    /* "orfipy_core.pyx":393
  *         startcodon="NA"
  *         stopcodon="NA"
  *         if otype == 0:             # <<<<<<<<<<<<<<
@@ -6821,7 +6821,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     switch (__pyx_v_otype) {
       case 0:
 
-      /* "orfipy_core.pyx":391
+      /* "orfipy_core.pyx":394
  *         stopcodon="NA"
  *         if otype == 0:
  *             startcodon=current_seq[ostart:ostart+3]             # <<<<<<<<<<<<<<
@@ -6830,45 +6830,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
       if (unlikely(__pyx_v_current_seq == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 391, __pyx_L1_error)
+        __PYX_ERR(0, 394, __pyx_L1_error)
       }
-      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 391, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 394, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF_SET(__pyx_v_startcodon, ((PyObject*)__pyx_t_3));
       __pyx_t_3 = 0;
 
-      /* "orfipy_core.pyx":392
+      /* "orfipy_core.pyx":395
  *         if otype == 0:
  *             startcodon=current_seq[ostart:ostart+3]
  *             stopcodon=current_seq[oend:oend+3]             # <<<<<<<<<<<<<<
  *         elif otype==1:
  *             #5pp->no stop
- */
-      if (unlikely(__pyx_v_current_seq == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 392, __pyx_L1_error)
-      }
-      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_oend, (__pyx_v_oend + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 392, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF_SET(__pyx_v_stopcodon, ((PyObject*)__pyx_t_3));
-      __pyx_t_3 = 0;
-
-      /* "orfipy_core.pyx":390
- *         startcodon="NA"
- *         stopcodon="NA"
- *         if otype == 0:             # <<<<<<<<<<<<<<
- *             startcodon=current_seq[ostart:ostart+3]
- *             stopcodon=current_seq[oend:oend+3]
- */
-      break;
-      case 1:
-
-      /* "orfipy_core.pyx":395
- *         elif otype==1:
- *             #5pp->no stop
- *             stopcodon=current_seq[oend:oend+3]             # <<<<<<<<<<<<<<
- *         else :
- *             #nostop
  */
       if (unlikely(__pyx_v_current_seq == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
@@ -6880,6 +6854,32 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       __pyx_t_3 = 0;
 
       /* "orfipy_core.pyx":393
+ *         startcodon="NA"
+ *         stopcodon="NA"
+ *         if otype == 0:             # <<<<<<<<<<<<<<
+ *             startcodon=current_seq[ostart:ostart+3]
+ *             stopcodon=current_seq[oend:oend+3]
+ */
+      break;
+      case 1:
+
+      /* "orfipy_core.pyx":398
+ *         elif otype==1:
+ *             #5pp->no stop
+ *             stopcodon=current_seq[oend:oend+3]             # <<<<<<<<<<<<<<
+ *         else :
+ *             #nostop
+ */
+      if (unlikely(__pyx_v_current_seq == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 398, __pyx_L1_error)
+      }
+      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_oend, (__pyx_v_oend + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 398, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF_SET(__pyx_v_stopcodon, ((PyObject*)__pyx_t_3));
+      __pyx_t_3 = 0;
+
+      /* "orfipy_core.pyx":396
  *             startcodon=current_seq[ostart:ostart+3]
  *             stopcodon=current_seq[oend:oend+3]
  *         elif otype==1:             # <<<<<<<<<<<<<<
@@ -6889,7 +6889,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       break;
       default:
 
-      /* "orfipy_core.pyx":398
+      /* "orfipy_core.pyx":401
  *         else :
  *             #nostop
  *             startcodon=current_seq[ostart:ostart+3]             # <<<<<<<<<<<<<<
@@ -6898,16 +6898,16 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
       if (unlikely(__pyx_v_current_seq == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 398, __pyx_L1_error)
+        __PYX_ERR(0, 401, __pyx_L1_error)
       }
-      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 398, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 401, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF_SET(__pyx_v_startcodon, ((PyObject*)__pyx_t_3));
       __pyx_t_3 = 0;
       break;
     }
 
-    /* "orfipy_core.pyx":400
+    /* "orfipy_core.pyx":403
  *             startcodon=current_seq[ostart:ostart+3]
  *         #if include stop add 3 to stop pos
  *         if (otype==0 or otype==1) and include_stop:             # <<<<<<<<<<<<<<
@@ -6933,7 +6933,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
     __pyx_L7_bool_binop_done:;
     if (__pyx_t_8) {
 
-      /* "orfipy_core.pyx":401
+      /* "orfipy_core.pyx":404
  *         #if include stop add 3 to stop pos
  *         if (otype==0 or otype==1) and include_stop:
  *             oend+=3             # <<<<<<<<<<<<<<
@@ -6942,7 +6942,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
       __pyx_v_oend = (__pyx_v_oend + 3);
 
-      /* "orfipy_core.pyx":400
+      /* "orfipy_core.pyx":403
  *             startcodon=current_seq[ostart:ostart+3]
  *         #if include stop add 3 to stop pos
  *         if (otype==0 or otype==1) and include_stop:             # <<<<<<<<<<<<<<
@@ -6951,7 +6951,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
     }
 
-    /* "orfipy_core.pyx":403
+    /* "orfipy_core.pyx":406
  *             oend+=3
  *         #get seq
  *         thisseq_dna=current_seq[ostart:oend]             # <<<<<<<<<<<<<<
@@ -6960,38 +6960,38 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
     if (unlikely(__pyx_v_current_seq == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 403, __pyx_L1_error)
+      __PYX_ERR(0, 406, __pyx_L1_error)
     }
-    __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, __pyx_v_oend); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 403, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, __pyx_v_oend); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 406, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_thisseq_dna, ((PyObject*)__pyx_t_3));
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":406
+    /* "orfipy_core.pyx":409
  * 
  *         #if rev complement reverse coordinates
  *         if frame < 0:             # <<<<<<<<<<<<<<
  *             temp=ostart
  *             ostart=seqlen-oend
  */
-    __pyx_t_3 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 406, __pyx_L1_error)
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 406, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 409, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 409, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_8) {
 
-      /* "orfipy_core.pyx":407
+      /* "orfipy_core.pyx":410
  *         #if rev complement reverse coordinates
  *         if frame < 0:
  *             temp=ostart             # <<<<<<<<<<<<<<
  *             ostart=seqlen-oend
  *             oend=seqlen-temp
  */
-      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 410, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_XDECREF_SET(__pyx_v_temp, __pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "orfipy_core.pyx":408
+      /* "orfipy_core.pyx":411
  *         if frame < 0:
  *             temp=ostart
  *             ostart=seqlen-oend             # <<<<<<<<<<<<<<
@@ -7000,23 +7000,23 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
       __pyx_v_ostart = (__pyx_v_seqlen - __pyx_v_oend);
 
-      /* "orfipy_core.pyx":409
+      /* "orfipy_core.pyx":412
  *             temp=ostart
  *             ostart=seqlen-oend
  *             oend=seqlen-temp             # <<<<<<<<<<<<<<
  * 
  *         thisorfid=seq_name+"_ORF."+str(ind)+' ['+str(ostart)+'-'+str(oend)+']('+strand+') type:'+orf_type+' length:'+str(olen)+' frame:'+str(frame)+' start:'+startcodon+' stop:'+stopcodon
  */
-      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_seqlen); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 409, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_seqlen); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 412, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_2 = PyNumber_Subtract(__pyx_t_3, __pyx_v_temp); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 409, __pyx_L1_error)
+      __pyx_t_2 = PyNumber_Subtract(__pyx_t_3, __pyx_v_temp); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 412, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 409, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 412, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_v_oend = __pyx_t_7;
 
-      /* "orfipy_core.pyx":406
+      /* "orfipy_core.pyx":409
  * 
  *         #if rev complement reverse coordinates
  *         if frame < 0:             # <<<<<<<<<<<<<<
@@ -7025,131 +7025,131 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
     }
 
-    /* "orfipy_core.pyx":411
+    /* "orfipy_core.pyx":414
  *             oend=seqlen-temp
  * 
  *         thisorfid=seq_name+"_ORF."+str(ind)+' ['+str(ostart)+'-'+str(oend)+']('+strand+') type:'+orf_type+' length:'+str(olen)+' frame:'+str(frame)+' start:'+startcodon+' stop:'+stopcodon             # <<<<<<<<<<<<<<
  * 
  * 
  */
-    __pyx_t_2 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_seq_name, __pyx_kp_u_ORF); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_seq_name, __pyx_kp_u_ORF); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_ind); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_ind); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u__5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u__5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u__4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u__4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_oend); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_oend); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u__6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u__6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_v_strand); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_v_strand); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_v_orf_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_v_orf_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u_length); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_kp_u_length); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_olen); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_olen); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_2, __pyx_kp_u_frame); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_2, __pyx_kp_u_frame); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_frame); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_frame); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_kp_u_start); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_kp_u_start); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_2, __pyx_v_startcodon); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_2, __pyx_v_startcodon); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_kp_u_stop); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_kp_u_stop); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_2, __pyx_v_stopcodon); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_t_2, __pyx_v_stopcodon); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF_SET(__pyx_v_thisorfid, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "orfipy_core.pyx":414
+    /* "orfipy_core.pyx":417
  * 
  * 
  *         if out_types[0]:             # <<<<<<<<<<<<<<
  *             result[0].append('>'+thisorfid+'\n'+format_fasta(thisseq_dna))
  *         if out_types[2]:
  */
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_out_types, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_out_types, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 417, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 414, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 417, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_8) {
 
-      /* "orfipy_core.pyx":415
+      /* "orfipy_core.pyx":418
  * 
  *         if out_types[0]:
  *             result[0].append('>'+thisorfid+'\n'+format_fasta(thisseq_dna))             # <<<<<<<<<<<<<<
  *         if out_types[2]:
  *             #convert to prot
  */
-      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_result, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 415, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_result, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 418, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_2 = PyNumber_Add(__pyx_kp_u__7, __pyx_v_thisorfid); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 415, __pyx_L1_error)
+      __pyx_t_2 = PyNumber_Add(__pyx_kp_u__7, __pyx_v_thisorfid); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 418, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_kp_u__2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 415, __pyx_L1_error)
+      __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_kp_u__2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 418, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = __pyx_f_11orfipy_core_format_fasta(__pyx_v_thisseq_dna); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 415, __pyx_L1_error)
+      __pyx_t_2 = __pyx_f_11orfipy_core_format_fasta(__pyx_v_thisseq_dna); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 418, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_10 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 415, __pyx_L1_error)
+      __pyx_t_10 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 418, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_11 = __Pyx_PyObject_Append(__pyx_t_1, __pyx_t_10); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 415, __pyx_L1_error)
+      __pyx_t_11 = __Pyx_PyObject_Append(__pyx_t_1, __pyx_t_10); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 418, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-      /* "orfipy_core.pyx":414
+      /* "orfipy_core.pyx":417
  * 
  * 
  *         if out_types[0]:             # <<<<<<<<<<<<<<
@@ -7158,20 +7158,20 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
     }
 
-    /* "orfipy_core.pyx":416
+    /* "orfipy_core.pyx":419
  *         if out_types[0]:
  *             result[0].append('>'+thisorfid+'\n'+format_fasta(thisseq_dna))
  *         if out_types[2]:             # <<<<<<<<<<<<<<
  *             #convert to prot
  *             #for all codons
  */
-    __pyx_t_10 = __Pyx_GetItemInt(__pyx_v_out_types, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 416, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_GetItemInt(__pyx_v_out_types, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 419, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 416, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 419, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     if (__pyx_t_8) {
 
-      /* "orfipy_core.pyx":419
+      /* "orfipy_core.pyx":422
  *             #convert to prot
  *             #for all codons
  *             thisseq_pep=''             # <<<<<<<<<<<<<<
@@ -7181,7 +7181,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       __Pyx_INCREF(__pyx_kp_u_);
       __Pyx_XDECREF_SET(__pyx_v_thisseq_pep, __pyx_kp_u_);
 
-      /* "orfipy_core.pyx":421
+      /* "orfipy_core.pyx":424
  *             thisseq_pep=''
  * 
  *             for s in [thisseq_dna[i: i + 3] for i in range(0, len(thisseq_dna), 3)]:             # <<<<<<<<<<<<<<
@@ -7189,15 +7189,15 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  *                     thisseq_pep+=table[s]
  */
       { /* enter inner scope */
-        __pyx_t_10 = PyList_New(0); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 421, __pyx_L1_error)
+        __pyx_t_10 = PyList_New(0); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 424, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_10);
-        __pyx_t_12 = __Pyx_PyUnicode_GET_LENGTH(__pyx_v_thisseq_dna); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 421, __pyx_L1_error)
+        __pyx_t_12 = __Pyx_PyUnicode_GET_LENGTH(__pyx_v_thisseq_dna); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 424, __pyx_L1_error)
         __pyx_t_13 = __pyx_t_12;
         for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=3) {
           __pyx_8genexpr5__pyx_v_i = __pyx_t_14;
-          __pyx_t_1 = __Pyx_PyUnicode_Substring(__pyx_v_thisseq_dna, __pyx_8genexpr5__pyx_v_i, (__pyx_8genexpr5__pyx_v_i + 3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 421, __pyx_L1_error)
+          __pyx_t_1 = __Pyx_PyUnicode_Substring(__pyx_v_thisseq_dna, __pyx_8genexpr5__pyx_v_i, (__pyx_8genexpr5__pyx_v_i + 3)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 424, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_10, (PyObject*)__pyx_t_1))) __PYX_ERR(0, 421, __pyx_L1_error)
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_10, (PyObject*)__pyx_t_1))) __PYX_ERR(0, 424, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         }
       } /* exit inner scope */
@@ -7206,15 +7206,15 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       for (;;) {
         if (__pyx_t_12 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_10 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_12); __Pyx_INCREF(__pyx_t_10); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 421, __pyx_L1_error)
+        __pyx_t_10 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_12); __Pyx_INCREF(__pyx_t_10); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 424, __pyx_L1_error)
         #else
-        __pyx_t_10 = PySequence_ITEM(__pyx_t_1, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 421, __pyx_L1_error)
+        __pyx_t_10 = PySequence_ITEM(__pyx_t_1, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 424, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_10);
         #endif
         __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_10);
         __pyx_t_10 = 0;
 
-        /* "orfipy_core.pyx":422
+        /* "orfipy_core.pyx":425
  * 
  *             for s in [thisseq_dna[i: i + 3] for i in range(0, len(thisseq_dna), 3)]:
  *                 try:             # <<<<<<<<<<<<<<
@@ -7230,7 +7230,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
           __Pyx_XGOTREF(__pyx_t_17);
           /*try:*/ {
 
-            /* "orfipy_core.pyx":423
+            /* "orfipy_core.pyx":426
  *             for s in [thisseq_dna[i: i + 3] for i in range(0, len(thisseq_dna), 3)]:
  *                 try:
  *                     thisseq_pep+=table[s]             # <<<<<<<<<<<<<<
@@ -7239,17 +7239,17 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
             if (unlikely(__pyx_v_table == Py_None)) {
               PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-              __PYX_ERR(0, 423, __pyx_L16_error)
+              __PYX_ERR(0, 426, __pyx_L16_error)
             }
-            __pyx_t_10 = __Pyx_PyDict_GetItem(__pyx_v_table, __pyx_v_s); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 423, __pyx_L16_error)
+            __pyx_t_10 = __Pyx_PyDict_GetItem(__pyx_v_table, __pyx_v_s); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 426, __pyx_L16_error)
             __Pyx_GOTREF(__pyx_t_10);
-            __pyx_t_2 = PyNumber_InPlaceAdd(__pyx_v_thisseq_pep, __pyx_t_10); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 423, __pyx_L16_error)
+            __pyx_t_2 = PyNumber_InPlaceAdd(__pyx_v_thisseq_pep, __pyx_t_10); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 426, __pyx_L16_error)
             __Pyx_GOTREF(__pyx_t_2);
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
             __Pyx_DECREF_SET(__pyx_v_thisseq_pep, __pyx_t_2);
             __pyx_t_2 = 0;
 
-            /* "orfipy_core.pyx":422
+            /* "orfipy_core.pyx":425
  * 
  *             for s in [thisseq_dna[i: i + 3] for i in range(0, len(thisseq_dna), 3)]:
  *                 try:             # <<<<<<<<<<<<<<
@@ -7266,7 +7266,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
           __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-          /* "orfipy_core.pyx":424
+          /* "orfipy_core.pyx":427
  *                 try:
  *                     thisseq_pep+=table[s]
  *                 except KeyError as error:             # <<<<<<<<<<<<<<
@@ -7276,7 +7276,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
           __pyx_t_7 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
           if (__pyx_t_7) {
             __Pyx_AddTraceback("orfipy_core.orfs_to_seq", __pyx_clineno, __pyx_lineno, __pyx_filename);
-            if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_10, &__pyx_t_3) < 0) __PYX_ERR(0, 424, __pyx_L18_except_error)
+            if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_10, &__pyx_t_3) < 0) __PYX_ERR(0, 427, __pyx_L18_except_error)
             __Pyx_GOTREF(__pyx_t_2);
             __Pyx_GOTREF(__pyx_t_10);
             __Pyx_GOTREF(__pyx_t_3);
@@ -7284,20 +7284,20 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
             __pyx_v_error = __pyx_t_10;
             /*try:*/ {
 
-              /* "orfipy_core.pyx":426
+              /* "orfipy_core.pyx":429
  *                 except KeyError as error:
  *                    #print("Error unknown codon:"+s+"...translating to x",file=sys.stderr)
  *                      thisseq_pep+='X'             # <<<<<<<<<<<<<<
  * 
  *             result[2].append('>'+thisorfid+'\n'+format_fasta(thisseq_pep))
  */
-              __pyx_t_18 = PyNumber_InPlaceAdd(__pyx_v_thisseq_pep, __pyx_n_u_X); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 426, __pyx_L29_error)
+              __pyx_t_18 = PyNumber_InPlaceAdd(__pyx_v_thisseq_pep, __pyx_n_u_X); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 429, __pyx_L29_error)
               __Pyx_GOTREF(__pyx_t_18);
               __Pyx_DECREF_SET(__pyx_v_thisseq_pep, __pyx_t_18);
               __pyx_t_18 = 0;
             }
 
-            /* "orfipy_core.pyx":424
+            /* "orfipy_core.pyx":427
  *                 try:
  *                     thisseq_pep+=table[s]
  *                 except KeyError as error:             # <<<<<<<<<<<<<<
@@ -7353,7 +7353,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
           goto __pyx_L18_except_error;
           __pyx_L18_except_error:;
 
-          /* "orfipy_core.pyx":422
+          /* "orfipy_core.pyx":425
  * 
  *             for s in [thisseq_dna[i: i + 3] for i in range(0, len(thisseq_dna), 3)]:
  *                 try:             # <<<<<<<<<<<<<<
@@ -7373,7 +7373,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
           __pyx_L23_try_end:;
         }
 
-        /* "orfipy_core.pyx":421
+        /* "orfipy_core.pyx":424
  *             thisseq_pep=''
  * 
  *             for s in [thisseq_dna[i: i + 3] for i in range(0, len(thisseq_dna), 3)]:             # <<<<<<<<<<<<<<
@@ -7383,31 +7383,31 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
       }
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "orfipy_core.pyx":428
+      /* "orfipy_core.pyx":431
  *                      thisseq_pep+='X'
  * 
  *             result[2].append('>'+thisorfid+'\n'+format_fasta(thisseq_pep))             # <<<<<<<<<<<<<<
  * 
  * 
  */
-      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_result, 2, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 428, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_result, 2, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 431, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = PyNumber_Add(__pyx_kp_u__7, __pyx_v_thisorfid); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 428, __pyx_L1_error)
+      __pyx_t_3 = PyNumber_Add(__pyx_kp_u__7, __pyx_v_thisorfid); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 431, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_10 = PyNumber_Add(__pyx_t_3, __pyx_kp_u__2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 428, __pyx_L1_error)
+      __pyx_t_10 = PyNumber_Add(__pyx_t_3, __pyx_kp_u__2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 431, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = __pyx_f_11orfipy_core_format_fasta(__pyx_v_thisseq_pep); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 428, __pyx_L1_error)
+      __pyx_t_3 = __pyx_f_11orfipy_core_format_fasta(__pyx_v_thisseq_pep); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 431, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_2 = PyNumber_Add(__pyx_t_10, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 428, __pyx_L1_error)
+      __pyx_t_2 = PyNumber_Add(__pyx_t_10, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 431, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_11 = __Pyx_PyObject_Append(__pyx_t_1, __pyx_t_2); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 428, __pyx_L1_error)
+      __pyx_t_11 = __Pyx_PyObject_Append(__pyx_t_1, __pyx_t_2); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 431, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "orfipy_core.pyx":416
+      /* "orfipy_core.pyx":419
  *         if out_types[0]:
  *             result[0].append('>'+thisorfid+'\n'+format_fasta(thisseq_dna))
  *         if out_types[2]:             # <<<<<<<<<<<<<<
@@ -7416,56 +7416,56 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
     }
 
-    /* "orfipy_core.pyx":431
+    /* "orfipy_core.pyx":434
  * 
  * 
  *         if out_types[1]:             # <<<<<<<<<<<<<<
  *             #conver to RNA
  *             thisseq_rna=thisseq_dna.replace('T','U')
  */
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_out_types, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 431, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_out_types, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 434, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 431, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 434, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_8) {
 
-      /* "orfipy_core.pyx":433
+      /* "orfipy_core.pyx":436
  *         if out_types[1]:
  *             #conver to RNA
  *             thisseq_rna=thisseq_dna.replace('T','U')             # <<<<<<<<<<<<<<
  *             result[1].append('>'+thisorfid+'\n'+format_fasta(thisseq_rna))
  * 
  */
-      __pyx_t_2 = PyUnicode_Replace(__pyx_v_thisseq_dna, __pyx_n_u_T, __pyx_n_u_U, -1L); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 433, __pyx_L1_error)
+      __pyx_t_2 = PyUnicode_Replace(__pyx_v_thisseq_dna, __pyx_n_u_T, __pyx_n_u_U, -1L); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 436, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_v_thisseq_rna, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "orfipy_core.pyx":434
+      /* "orfipy_core.pyx":437
  *             #conver to RNA
  *             thisseq_rna=thisseq_dna.replace('T','U')
  *             result[1].append('>'+thisorfid+'\n'+format_fasta(thisseq_rna))             # <<<<<<<<<<<<<<
  * 
  *     #print('return',result)
  */
-      __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_result, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 434, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_result, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 437, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_1 = PyNumber_Add(__pyx_kp_u__7, __pyx_v_thisorfid); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 434, __pyx_L1_error)
+      __pyx_t_1 = PyNumber_Add(__pyx_kp_u__7, __pyx_v_thisorfid); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 437, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_kp_u__2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 434, __pyx_L1_error)
+      __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_kp_u__2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 437, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = __pyx_f_11orfipy_core_format_fasta(__pyx_v_thisseq_rna); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 434, __pyx_L1_error)
+      __pyx_t_1 = __pyx_f_11orfipy_core_format_fasta(__pyx_v_thisseq_rna); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 437, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_10 = PyNumber_Add(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 434, __pyx_L1_error)
+      __pyx_t_10 = PyNumber_Add(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 437, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_11 = __Pyx_PyObject_Append(__pyx_t_2, __pyx_t_10); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 434, __pyx_L1_error)
+      __pyx_t_11 = __Pyx_PyObject_Append(__pyx_t_2, __pyx_t_10); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 437, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-      /* "orfipy_core.pyx":431
+      /* "orfipy_core.pyx":434
  * 
  * 
  *         if out_types[1]:             # <<<<<<<<<<<<<<
@@ -7474,7 +7474,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
     }
 
-    /* "orfipy_core.pyx":363
+    /* "orfipy_core.pyx":366
  *     #out_types is array of bool [0] --> out seq as nuc; 1-->RNA; 2-->peptide
  * 
  *     for orf in orfs_struct_list:             # <<<<<<<<<<<<<<
@@ -7484,7 +7484,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "orfipy_core.pyx":437
+  /* "orfipy_core.pyx":440
  * 
  *     #print('return',result)
  *     return ['\n'.join(res) for res in result] #return a list ofstrings             # <<<<<<<<<<<<<<
@@ -7493,22 +7493,22 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
  */
   __Pyx_XDECREF(__pyx_r);
   { /* enter inner scope */
-    __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 437, __pyx_L38_error)
+    __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 440, __pyx_L38_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_10 = __pyx_v_result; __Pyx_INCREF(__pyx_t_10); __pyx_t_5 = 0;
     for (;;) {
       if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_10)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_2 = PyList_GET_ITEM(__pyx_t_10, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 437, __pyx_L38_error)
+      __pyx_t_2 = PyList_GET_ITEM(__pyx_t_10, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 440, __pyx_L38_error)
       #else
-      __pyx_t_2 = PySequence_ITEM(__pyx_t_10, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 437, __pyx_L38_error)
+      __pyx_t_2 = PySequence_ITEM(__pyx_t_10, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 440, __pyx_L38_error)
       __Pyx_GOTREF(__pyx_t_2);
       #endif
       __Pyx_XDECREF_SET(__pyx_8genexpr6__pyx_v_res, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_2 = PyUnicode_Join(__pyx_kp_u__2, __pyx_8genexpr6__pyx_v_res); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 437, __pyx_L38_error)
+      __pyx_t_2 = PyUnicode_Join(__pyx_kp_u__2, __pyx_8genexpr6__pyx_v_res); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 440, __pyx_L38_error)
       __Pyx_GOTREF(__pyx_t_2);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 437, __pyx_L38_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 440, __pyx_L38_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -7523,7 +7523,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "orfipy_core.pyx":355
+  /* "orfipy_core.pyx":358
  * 
  * 
  * cdef list orfs_to_seq(list orfs_struct_list, str seq, str seq_rc, str seq_name, int seqlen, bint include_stop,out_types,dict table):             # <<<<<<<<<<<<<<
@@ -7563,7 +7563,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_seq(PyObject *__pyx_v_orfs_struct
   return __pyx_r;
 }
 
-/* "orfipy_core.pyx":443
+/* "orfipy_core.pyx":446
  * 
  * #compile results in bed
  * cdef str orfs_to_bed(list orfs_struct_list,str seq,str seq_rc,str seq_name, int seqlen, bint include_stop):             # <<<<<<<<<<<<<<
@@ -7606,19 +7606,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("orfs_to_bed", 0);
 
-  /* "orfipy_core.pyx":448
+  /* "orfipy_core.pyx":451
  *     cdef int oend
  *     #print(orfs_list)
  *     result=[]             # <<<<<<<<<<<<<<
  *     ind=0
  * 
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 448, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 451, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "orfipy_core.pyx":449
+  /* "orfipy_core.pyx":452
  *     #print(orfs_list)
  *     result=[]
  *     ind=0             # <<<<<<<<<<<<<<
@@ -7628,7 +7628,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_ind = __pyx_int_0;
 
-  /* "orfipy_core.pyx":451
+  /* "orfipy_core.pyx":454
  *     ind=0
  * 
  *     for orf in orfs_struct_list:             # <<<<<<<<<<<<<<
@@ -7637,34 +7637,34 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
  */
   if (unlikely(__pyx_v_orfs_struct_list == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 451, __pyx_L1_error)
+    __PYX_ERR(0, 454, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_v_orfs_struct_list; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
   for (;;) {
     if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 451, __pyx_L1_error)
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 454, __pyx_L1_error)
     #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 451, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 454, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
-    __pyx_t_4 = __pyx_convert__from_py_struct____pyx_t_11orfipy_core_ORF(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 451, __pyx_L1_error)
+    __pyx_t_4 = __pyx_convert__from_py_struct____pyx_t_11orfipy_core_ORF(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 454, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_orf = __pyx_t_4;
 
-    /* "orfipy_core.pyx":452
+    /* "orfipy_core.pyx":455
  * 
  *     for orf in orfs_struct_list:
  *         ind+=1             # <<<<<<<<<<<<<<
  *         #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon,orftype,seqlen]
  *         #struct is thisORF.start_index,thisORF.stop_index,thisORF.framenum, thisORF.orf_type, thisORF.length
  */
-    __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_v_ind, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 452, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_v_ind, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 455, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF_SET(__pyx_v_ind, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":456
+    /* "orfipy_core.pyx":459
  *         #struct is thisORF.start_index,thisORF.stop_index,thisORF.framenum, thisORF.orf_type, thisORF.length
  *         #print(orf)
  *         ostart=orf.start_index             # <<<<<<<<<<<<<<
@@ -7674,7 +7674,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     __pyx_t_5 = __pyx_v_orf.start_index;
     __pyx_v_ostart = __pyx_t_5;
 
-    /* "orfipy_core.pyx":457
+    /* "orfipy_core.pyx":460
  *         #print(orf)
  *         ostart=orf.start_index
  *         oend=orf.stop_index             # <<<<<<<<<<<<<<
@@ -7684,19 +7684,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     __pyx_t_5 = __pyx_v_orf.stop_index;
     __pyx_v_oend = __pyx_t_5;
 
-    /* "orfipy_core.pyx":458
+    /* "orfipy_core.pyx":461
  *         ostart=orf.start_index
  *         oend=orf.stop_index
  *         frame=orf.framenum             # <<<<<<<<<<<<<<
  *         strand='+'
  *         current_seq=seq
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.framenum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 458, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.framenum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 461, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_frame, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":459
+    /* "orfipy_core.pyx":462
  *         oend=orf.stop_index
  *         frame=orf.framenum
  *         strand='+'             # <<<<<<<<<<<<<<
@@ -7706,7 +7706,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     __Pyx_INCREF(__pyx_kp_u__3);
     __Pyx_XDECREF_SET(__pyx_v_strand, __pyx_kp_u__3);
 
-    /* "orfipy_core.pyx":460
+    /* "orfipy_core.pyx":463
  *         frame=orf.framenum
  *         strand='+'
  *         current_seq=seq             # <<<<<<<<<<<<<<
@@ -7716,19 +7716,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     __Pyx_INCREF(__pyx_v_seq);
     __Pyx_XDECREF_SET(__pyx_v_current_seq, __pyx_v_seq);
 
-    /* "orfipy_core.pyx":461
+    /* "orfipy_core.pyx":464
  *         strand='+'
  *         current_seq=seq
  *         if frame < 0:             # <<<<<<<<<<<<<<
  *             strand='-'
  *             current_seq=seq_rc
  */
-    __pyx_t_3 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 461, __pyx_L1_error)
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 461, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 464, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 464, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_6) {
 
-      /* "orfipy_core.pyx":462
+      /* "orfipy_core.pyx":465
  *         current_seq=seq
  *         if frame < 0:
  *             strand='-'             # <<<<<<<<<<<<<<
@@ -7738,7 +7738,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
       __Pyx_INCREF(__pyx_kp_u__4);
       __Pyx_DECREF_SET(__pyx_v_strand, __pyx_kp_u__4);
 
-      /* "orfipy_core.pyx":463
+      /* "orfipy_core.pyx":466
  *         if frame < 0:
  *             strand='-'
  *             current_seq=seq_rc             # <<<<<<<<<<<<<<
@@ -7748,7 +7748,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
       __Pyx_INCREF(__pyx_v_seq_rc);
       __Pyx_DECREF_SET(__pyx_v_current_seq, __pyx_v_seq_rc);
 
-      /* "orfipy_core.pyx":461
+      /* "orfipy_core.pyx":464
  *         strand='+'
  *         current_seq=seq
  *         if frame < 0:             # <<<<<<<<<<<<<<
@@ -7757,7 +7757,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
  */
     }
 
-    /* "orfipy_core.pyx":465
+    /* "orfipy_core.pyx":468
  *             current_seq=seq_rc
  * 
  *         otype=orf.orf_type             # <<<<<<<<<<<<<<
@@ -7767,7 +7767,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     __pyx_t_5 = __pyx_v_orf.orf_type;
     __pyx_v_otype = __pyx_t_5;
 
-    /* "orfipy_core.pyx":466
+    /* "orfipy_core.pyx":469
  * 
  *         otype=orf.orf_type
  *         orf_type=''             # <<<<<<<<<<<<<<
@@ -7777,7 +7777,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     __Pyx_INCREF(__pyx_kp_u_);
     __Pyx_XDECREF_SET(__pyx_v_orf_type, __pyx_kp_u_);
 
-    /* "orfipy_core.pyx":467
+    /* "orfipy_core.pyx":470
  *         otype=orf.orf_type
  *         orf_type=''
  *         if otype==0:             # <<<<<<<<<<<<<<
@@ -7787,7 +7787,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     switch (__pyx_v_otype) {
       case 0:
 
-      /* "orfipy_core.pyx":468
+      /* "orfipy_core.pyx":471
  *         orf_type=''
  *         if otype==0:
  *             orf_type='complete'             # <<<<<<<<<<<<<<
@@ -7797,7 +7797,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
       __Pyx_INCREF(__pyx_n_u_complete);
       __Pyx_DECREF_SET(__pyx_v_orf_type, __pyx_n_u_complete);
 
-      /* "orfipy_core.pyx":467
+      /* "orfipy_core.pyx":470
  *         otype=orf.orf_type
  *         orf_type=''
  *         if otype==0:             # <<<<<<<<<<<<<<
@@ -7807,7 +7807,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
       break;
       case 1:
 
-      /* "orfipy_core.pyx":470
+      /* "orfipy_core.pyx":473
  *             orf_type='complete'
  *         elif otype==1:
  *             orf_type='5-prime-partial'             # <<<<<<<<<<<<<<
@@ -7817,7 +7817,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
       __Pyx_INCREF(__pyx_kp_u_5_prime_partial);
       __Pyx_DECREF_SET(__pyx_v_orf_type, __pyx_kp_u_5_prime_partial);
 
-      /* "orfipy_core.pyx":469
+      /* "orfipy_core.pyx":472
  *         if otype==0:
  *             orf_type='complete'
  *         elif otype==1:             # <<<<<<<<<<<<<<
@@ -7827,7 +7827,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
       break;
       default:
 
-      /* "orfipy_core.pyx":472
+      /* "orfipy_core.pyx":475
  *             orf_type='5-prime-partial'
  *         else:
  *             orf_type='3-prime-partial'             # <<<<<<<<<<<<<<
@@ -7839,19 +7839,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
       break;
     }
 
-    /* "orfipy_core.pyx":473
+    /* "orfipy_core.pyx":476
  *         else:
  *             orf_type='3-prime-partial'
  *         olen=orf.length             # <<<<<<<<<<<<<<
  * 
  *         startcodon="NA"
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.length); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 473, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.length); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 476, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_olen, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":475
+    /* "orfipy_core.pyx":478
  *         olen=orf.length
  * 
  *         startcodon="NA"             # <<<<<<<<<<<<<<
@@ -7861,7 +7861,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     __Pyx_INCREF(__pyx_n_u_NA);
     __Pyx_XDECREF_SET(__pyx_v_startcodon, __pyx_n_u_NA);
 
-    /* "orfipy_core.pyx":476
+    /* "orfipy_core.pyx":479
  * 
  *         startcodon="NA"
  *         stopcodon="NA"             # <<<<<<<<<<<<<<
@@ -7871,7 +7871,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     __Pyx_INCREF(__pyx_n_u_NA);
     __Pyx_XDECREF_SET(__pyx_v_stopcodon, __pyx_n_u_NA);
 
-    /* "orfipy_core.pyx":477
+    /* "orfipy_core.pyx":480
  *         startcodon="NA"
  *         stopcodon="NA"
  *         if otype == 0:             # <<<<<<<<<<<<<<
@@ -7881,7 +7881,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     switch (__pyx_v_otype) {
       case 0:
 
-      /* "orfipy_core.pyx":478
+      /* "orfipy_core.pyx":481
  *         stopcodon="NA"
  *         if otype == 0:
  *             startcodon=current_seq[ostart:ostart+3]             # <<<<<<<<<<<<<<
@@ -7890,45 +7890,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
  */
       if (unlikely(__pyx_v_current_seq == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 478, __pyx_L1_error)
+        __PYX_ERR(0, 481, __pyx_L1_error)
       }
-      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 478, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 481, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF_SET(__pyx_v_startcodon, ((PyObject*)__pyx_t_3));
       __pyx_t_3 = 0;
 
-      /* "orfipy_core.pyx":479
+      /* "orfipy_core.pyx":482
  *         if otype == 0:
  *             startcodon=current_seq[ostart:ostart+3]
  *             stopcodon=current_seq[oend:oend+3]             # <<<<<<<<<<<<<<
  *         elif otype==1:
  *             #5pp->no stop
- */
-      if (unlikely(__pyx_v_current_seq == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 479, __pyx_L1_error)
-      }
-      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_oend, (__pyx_v_oend + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 479, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF_SET(__pyx_v_stopcodon, ((PyObject*)__pyx_t_3));
-      __pyx_t_3 = 0;
-
-      /* "orfipy_core.pyx":477
- *         startcodon="NA"
- *         stopcodon="NA"
- *         if otype == 0:             # <<<<<<<<<<<<<<
- *             startcodon=current_seq[ostart:ostart+3]
- *             stopcodon=current_seq[oend:oend+3]
- */
-      break;
-      case 1:
-
-      /* "orfipy_core.pyx":482
- *         elif otype==1:
- *             #5pp->no stop
- *             stopcodon=current_seq[oend:oend+3]             # <<<<<<<<<<<<<<
- *         else :
- *             #nostop
  */
       if (unlikely(__pyx_v_current_seq == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
@@ -7940,6 +7914,32 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
       __pyx_t_3 = 0;
 
       /* "orfipy_core.pyx":480
+ *         startcodon="NA"
+ *         stopcodon="NA"
+ *         if otype == 0:             # <<<<<<<<<<<<<<
+ *             startcodon=current_seq[ostart:ostart+3]
+ *             stopcodon=current_seq[oend:oend+3]
+ */
+      break;
+      case 1:
+
+      /* "orfipy_core.pyx":485
+ *         elif otype==1:
+ *             #5pp->no stop
+ *             stopcodon=current_seq[oend:oend+3]             # <<<<<<<<<<<<<<
+ *         else :
+ *             #nostop
+ */
+      if (unlikely(__pyx_v_current_seq == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 485, __pyx_L1_error)
+      }
+      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_oend, (__pyx_v_oend + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 485, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF_SET(__pyx_v_stopcodon, ((PyObject*)__pyx_t_3));
+      __pyx_t_3 = 0;
+
+      /* "orfipy_core.pyx":483
  *             startcodon=current_seq[ostart:ostart+3]
  *             stopcodon=current_seq[oend:oend+3]
  *         elif otype==1:             # <<<<<<<<<<<<<<
@@ -7949,7 +7949,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
       break;
       default:
 
-      /* "orfipy_core.pyx":485
+      /* "orfipy_core.pyx":488
  *         else :
  *             #nostop
  *             startcodon=current_seq[ostart:ostart+3]             # <<<<<<<<<<<<<<
@@ -7958,16 +7958,16 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
  */
       if (unlikely(__pyx_v_current_seq == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 485, __pyx_L1_error)
+        __PYX_ERR(0, 488, __pyx_L1_error)
       }
-      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 485, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 488, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF_SET(__pyx_v_startcodon, ((PyObject*)__pyx_t_3));
       __pyx_t_3 = 0;
       break;
     }
 
-    /* "orfipy_core.pyx":488
+    /* "orfipy_core.pyx":491
  * 
  *         #if include stop add 3 to stop pos
  *         if (otype==0 or otype==1) and include_stop:             # <<<<<<<<<<<<<<
@@ -7993,18 +7993,18 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
     __pyx_L7_bool_binop_done:;
     if (__pyx_t_6) {
 
-      /* "orfipy_core.pyx":489
+      /* "orfipy_core.pyx":492
  *         #if include stop add 3 to stop pos
  *         if (otype==0 or otype==1) and include_stop:
  *             print(oend,oend+3)             # <<<<<<<<<<<<<<
  *             oend+=3
  * 
  */
-      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_oend); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 489, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_oend); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 492, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_8 = __Pyx_PyInt_From_long((__pyx_v_oend + 3)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 489, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyInt_From_long((__pyx_v_oend + 3)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 492, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 489, __pyx_L1_error)
+      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 492, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_3);
@@ -8012,12 +8012,12 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
       PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_t_8);
       __pyx_t_3 = 0;
       __pyx_t_8 = 0;
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_t_9, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 489, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_t_9, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 492, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "orfipy_core.pyx":490
+      /* "orfipy_core.pyx":493
  *         if (otype==0 or otype==1) and include_stop:
  *             print(oend,oend+3)
  *             oend+=3             # <<<<<<<<<<<<<<
@@ -8026,7 +8026,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
  */
       __pyx_v_oend = (__pyx_v_oend + 3);
 
-      /* "orfipy_core.pyx":488
+      /* "orfipy_core.pyx":491
  * 
  *         #if include stop add 3 to stop pos
  *         if (otype==0 or otype==1) and include_stop:             # <<<<<<<<<<<<<<
@@ -8035,31 +8035,31 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
  */
     }
 
-    /* "orfipy_core.pyx":493
+    /* "orfipy_core.pyx":496
  * 
  *         #if rev complement reverse coordinates
  *         if frame < 0:             # <<<<<<<<<<<<<<
  *             temp=ostart
  *             ostart=seqlen-oend
  */
-    __pyx_t_8 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 493, __pyx_L1_error)
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 493, __pyx_L1_error)
+    __pyx_t_8 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 496, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 496, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     if (__pyx_t_6) {
 
-      /* "orfipy_core.pyx":494
+      /* "orfipy_core.pyx":497
  *         #if rev complement reverse coordinates
  *         if frame < 0:
  *             temp=ostart             # <<<<<<<<<<<<<<
  *             ostart=seqlen-oend
  *             oend=seqlen-temp
  */
-      __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 494, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 497, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_XDECREF_SET(__pyx_v_temp, __pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "orfipy_core.pyx":495
+      /* "orfipy_core.pyx":498
  *         if frame < 0:
  *             temp=ostart
  *             ostart=seqlen-oend             # <<<<<<<<<<<<<<
@@ -8068,23 +8068,23 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
  */
       __pyx_v_ostart = (__pyx_v_seqlen - __pyx_v_oend);
 
-      /* "orfipy_core.pyx":496
+      /* "orfipy_core.pyx":499
  *             temp=ostart
  *             ostart=seqlen-oend
  *             oend=seqlen-temp             # <<<<<<<<<<<<<<
  * 
  * 
  */
-      __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_seqlen); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 496, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_seqlen); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 499, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_9 = PyNumber_Subtract(__pyx_t_8, __pyx_v_temp); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 496, __pyx_L1_error)
+      __pyx_t_9 = PyNumber_Subtract(__pyx_t_8, __pyx_v_temp); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 499, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_9); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 496, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_9); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 499, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_v_oend = __pyx_t_5;
 
-      /* "orfipy_core.pyx":493
+      /* "orfipy_core.pyx":496
  * 
  *         #if rev complement reverse coordinates
  *         if frame < 0:             # <<<<<<<<<<<<<<
@@ -8093,133 +8093,133 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
  */
     }
 
-    /* "orfipy_core.pyx":499
+    /* "orfipy_core.pyx":502
  * 
  * 
  *         thisorfid=seq_name+"_ORF."+str(ind)             # <<<<<<<<<<<<<<
  *         oid= 'ID='+thisorfid+';ORF_type='+orf_type+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
  *         thisorf=seq_name+'\t'+str(ostart)+'\t'+str(oend)+'\t'+oid+'\t'+'0'+'\t'+strand
  */
-    __pyx_t_9 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_seq_name, __pyx_kp_u_ORF); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 499, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_seq_name, __pyx_kp_u_ORF); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 502, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_ind); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 499, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_ind); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 502, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 499, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 502, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_XDECREF_SET(__pyx_v_thisorfid, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":500
+    /* "orfipy_core.pyx":503
  * 
  *         thisorfid=seq_name+"_ORF."+str(ind)
  *         oid= 'ID='+thisorfid+';ORF_type='+orf_type+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon             # <<<<<<<<<<<<<<
  *         thisorf=seq_name+'\t'+str(ostart)+'\t'+str(oend)+'\t'+oid+'\t'+'0'+'\t'+strand
  *         #print(thisorf)
  */
-    __pyx_t_3 = PyNumber_Add(__pyx_kp_u_ID, __pyx_v_thisorfid); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_kp_u_ID, __pyx_v_thisorfid); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_ORF_type); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_ORF_type); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_8, __pyx_v_orf_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_8, __pyx_v_orf_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_ORF_len); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_ORF_len); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_olen); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_olen); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u_ORF_frame); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u_ORF_frame); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_frame); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_frame); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_kp_u_Start); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_kp_u_Start); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_v_startcodon); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_v_startcodon); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_kp_u_Stop); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_kp_u_Stop); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_v_stopcodon); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_v_stopcodon); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 503, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_XDECREF_SET(__pyx_v_oid, __pyx_t_8);
     __pyx_t_8 = 0;
 
-    /* "orfipy_core.pyx":501
+    /* "orfipy_core.pyx":504
  *         thisorfid=seq_name+"_ORF."+str(ind)
  *         oid= 'ID='+thisorfid+';ORF_type='+orf_type+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
  *         thisorf=seq_name+'\t'+str(ostart)+'\t'+str(oend)+'\t'+oid+'\t'+'0'+'\t'+strand             # <<<<<<<<<<<<<<
  *         #print(thisorf)
  *         result.append(thisorf)
  */
-    __pyx_t_8 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_seq_name, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_seq_name, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_oend); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_oend); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_v_oid); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_v_oid); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_kp_u_0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_kp_u_0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_v_strand); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_v_strand); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 504, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_XDECREF_SET(__pyx_v_thisorf, __pyx_t_9);
     __pyx_t_9 = 0;
 
-    /* "orfipy_core.pyx":503
+    /* "orfipy_core.pyx":506
  *         thisorf=seq_name+'\t'+str(ostart)+'\t'+str(oend)+'\t'+oid+'\t'+'0'+'\t'+strand
  *         #print(thisorf)
  *         result.append(thisorf)             # <<<<<<<<<<<<<<
  *     #return as string
  *     #print('RETBED:','\n'.join(result))
  */
-    __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_result, __pyx_v_thisorf); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 503, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_result, __pyx_v_thisorf); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 506, __pyx_L1_error)
 
-    /* "orfipy_core.pyx":451
+    /* "orfipy_core.pyx":454
  *     ind=0
  * 
  *     for orf in orfs_struct_list:             # <<<<<<<<<<<<<<
@@ -8229,7 +8229,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "orfipy_core.pyx":506
+  /* "orfipy_core.pyx":509
  *     #return as string
  *     #print('RETBED:','\n'.join(result))
  *     return '\n'.join(result)             # <<<<<<<<<<<<<<
@@ -8237,13 +8237,13 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyUnicode_Join(__pyx_kp_u__2, __pyx_v_result); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 506, __pyx_L1_error)
+  __pyx_t_1 = PyUnicode_Join(__pyx_kp_u__2, __pyx_v_result); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 509, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "orfipy_core.pyx":443
+  /* "orfipy_core.pyx":446
  * 
  * #compile results in bed
  * cdef str orfs_to_bed(list orfs_struct_list,str seq,str seq_rc,str seq_name, int seqlen, bint include_stop):             # <<<<<<<<<<<<<<
@@ -8278,7 +8278,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed(PyObject *__pyx_v_orfs_struct
   return __pyx_r;
 }
 
-/* "orfipy_core.pyx":510
+/* "orfipy_core.pyx":513
  * 
  * #compile results in bed12
  * cdef str orfs_to_bed12(list orfs_struct_list,str seq,str seq_rc, str seq_name, int seqlen, bint include_stop):             # <<<<<<<<<<<<<<
@@ -8321,19 +8321,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("orfs_to_bed12", 0);
 
-  /* "orfipy_core.pyx":515
+  /* "orfipy_core.pyx":518
  *     cdef int oend
  *     #print(orfs_list)
  *     result=[]             # <<<<<<<<<<<<<<
  *     ind=0
  * 
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 515, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 518, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "orfipy_core.pyx":516
+  /* "orfipy_core.pyx":519
  *     #print(orfs_list)
  *     result=[]
  *     ind=0             # <<<<<<<<<<<<<<
@@ -8343,7 +8343,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_ind = __pyx_int_0;
 
-  /* "orfipy_core.pyx":518
+  /* "orfipy_core.pyx":521
  *     ind=0
  * 
  *     for orf in orfs_struct_list:             # <<<<<<<<<<<<<<
@@ -8352,34 +8352,34 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
  */
   if (unlikely(__pyx_v_orfs_struct_list == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 518, __pyx_L1_error)
+    __PYX_ERR(0, 521, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_v_orfs_struct_list; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
   for (;;) {
     if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 518, __pyx_L1_error)
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 521, __pyx_L1_error)
     #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 518, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 521, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
-    __pyx_t_4 = __pyx_convert__from_py_struct____pyx_t_11orfipy_core_ORF(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 518, __pyx_L1_error)
+    __pyx_t_4 = __pyx_convert__from_py_struct____pyx_t_11orfipy_core_ORF(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 521, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_orf = __pyx_t_4;
 
-    /* "orfipy_core.pyx":519
+    /* "orfipy_core.pyx":522
  * 
  *     for orf in orfs_struct_list:
  *         ind+=1             # <<<<<<<<<<<<<<
  *         #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon,orftype,seqlen]
  *         #struct is thisORF.start_index,thisORF.stop_index,thisORF.framenum, thisORF.orf_type, thisORF.length
  */
-    __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_v_ind, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 519, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_v_ind, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 522, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF_SET(__pyx_v_ind, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":523
+    /* "orfipy_core.pyx":526
  *         #struct is thisORF.start_index,thisORF.stop_index,thisORF.framenum, thisORF.orf_type, thisORF.length
  *         #print(orf)
  *         ostart=orf.start_index             # <<<<<<<<<<<<<<
@@ -8389,7 +8389,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     __pyx_t_5 = __pyx_v_orf.start_index;
     __pyx_v_ostart = __pyx_t_5;
 
-    /* "orfipy_core.pyx":524
+    /* "orfipy_core.pyx":527
  *         #print(orf)
  *         ostart=orf.start_index
  *         oend=orf.stop_index             # <<<<<<<<<<<<<<
@@ -8399,19 +8399,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     __pyx_t_5 = __pyx_v_orf.stop_index;
     __pyx_v_oend = __pyx_t_5;
 
-    /* "orfipy_core.pyx":525
+    /* "orfipy_core.pyx":528
  *         ostart=orf.start_index
  *         oend=orf.stop_index
  *         frame=orf.framenum             # <<<<<<<<<<<<<<
  *         strand='+'
  *         current_seq=seq
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.framenum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 525, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.framenum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 528, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_frame, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":526
+    /* "orfipy_core.pyx":529
  *         oend=orf.stop_index
  *         frame=orf.framenum
  *         strand='+'             # <<<<<<<<<<<<<<
@@ -8421,7 +8421,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     __Pyx_INCREF(__pyx_kp_u__3);
     __Pyx_XDECREF_SET(__pyx_v_strand, __pyx_kp_u__3);
 
-    /* "orfipy_core.pyx":527
+    /* "orfipy_core.pyx":530
  *         frame=orf.framenum
  *         strand='+'
  *         current_seq=seq             # <<<<<<<<<<<<<<
@@ -8431,19 +8431,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     __Pyx_INCREF(__pyx_v_seq);
     __Pyx_XDECREF_SET(__pyx_v_current_seq, __pyx_v_seq);
 
-    /* "orfipy_core.pyx":528
+    /* "orfipy_core.pyx":531
  *         strand='+'
  *         current_seq=seq
  *         if frame < 0:             # <<<<<<<<<<<<<<
  *             strand='-'
  *             current_seq=seq_rc
  */
-    __pyx_t_3 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 528, __pyx_L1_error)
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 528, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 531, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 531, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_6) {
 
-      /* "orfipy_core.pyx":529
+      /* "orfipy_core.pyx":532
  *         current_seq=seq
  *         if frame < 0:
  *             strand='-'             # <<<<<<<<<<<<<<
@@ -8453,7 +8453,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
       __Pyx_INCREF(__pyx_kp_u__4);
       __Pyx_DECREF_SET(__pyx_v_strand, __pyx_kp_u__4);
 
-      /* "orfipy_core.pyx":530
+      /* "orfipy_core.pyx":533
  *         if frame < 0:
  *             strand='-'
  *             current_seq=seq_rc             # <<<<<<<<<<<<<<
@@ -8463,7 +8463,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
       __Pyx_INCREF(__pyx_v_seq_rc);
       __Pyx_DECREF_SET(__pyx_v_current_seq, __pyx_v_seq_rc);
 
-      /* "orfipy_core.pyx":528
+      /* "orfipy_core.pyx":531
  *         strand='+'
  *         current_seq=seq
  *         if frame < 0:             # <<<<<<<<<<<<<<
@@ -8472,7 +8472,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
  */
     }
 
-    /* "orfipy_core.pyx":532
+    /* "orfipy_core.pyx":535
  *             current_seq=seq_rc
  * 
  *         otype=orf.orf_type             # <<<<<<<<<<<<<<
@@ -8482,7 +8482,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     __pyx_t_5 = __pyx_v_orf.orf_type;
     __pyx_v_otype = __pyx_t_5;
 
-    /* "orfipy_core.pyx":533
+    /* "orfipy_core.pyx":536
  * 
  *         otype=orf.orf_type
  *         orf_type=''             # <<<<<<<<<<<<<<
@@ -8492,7 +8492,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     __Pyx_INCREF(__pyx_kp_u_);
     __Pyx_XDECREF_SET(__pyx_v_orf_type, __pyx_kp_u_);
 
-    /* "orfipy_core.pyx":534
+    /* "orfipy_core.pyx":537
  *         otype=orf.orf_type
  *         orf_type=''
  *         if otype==0:             # <<<<<<<<<<<<<<
@@ -8502,7 +8502,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     switch (__pyx_v_otype) {
       case 0:
 
-      /* "orfipy_core.pyx":535
+      /* "orfipy_core.pyx":538
  *         orf_type=''
  *         if otype==0:
  *             orf_type='complete'             # <<<<<<<<<<<<<<
@@ -8512,7 +8512,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
       __Pyx_INCREF(__pyx_n_u_complete);
       __Pyx_DECREF_SET(__pyx_v_orf_type, __pyx_n_u_complete);
 
-      /* "orfipy_core.pyx":534
+      /* "orfipy_core.pyx":537
  *         otype=orf.orf_type
  *         orf_type=''
  *         if otype==0:             # <<<<<<<<<<<<<<
@@ -8522,7 +8522,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
       break;
       case 1:
 
-      /* "orfipy_core.pyx":537
+      /* "orfipy_core.pyx":540
  *             orf_type='complete'
  *         elif otype==1:
  *             orf_type='5-prime-partial'             # <<<<<<<<<<<<<<
@@ -8532,7 +8532,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
       __Pyx_INCREF(__pyx_kp_u_5_prime_partial);
       __Pyx_DECREF_SET(__pyx_v_orf_type, __pyx_kp_u_5_prime_partial);
 
-      /* "orfipy_core.pyx":536
+      /* "orfipy_core.pyx":539
  *         if otype==0:
  *             orf_type='complete'
  *         elif otype==1:             # <<<<<<<<<<<<<<
@@ -8542,7 +8542,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
       break;
       default:
 
-      /* "orfipy_core.pyx":539
+      /* "orfipy_core.pyx":542
  *             orf_type='5-prime-partial'
  *         else:
  *             orf_type='3-prime-partial'             # <<<<<<<<<<<<<<
@@ -8554,19 +8554,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
       break;
     }
 
-    /* "orfipy_core.pyx":540
+    /* "orfipy_core.pyx":543
  *         else:
  *             orf_type='3-prime-partial'
  *         olen=orf.length             # <<<<<<<<<<<<<<
  * 
  *         startcodon="NA"
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.length); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 540, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_orf.length); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 543, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_olen, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":542
+    /* "orfipy_core.pyx":545
  *         olen=orf.length
  * 
  *         startcodon="NA"             # <<<<<<<<<<<<<<
@@ -8576,7 +8576,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     __Pyx_INCREF(__pyx_n_u_NA);
     __Pyx_XDECREF_SET(__pyx_v_startcodon, __pyx_n_u_NA);
 
-    /* "orfipy_core.pyx":543
+    /* "orfipy_core.pyx":546
  * 
  *         startcodon="NA"
  *         stopcodon="NA"             # <<<<<<<<<<<<<<
@@ -8586,7 +8586,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     __Pyx_INCREF(__pyx_n_u_NA);
     __Pyx_XDECREF_SET(__pyx_v_stopcodon, __pyx_n_u_NA);
 
-    /* "orfipy_core.pyx":544
+    /* "orfipy_core.pyx":547
  *         startcodon="NA"
  *         stopcodon="NA"
  *         if otype == 0:             # <<<<<<<<<<<<<<
@@ -8596,7 +8596,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     switch (__pyx_v_otype) {
       case 0:
 
-      /* "orfipy_core.pyx":545
+      /* "orfipy_core.pyx":548
  *         stopcodon="NA"
  *         if otype == 0:
  *             startcodon=current_seq[ostart:ostart+3]             # <<<<<<<<<<<<<<
@@ -8605,45 +8605,19 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
  */
       if (unlikely(__pyx_v_current_seq == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 545, __pyx_L1_error)
+        __PYX_ERR(0, 548, __pyx_L1_error)
       }
-      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 545, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 548, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF_SET(__pyx_v_startcodon, ((PyObject*)__pyx_t_3));
       __pyx_t_3 = 0;
 
-      /* "orfipy_core.pyx":546
+      /* "orfipy_core.pyx":549
  *         if otype == 0:
  *             startcodon=current_seq[ostart:ostart+3]
  *             stopcodon=current_seq[oend:oend+3]             # <<<<<<<<<<<<<<
  *         elif otype==1:
  *             #5pp->no stop
- */
-      if (unlikely(__pyx_v_current_seq == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 546, __pyx_L1_error)
-      }
-      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_oend, (__pyx_v_oend + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 546, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF_SET(__pyx_v_stopcodon, ((PyObject*)__pyx_t_3));
-      __pyx_t_3 = 0;
-
-      /* "orfipy_core.pyx":544
- *         startcodon="NA"
- *         stopcodon="NA"
- *         if otype == 0:             # <<<<<<<<<<<<<<
- *             startcodon=current_seq[ostart:ostart+3]
- *             stopcodon=current_seq[oend:oend+3]
- */
-      break;
-      case 1:
-
-      /* "orfipy_core.pyx":549
- *         elif otype==1:
- *             #5pp->no stop
- *             stopcodon=current_seq[oend:oend+3]             # <<<<<<<<<<<<<<
- *         else :
- *             #nostop
  */
       if (unlikely(__pyx_v_current_seq == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
@@ -8655,6 +8629,32 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
       __pyx_t_3 = 0;
 
       /* "orfipy_core.pyx":547
+ *         startcodon="NA"
+ *         stopcodon="NA"
+ *         if otype == 0:             # <<<<<<<<<<<<<<
+ *             startcodon=current_seq[ostart:ostart+3]
+ *             stopcodon=current_seq[oend:oend+3]
+ */
+      break;
+      case 1:
+
+      /* "orfipy_core.pyx":552
+ *         elif otype==1:
+ *             #5pp->no stop
+ *             stopcodon=current_seq[oend:oend+3]             # <<<<<<<<<<<<<<
+ *         else :
+ *             #nostop
+ */
+      if (unlikely(__pyx_v_current_seq == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 552, __pyx_L1_error)
+      }
+      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_oend, (__pyx_v_oend + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 552, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF_SET(__pyx_v_stopcodon, ((PyObject*)__pyx_t_3));
+      __pyx_t_3 = 0;
+
+      /* "orfipy_core.pyx":550
  *             startcodon=current_seq[ostart:ostart+3]
  *             stopcodon=current_seq[oend:oend+3]
  *         elif otype==1:             # <<<<<<<<<<<<<<
@@ -8664,7 +8664,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
       break;
       default:
 
-      /* "orfipy_core.pyx":552
+      /* "orfipy_core.pyx":555
  *         else :
  *             #nostop
  *             startcodon=current_seq[ostart:ostart+3]             # <<<<<<<<<<<<<<
@@ -8673,16 +8673,16 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
  */
       if (unlikely(__pyx_v_current_seq == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 552, __pyx_L1_error)
+        __PYX_ERR(0, 555, __pyx_L1_error)
       }
-      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 552, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyUnicode_Substring(__pyx_v_current_seq, __pyx_v_ostart, (__pyx_v_ostart + 3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 555, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF_SET(__pyx_v_startcodon, ((PyObject*)__pyx_t_3));
       __pyx_t_3 = 0;
       break;
     }
 
-    /* "orfipy_core.pyx":555
+    /* "orfipy_core.pyx":558
  * 
  *         #if include stop add 3 to stop pos
  *         if (otype==0 or otype==1) and include_stop:             # <<<<<<<<<<<<<<
@@ -8708,7 +8708,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
     __pyx_L7_bool_binop_done:;
     if (__pyx_t_6) {
 
-      /* "orfipy_core.pyx":556
+      /* "orfipy_core.pyx":559
  *         #if include stop add 3 to stop pos
  *         if (otype==0 or otype==1) and include_stop:
  *             oend+=3             # <<<<<<<<<<<<<<
@@ -8717,7 +8717,7 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
  */
       __pyx_v_oend = (__pyx_v_oend + 3);
 
-      /* "orfipy_core.pyx":555
+      /* "orfipy_core.pyx":558
  * 
  *         #if include stop add 3 to stop pos
  *         if (otype==0 or otype==1) and include_stop:             # <<<<<<<<<<<<<<
@@ -8726,31 +8726,31 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
  */
     }
 
-    /* "orfipy_core.pyx":559
+    /* "orfipy_core.pyx":562
  * 
  *         #if rev complement reverse coordinates
  *         if frame < 0:             # <<<<<<<<<<<<<<
  *             temp=ostart
  *             ostart=seqlen-oend
  */
-    __pyx_t_3 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 559, __pyx_L1_error)
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 559, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_v_frame, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 562, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 562, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_6) {
 
-      /* "orfipy_core.pyx":560
+      /* "orfipy_core.pyx":563
  *         #if rev complement reverse coordinates
  *         if frame < 0:
  *             temp=ostart             # <<<<<<<<<<<<<<
  *             ostart=seqlen-oend
  *             oend=seqlen-temp
  */
-      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 560, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 563, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_XDECREF_SET(__pyx_v_temp, __pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "orfipy_core.pyx":561
+      /* "orfipy_core.pyx":564
  *         if frame < 0:
  *             temp=ostart
  *             ostart=seqlen-oend             # <<<<<<<<<<<<<<
@@ -8759,23 +8759,23 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
  */
       __pyx_v_ostart = (__pyx_v_seqlen - __pyx_v_oend);
 
-      /* "orfipy_core.pyx":562
+      /* "orfipy_core.pyx":565
  *             temp=ostart
  *             ostart=seqlen-oend
  *             oend=seqlen-temp             # <<<<<<<<<<<<<<
  * 
  *         thisorfid=seq_name+"_ORF."+str(ind)
  */
-      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_seqlen); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 562, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_seqlen); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 565, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_8 = PyNumber_Subtract(__pyx_t_3, __pyx_v_temp); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 562, __pyx_L1_error)
+      __pyx_t_8 = PyNumber_Subtract(__pyx_t_3, __pyx_v_temp); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 565, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_8); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 562, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_8); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 565, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_v_oend = __pyx_t_5;
 
-      /* "orfipy_core.pyx":559
+      /* "orfipy_core.pyx":562
  * 
  *         #if rev complement reverse coordinates
  *         if frame < 0:             # <<<<<<<<<<<<<<
@@ -8784,187 +8784,187 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
  */
     }
 
-    /* "orfipy_core.pyx":564
+    /* "orfipy_core.pyx":567
  *             oend=seqlen-temp
  * 
  *         thisorfid=seq_name+"_ORF."+str(ind)             # <<<<<<<<<<<<<<
  *         oid= 'ID='+thisorfid+';ORF_type='+orf_type+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
  *         thisorf=seq_name+'\t'+str(0)+'\t'+str(seqlen)+'\t'+oid+'\t'+'0'+'\t'+strand+'\t'+str(ostart)+'\t'+str(oend)+'\t'+'0'+'\t'+'1'+'\t'+str(seqlen)+'\t'+str(0)
  */
-    __pyx_t_8 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_seq_name, __pyx_kp_u_ORF); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 564, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_seq_name, __pyx_kp_u_ORF); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 567, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_ind); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 564, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_ind); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 567, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 564, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 567, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_XDECREF_SET(__pyx_v_thisorfid, __pyx_t_9);
     __pyx_t_9 = 0;
 
-    /* "orfipy_core.pyx":565
+    /* "orfipy_core.pyx":568
  * 
  *         thisorfid=seq_name+"_ORF."+str(ind)
  *         oid= 'ID='+thisorfid+';ORF_type='+orf_type+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon             # <<<<<<<<<<<<<<
  *         thisorf=seq_name+'\t'+str(0)+'\t'+str(seqlen)+'\t'+oid+'\t'+'0'+'\t'+strand+'\t'+str(ostart)+'\t'+str(oend)+'\t'+'0'+'\t'+'1'+'\t'+str(seqlen)+'\t'+str(0)
  *         #print(thisorf)
  */
-    __pyx_t_9 = PyNumber_Add(__pyx_kp_u_ID, __pyx_v_thisorfid); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_kp_u_ID, __pyx_v_thisorfid); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u_ORF_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u_ORF_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_v_orf_type); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_v_orf_type); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u_ORF_len); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u_ORF_len); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_olen); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_olen); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_kp_u_ORF_frame); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_kp_u_ORF_frame); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_frame); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_v_frame); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_Start); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_Start); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_8, __pyx_v_startcodon); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_8, __pyx_v_startcodon); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_Stop); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_Stop); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_8, __pyx_v_stopcodon); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 565, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_8, __pyx_v_stopcodon); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 568, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_XDECREF_SET(__pyx_v_oid, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":566
+    /* "orfipy_core.pyx":569
  *         thisorfid=seq_name+"_ORF."+str(ind)
  *         oid= 'ID='+thisorfid+';ORF_type='+orf_type+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
  *         thisorf=seq_name+'\t'+str(0)+'\t'+str(seqlen)+'\t'+oid+'\t'+'0'+'\t'+strand+'\t'+str(ostart)+'\t'+str(oend)+'\t'+'0'+'\t'+'1'+'\t'+str(seqlen)+'\t'+str(0)             # <<<<<<<<<<<<<<
  *         #print(thisorf)
  *         result.append(thisorf)
  */
-    __pyx_t_3 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_seq_name, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_seq_name, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_8 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_seqlen); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_seqlen); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_v_oid); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_v_oid); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_v_strand); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_v_strand); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_ostart); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_oend); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_oend); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_kp_u_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_seqlen); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_seqlen); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_kp_u__8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_3 = PyNumber_Add(__pyx_t_8, __pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_8, __pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_XDECREF_SET(__pyx_v_thisorf, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "orfipy_core.pyx":568
+    /* "orfipy_core.pyx":571
  *         thisorf=seq_name+'\t'+str(0)+'\t'+str(seqlen)+'\t'+oid+'\t'+'0'+'\t'+strand+'\t'+str(ostart)+'\t'+str(oend)+'\t'+'0'+'\t'+'1'+'\t'+str(seqlen)+'\t'+str(0)
  *         #print(thisorf)
  *         result.append(thisorf)             # <<<<<<<<<<<<<<
  *     #return as string
  *     return '\n'.join(result)
  */
-    __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_result, __pyx_v_thisorf); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 568, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyList_Append(__pyx_v_result, __pyx_v_thisorf); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 571, __pyx_L1_error)
 
-    /* "orfipy_core.pyx":518
+    /* "orfipy_core.pyx":521
  *     ind=0
  * 
  *     for orf in orfs_struct_list:             # <<<<<<<<<<<<<<
@@ -8974,20 +8974,20 @@ static PyObject *__pyx_f_11orfipy_core_orfs_to_bed12(PyObject *__pyx_v_orfs_stru
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "orfipy_core.pyx":570
+  /* "orfipy_core.pyx":573
  *         result.append(thisorf)
  *     #return as string
  *     return '\n'.join(result)             # <<<<<<<<<<<<<<
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyUnicode_Join(__pyx_kp_u__2, __pyx_v_result); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_1 = PyUnicode_Join(__pyx_kp_u__2, __pyx_v_result); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 573, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "orfipy_core.pyx":510
+  /* "orfipy_core.pyx":513
  * 
  * #compile results in bed12
  * cdef str orfs_to_bed12(list orfs_struct_list,str seq,str seq_rc, str seq_name, int seqlen, bint include_stop):             # <<<<<<<<<<<<<<
@@ -9991,8 +9991,8 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 70, __pyx_L1_error)
   __pyx_builtin_map = __Pyx_GetBuiltinName(__pyx_n_s_map); if (!__pyx_builtin_map) __PYX_ERR(0, 201, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 270, __pyx_L1_error)
-  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 424, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 489, __pyx_L1_error)
+  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 427, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 492, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 14, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 19, __pyx_L1_error)
   return 0;
@@ -10004,14 +10004,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "orfipy_core.pyx":566
+  /* "orfipy_core.pyx":569
  *         thisorfid=seq_name+"_ORF."+str(ind)
  *         oid= 'ID='+thisorfid+';ORF_type='+orf_type+';ORF_len='+str(olen)+';ORF_frame='+str(frame)+';Start:'+startcodon+';Stop:'+stopcodon
  *         thisorf=seq_name+'\t'+str(0)+'\t'+str(seqlen)+'\t'+oid+'\t'+'0'+'\t'+strand+'\t'+str(ostart)+'\t'+str(oend)+'\t'+'0'+'\t'+'1'+'\t'+str(seqlen)+'\t'+str(0)             # <<<<<<<<<<<<<<
  *         #print(thisorf)
  *         result.append(thisorf)
  */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_int_0); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 566, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_int_0); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 569, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
 
@@ -10129,7 +10129,7 @@ static int __Pyx_modinit_type_init_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_11orfipy_core___pyx_scope_struct____pyx_f_11orfipy_core_format_fasta) < 0) __PYX_ERR(0, 335, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_11orfipy_core___pyx_scope_struct____pyx_f_11orfipy_core_format_fasta) < 0) __PYX_ERR(0, 338, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_11orfipy_core___pyx_scope_struct____pyx_f_11orfipy_core_format_fasta.tp_print = 0;
   #endif
@@ -10137,7 +10137,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_11orfipy_core___pyx_scope_struct____pyx_f_11orfipy_core_format_fasta.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_11orfipy_core___pyx_scope_struct____pyx_f_11orfipy_core_format_fasta = &__pyx_type_11orfipy_core___pyx_scope_struct____pyx_f_11orfipy_core_format_fasta;
-  if (PyType_Ready(&__pyx_type_11orfipy_core___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(0, 351, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_11orfipy_core___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(0, 354, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_11orfipy_core___pyx_scope_struct_1_genexpr.tp_print = 0;
   #endif

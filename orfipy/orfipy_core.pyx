@@ -127,7 +127,6 @@ cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,in
            
     #if no output specified only return bed
     if not (bed or bed12 or dna or rna or pep):
-        #print('stdout')
         bedresults=orfs_to_bed(orfs_as_struct,seq,seq_rc,seqname,seq_len,include_stop)
         return [bedresults,[],[],[],[]]    
     
@@ -289,6 +288,8 @@ cpdef list find_between_start_stop_v(start_positions,  list stop_positions):
     
     #convert to dequeue for faster pop operation
     start_positions=deque(start_positions)
+    #print('S',start_positions)
+    #print('T',stop_positions)
 
     
     #first stop pos is -1,-2 or -3 ignore
@@ -327,6 +328,7 @@ cpdef list find_between_start_stop_v(start_positions,  list stop_positions):
             otype=0
         
         result.append((upstream_stop,current_stop,otype))
+    
     return result
     
     
@@ -444,7 +446,7 @@ cdef str orfs_to_bed(list orfs_struct_list,str seq,str seq_rc,str seq_name, int 
     cdef ORF orf
     cdef int ostart
     cdef int oend
-    #print(orfs_list)
+    
     result=[]
     ind=0
     
@@ -452,7 +454,7 @@ cdef str orfs_to_bed(list orfs_struct_list,str seq,str seq_rc,str seq_name, int 
         ind+=1
         #pair is a list [current_start_index,current_stop_index,this_frame,this_start_codon,this_stop_codon,orftype,seqlen]
         #struct is thisORF.start_index,thisORF.stop_index,thisORF.framenum, thisORF.orf_type, thisORF.length
-        #print(orf)
+        
         ostart=orf.start_index
         oend=orf.stop_index
         frame=orf.framenum
@@ -486,7 +488,7 @@ cdef str orfs_to_bed(list orfs_struct_list,str seq,str seq_rc,str seq_name, int 
         
         #if include stop add 3 to stop pos
         if (otype==0 or otype==1) and include_stop:
-            print(oend,oend+3)
+            #print(oend,oend+3)
             oend+=3
         
         #if rev complement reverse coordinates
@@ -502,16 +504,15 @@ cdef str orfs_to_bed(list orfs_struct_list,str seq,str seq_rc,str seq_name, int 
         #print(thisorf)
         result.append(thisorf)
     #return as string    
-    #print('RETBED:','\n'.join(result))
     return '\n'.join(result)
-    #return ''
+    
 
 #compile results in bed12
 cdef str orfs_to_bed12(list orfs_struct_list,str seq,str seq_rc, str seq_name, int seqlen, bint include_stop):
     cdef ORF orf
     cdef int ostart
     cdef int oend
-    #print(orfs_list)
+
     result=[]
     ind=0
     

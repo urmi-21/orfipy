@@ -10,12 +10,18 @@ Install latest stable version
 pip install orfipy
 ```
 
-Install development version source
+Install development version from source
 
 ```
 git clone https://github.com/urmi-21/orfipy.git
 cd orfipy
 pip install .
+```
+
+or use pip
+
+```
+pip install git+git://github.com/urmi-21/orfipy.git
 ```
 
 ## Examples
