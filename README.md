@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/urmi-21/orfipy.svg?branch=master)](https://travis-ci.org/urmi-21/orfipy)
 
 # Introduction
-orfipy is a python package to extract ORFs in extremely fast and flexible manner. 
+orfipy is a python package to extract ORFs in extremely fast and flexible manner. Please read the [preprint here](https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1)
 
 
 ## Installation
@@ -64,11 +64,11 @@ orfipy --show-table
 
 ```
 
-## Comparison with Getorf and OrfM
+## Comparison with getorf and OrfM
 
 <p>
     <img src="https://raw.githubusercontent.com/urmi-21/orfipy/master/scripts/comparison.png" alt>
-    <em>Comparison of orfipy features and performance with getorf and OrfM</em>
+    <em>Comparison of orfipy features and performance with getorf and OrfM. For details see <a href=https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1> preprint</a> and <a href=https://github.com/urmi-21/orfipy/tree/master/supplementary_data>SI</a></em>
 </p>
 
 
