@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/urmi-21/orfipy.svg?branch=master)](https://travis-ci.org/urmi-21/orfipy)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/orfipy)
+
 
 # Introduction
 orfipy is a python package to extract ORFs in extremely fast and flexible manner. Please read the [preprint here](https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1)
