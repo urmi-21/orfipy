@@ -11,14 +11,15 @@ import time
 import multiprocessing
 from contextlib import closing
 import gc
-import psutil
 #import pyximport; pyximport.install()
 import orfipy_core as oc
 from pyfaidx import Fasta
 import subprocess
+import __main__ as m
 
-   
-    
+
+
+  
 def worker_map(arglist):
     """
     start worker
@@ -396,7 +397,7 @@ def group_by_frame_length(bed,bed12,longest,byframe):
             
 
     
-    
+
     
 ##########main################
 #TODO: handle longest and byframe opts
@@ -421,7 +422,7 @@ def main(infasta,
          dna,
          rna,
          pep,
-         outdir):
+         outdir,logr):
     
     """
     
@@ -475,33 +476,11 @@ def main(infasta,
     ##start time
     start = time.time()
     
-         
     file_streams=init_result_files((bed12, bed, dna, rna, pep),tmp=outdir)    
-    
-    if not procs:
-        procs=int(multiprocessing.cpu_count()*.7)+1
-    
-    #estimate chunk_size
-    if not chunk_size:
-        #total mem in MB
-        total_mem_MB=psutil.virtual_memory()[0]/1000000
-        chunk_size=int(total_mem_MB/(procs*4))
-    else:
-        chunk_size=int(chunk_size)
-    #limit chunk size to 1000 if sequences are extracted; this works best
-    if (dna or rna or pep) and (chunk_size > 1000):
-        chunk_size=1000
-    
-    #check py < 3.8; if yes max chunk size can be 2000 otherwise error is reported
-    if sys.version_info[1] < 8 and chunk_size > 2000:
-        chunk_size = 1900
-                
-    print("Setting chunk size {} MB. Procs {}".format(chunk_size,procs),file=sys.stderr)
     
     
     #read fasta file
     seqs = Fasta(infasta)
-    
     
     
     if single_mode:
@@ -553,6 +532,9 @@ def main(infasta,
         group_by_frame_length(bedfile,bed12file,longest,byframe)
         
     print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
+    #m.print_notification("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration))
+    logr.info("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration))
+    logr.info("END")
 
 
 if __name__ == '__main__':

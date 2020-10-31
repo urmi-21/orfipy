@@ -10,7 +10,41 @@ import sys
 import os
 import orfipy.translation_tables
 import orfipy.findorfs
+import orfipy.version
 import json
+import logging
+import datetime as dt
+import psutil
+import multiprocessing
+from colorama import Fore,Style
+
+#color print
+def orfipy_print(color,*args,stderr=False,**kwargs):
+    if stderr:
+        print(color,file=sys.stderr,end="",**kwargs)
+        print(*args,file=sys.stderr,end="",**kwargs)
+        print(Style.RESET_ALL,file=sys.stderr,**kwargs)
+    else:
+        print(color,file=sys.stdout,end="",**kwargs)
+        print(*args,file=sys.stdout,end="",**kwargs)
+        print(Style.RESET_ALL,file=sys.stdout,**kwargs)
+def print_notification(*args):
+    """Print message to stderr
+    """
+    orfipy_print(Fore.LIGHTYELLOW_EX,*args,stderr=True)
+def print_message(*args):
+    """Print message to stderr
+    """
+    orfipy_print(Fore.LIGHTCYAN_EX,*args,stderr=True)
+def print_error(*args):
+    """Print message to stderr
+    """
+    orfipy_print(Fore.LIGHTRED_EX,*args,stderr=True)
+    
+def print_success(*args):
+    """Print message to stderr
+    """
+    orfipy_print(Fore.LIGHTGREEN_EX,*args,stderr=True)
 
 def validate_codons(starts,stops):
     validalphabets=['A','C','T','G']
@@ -53,8 +87,95 @@ def print_tables():
                '['+','.join(tab_dict[k]['start'])+']',
                '['+','.join(tab_dict[k]['stop'])+']')
     
+def get_time_stamp():
+    """Function to return current timestamp.
+    Parameters
+    ----------
+    shorten: bool
+        return short version without space, dash and colons
+    :return: timestamp as string
+    :rtype: string
+    """
+    timestamp=str(dt.datetime.now()).replace(" ","-").replace("-","_").replace(" ","").replace(":","_")
+    return timestamp
+
+def get_logger(outdir):
+    """
+    create and return logger
+    """
+    #create out dir if not present
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
+    
+    timestamp=get_time_stamp()
+    logfile=os.path.join(outdir,'orfipy_'+timestamp+'.log')
+    handler = logging.FileHandler(logfile)        
+    #handler.setFormatter(formatter)
+    logger = logging.getLogger('log')
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+    
+    #print("Logs will be saved to: {}".format(logfile),file=sys.stderr)
+    print_notification("Logs will be saved to: {}".format(logfile))
+    return logger
+    
+def get_command_for_log(infasta,
+         minlen,
+         maxlen,
+         procs,
+         single_mode,
+         chunk_size,
+         strand,
+         starts,
+         stops,
+         table,
+         include_stop,
+         partial3,
+         partial5,
+         bw_stops,
+         longest,
+         byframe,
+         bed12,
+         bed,
+         dna,
+         rna,
+         pep,
+         outdir):
+    cmd="orfipy "+infasta+" --min "+ str(minlen)+" --max "+str(maxlen)+" --procs "+str(procs)
+    if single_mode:
+        cmd+=" --single-mode"
+    cmd+=" --chunk-size "+str(chunk_size)+" --strand "+strand+ " --start "+','.join(starts)+" --stop "+",".join(stops)+" --table "+str(table)
+    if include_stop:
+        cmd+=" --include-stop"
+    if partial3:
+        cmd+=" --partial-3"
+    if partial5:
+        cmd+=" --partial-5"
+    if bw_stops:
+        cmd+=" --between-stops"
+    if longest:
+        cmd+=" --longest"
+    if byframe:
+        cmd+=" --by-frame"
+    if bed12:
+        cmd+=" --bed12 "+bed12
+    if bed:
+        cmd+=" --bed "+bed
+    if dna:
+        cmd+=" --dna "+dna
+    if rna:
+        cmd+=" --rna "+rna
+    if pep:
+        cmd+=" --pep "+pep
+    cmd+=" --outdir "+outdir
+    #print(cmd)
+    return cmd
+
 
 def main():
+    ver=orfipy.version.version
+    #print("orfipy version {}".format(ver),file=sys.stderr)
+    print_message("orfipy version {}".format(ver))
     parser = argparse.ArgumentParser(description='orfipy: extract Open Reading Frames',
     usage="""
     orfipy [<options>] <infile>
@@ -165,7 +286,8 @@ def main():
     if not validate_codons(starts,stops):
         print('Please check start/stop codon list again')
         sys.exit(1)
-    print('Using translation table:',table['name'],'start:',starts,'stop:',stops,file=sys.stderr)
+    #print('Using translation table:',table['name'],'start:',starts,'stop:',stops,file=sys.stderr)
+    print_message('Using translation table:',table['name'],'start:',starts,'stop:',stops)
         
     
     strand=args.strand
@@ -189,9 +311,61 @@ def main():
             print('Please specify the bed output option if providing --longest or --byframe')
             sys.exit(1)
     
+    
+    ###Estimate procs and chunk
+    if not procs:
+        procs=int(multiprocessing.cpu_count()*.7)+1
+    
+    #estimate chunk_size
+    if not chunk_size:
+        #total mem in MB
+        total_mem_MB=psutil.virtual_memory()[0]/1000000
+        chunk_size=int(total_mem_MB/(procs*4))
+    else:
+        chunk_size=int(chunk_size)
+    #limit chunk size to 1000 if sequences are extracted; this works best
+    if (dna or rna or pep) and (chunk_size > 1000):
+        chunk_size=1000
+    
+    #check py < 3.8; if yes max chunk size can be 2000 otherwise error is reported
+    if sys.version_info[1] < 8 and chunk_size > 2000:
+        chunk_size = 1900
+                
+    #print("Setting chunk size {} MB. Procs {}".format(chunk_size,procs),file=sys.stderr)
+    print_message("Setting chunk size {} MB. Procs {}".format(chunk_size,procs))
+    
+    ###log####
+    #log
+    logr=get_logger(outdir)
+    logr.info("#START LOG")
+    logr.info("orfipy version "+ver)          
+    logr.info("orfipy command:")
+    logr.info(get_command_for_log(infile,
+                         minlen,
+                         maxlen,
+                         procs,
+                         single,
+                         chunk_size,
+                         strand,
+                         starts,
+                         stops,
+                         tablenum,
+                         args.include_stop,
+                         args.partial3,
+                         args.partial5,
+                         args.bw_stops, 
+                         args.longest,
+                         args.byframe,
+                         bed12,
+                         bed,
+                         dna,
+                         rna,
+                         pep,
+                         outdir))
+    
+    
     #print(args)
     #call main program    
-    #print('VersionXXXXX')
     orfipy.findorfs.main(infile,
                          minlen,
                          maxlen,
@@ -213,7 +387,7 @@ def main():
                          dna,
                          rna,
                          pep,
-                         outdir)
+                         outdir,logr)
     
     
     
