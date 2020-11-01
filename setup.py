@@ -35,7 +35,7 @@ extensions=[
 
 setuptools.setup(
     name="orfipy",
-    version=open("orfipy/version.py").readlines()[-1].split()[-1].strip("\"'"),
+    version=open("orfipy/version.py").readlines()[-1].split('=')[-1].strip().replace('"',''),
     author="Urminder Singh",
     author_email="usingh@iastate.edu",
     description="orfipy",
