@@ -73,7 +73,9 @@ def get_logger(outdir):
     timestamp=ut.get_time_stamp()
     logfile=os.path.join(outdir,'orfipy_'+timestamp+'.log')
     handler = logging.FileHandler(logfile)        
-    #handler.setFormatter(formatter)
+    formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
+                                  datefmt='%Y-%m-%d %H:%M:%S')
+    handler.setFormatter(formatter)
     logger = logging.getLogger('log')
     logger.setLevel(logging.DEBUG)
     logger.addHandler(handler)
@@ -137,9 +139,7 @@ def get_command_for_log(infasta,
 
 def main():
     ver=orfipy.version.version
-    #print("orfipy version {}".format(ver),file=sys.stderr)
-    ut.print_message("orfipy version {}".format(ver))
-    parser = argparse.ArgumentParser(description='orfipy: extract Open Reading Frames',
+    parser = argparse.ArgumentParser(description='orfipy: extract Open Reading Frames (version {})'.format(ver),
     usage="""
     orfipy [<options>] <infile>
     By default orfipy reports ORFs as sequences between start and stop codons. See ORF searching options to change this behaviour.
@@ -182,6 +182,8 @@ def main():
                         
     parser.add_argument("--show-tables", help="Print translation tables and exit.\nDefault: False",default=False,dest='showtab', action='store_true')
     
+    parser.add_argument("--version", help="Print version information and exit",default=False,dest='versioninfo', action='store_true')
+    
     
     parser.add_argument('infile', help='The input file, in Fasta format, containing Nucletide sequences',action="store",nargs="?")
     
@@ -190,6 +192,9 @@ def main():
     
     
     
+    if args.versioninfo:
+        print("orfipy version {}".format(ver))
+        sys.exit(0)
     if args.showtab:
         print_tables()
         sys.exit(0)
@@ -250,6 +255,7 @@ def main():
         print('Please check start/stop codon list again')
         sys.exit(1)
     #print('Using translation table:',table['name'],'start:',starts,'stop:',stops,file=sys.stderr)
+    ut.print_message("orfipy version {}".format(ver))
     ut.print_message('Using translation table:',table['name'],'start:',starts,'stop:',stops)
         
     
@@ -300,9 +306,9 @@ def main():
     ###log####
     #log
     logr=get_logger(outdir)
-    logr.info("#START LOG")
-    logr.info("orfipy version "+ver)          
-    logr.info("orfipy command:")
+    logr.info("START LOG")
+    logr.info("Python info: {}".format(sys.version))
+    logr.info("orfipy version: "+ver)          
     logr.info(get_command_for_log(infile,
                          minlen,
                          maxlen,
