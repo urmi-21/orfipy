@@ -11,40 +11,13 @@ import os
 import orfipy.translation_tables
 import orfipy.findorfs
 import orfipy.version
+import orfipy.utils as ut
 import json
 import logging
-import datetime as dt
 import psutil
 import multiprocessing
-from colorama import Fore,Style
 
-#color print
-def orfipy_print(color,*args,stderr=False,**kwargs):
-    if stderr:
-        print(color,file=sys.stderr,end="",**kwargs)
-        print(*args,file=sys.stderr,end="",**kwargs)
-        print(Style.RESET_ALL,file=sys.stderr,**kwargs)
-    else:
-        print(color,file=sys.stdout,end="",**kwargs)
-        print(*args,file=sys.stdout,end="",**kwargs)
-        print(Style.RESET_ALL,file=sys.stdout,**kwargs)
-def print_notification(*args):
-    """Print message to stderr
-    """
-    orfipy_print(Fore.LIGHTYELLOW_EX,*args,stderr=True)
-def print_message(*args):
-    """Print message to stderr
-    """
-    orfipy_print(Fore.LIGHTCYAN_EX,*args,stderr=True)
-def print_error(*args):
-    """Print message to stderr
-    """
-    orfipy_print(Fore.LIGHTRED_EX,*args,stderr=True)
-    
-def print_success(*args):
-    """Print message to stderr
-    """
-    orfipy_print(Fore.LIGHTGREEN_EX,*args,stderr=True)
+
 
 def validate_codons(starts,stops):
     validalphabets=['A','C','T','G']
@@ -87,17 +60,7 @@ def print_tables():
                '['+','.join(tab_dict[k]['start'])+']',
                '['+','.join(tab_dict[k]['stop'])+']')
     
-def get_time_stamp():
-    """Function to return current timestamp.
-    Parameters
-    ----------
-    shorten: bool
-        return short version without space, dash and colons
-    :return: timestamp as string
-    :rtype: string
-    """
-    timestamp=str(dt.datetime.now()).replace(" ","-").replace("-","_").replace(" ","").replace(":","_")
-    return timestamp
+
 
 def get_logger(outdir):
     """
@@ -107,7 +70,7 @@ def get_logger(outdir):
     if not os.path.exists(outdir):
         os.makedirs(outdir)
     
-    timestamp=get_time_stamp()
+    timestamp=ut.get_time_stamp()
     logfile=os.path.join(outdir,'orfipy_'+timestamp+'.log')
     handler = logging.FileHandler(logfile)        
     #handler.setFormatter(formatter)
@@ -116,7 +79,7 @@ def get_logger(outdir):
     logger.addHandler(handler)
     
     #print("Logs will be saved to: {}".format(logfile),file=sys.stderr)
-    print_notification("Logs will be saved to: {}".format(logfile))
+    ut.print_notification("Logs will be saved to: {}".format(logfile))
     return logger
     
 def get_command_for_log(infasta,
@@ -175,7 +138,7 @@ def get_command_for_log(infasta,
 def main():
     ver=orfipy.version.version
     #print("orfipy version {}".format(ver),file=sys.stderr)
-    print_message("orfipy version {}".format(ver))
+    ut.print_message("orfipy version {}".format(ver))
     parser = argparse.ArgumentParser(description='orfipy: extract Open Reading Frames',
     usage="""
     orfipy [<options>] <infile>
@@ -287,7 +250,7 @@ def main():
         print('Please check start/stop codon list again')
         sys.exit(1)
     #print('Using translation table:',table['name'],'start:',starts,'stop:',stops,file=sys.stderr)
-    print_message('Using translation table:',table['name'],'start:',starts,'stop:',stops)
+    ut.print_message('Using translation table:',table['name'],'start:',starts,'stop:',stops)
         
     
     strand=args.strand
@@ -332,7 +295,7 @@ def main():
         chunk_size = 1900
                 
     #print("Setting chunk size {} MB. Procs {}".format(chunk_size,procs),file=sys.stderr)
-    print_message("Setting chunk size {} MB. Procs {}".format(chunk_size,procs))
+    ut.print_message("Setting chunk size {} MB. Procs {}".format(chunk_size,procs))
     
     ###log####
     #log

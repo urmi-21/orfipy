@@ -15,8 +15,7 @@ import gc
 import orfipy_core as oc
 from pyfaidx import Fasta
 import subprocess
-import __main__ as m
-
+import orfipy.utils as ut
 
 
   
@@ -531,8 +530,8 @@ def main(infasta,
            bed12file=os.path.join(outdir,bed12)
         group_by_frame_length(bedfile,bed12file,longest,byframe)
         
-    print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
-    #m.print_notification("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration))
+    #print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
+    ut.print_success("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration))
     logr.info("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration))
     logr.info("END")
 
