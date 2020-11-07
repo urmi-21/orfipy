@@ -23,7 +23,7 @@ install:
 # command to run tests
 script:
   - ls
-  - #run getorf comparison
+  #run getorf comparison
   - getorf -find 3 -outseq ec3.fa -sequence tests/testseq/ecoli.fa -min 120
   - getorf -find 1 -outseq ecp3.fa -sequence tests/testseq/ecoli.fa -min 120
   - getorf -find 2 -outseq ec.fa -sequence tests/testseq/ecoli.fa -min 120
@@ -34,7 +34,14 @@ script:
   - python scripts/compare_fasta_files.py ecp3.fa ofout/p3
   - python scripts/compare_fasta_files.py ec.fa ofout/d
   - python scripts/compare_fasta_files.py ecp.fa ofout/p
-  - coverage run -m pytest tests/
-  - coverage report --show-missing  
-after_success:
-  - coveralls
+  #test run some parameters
+  - orfipy --single --between-stops --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stops
+  - orfipy --single --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stops --partial-3 --partial-5
+  - orfipy --single --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stops --partial-5
+  - orfipy --single --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stops --partial-5 --start ACG --stop TGC
+  #see logs
+  - cat ofout/*.log
+  #- coverage run -m pytest tests/
+  #- coverage report --show-missing  
+#after_success:
+#  - coveralls

@@ -3,7 +3,7 @@
 ![PyPI](https://img.shields.io/pypi/v/orfipy?style=flat-square)
 
 # Introduction
-orfipy is a python package to extract ORFs in extremely fast and flexible manner. Please read the [preprint here](https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1)
+orfipy is a tool written in python/cython to extract ORFs in extremely fast and flexible manner. Please read the [preprint here](https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1)
 
 
 ## Installation
