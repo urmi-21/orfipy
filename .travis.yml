@@ -35,10 +35,10 @@ script:
   - python scripts/compare_fasta_files.py ec.fa ofout/d
   - python scripts/compare_fasta_files.py ecp.fa ofout/p
   #test run some parameters
-  - orfipy --single --between-stops --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stops
-  - orfipy --single --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stops --partial-3 --partial-5
-  - orfipy --single --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stops --partial-5
-  - orfipy --single --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stops --partial-5 --start ACG --stop TGC
+  - orfipy --single --between-stops --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stop
+  - orfipy --single --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stop --partial-3 --partial-5
+  - orfipy --single --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stop --partial-5
+  - orfipy --single --min 120 --outdir ofout --dna d --pep p tests/testseq/ecoli.fa --include-stop --partial-5 --start ACG --stop TGC
   #see logs
   - cat ofout/*.log
   #- coverage run -m pytest tests/

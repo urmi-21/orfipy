@@ -1,0 +1,10 @@
+1. Using TestPyPI
+python setup.py sdist
+twine upload --repository-url https://test.pypi.org/legacy/ dist/orfipy-0.0.2b0.tar.gz
+#test install
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple orfipy==0.0.2b0
+
+2. Upload to PyPI
+python setup.py sdist
+twine check dist/*
+twine upload dist/orfipy-0.0.2.tar.gz
