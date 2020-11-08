@@ -7,12 +7,18 @@ orfipy is a tool written in python/cython to extract ORFs in extremely fast and 
 
 
 ## Installation
-Install latest stable version
+
+### Install latest stable version
 ```
 pip install orfipy
 ```
+Or install via conda
 
-Install development version from source
+```
+conda install -c bioconda orfipy
+```
+
+### Install the development version from source
 
 ```
 git clone https://github.com/urmi-21/orfipy.git
