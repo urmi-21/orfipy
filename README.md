@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/urmi-21/orfipy.svg?branch=master)](https://travis-ci.org/urmi-21/orfipy)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/orfipy)
 ![PyPI](https://img.shields.io/pypi/v/orfipy?style=flat-square)
+[![install with bioconda](https://anaconda.org/bioconda/plncpro/badges/installer/conda.svg)](https://anaconda.org/bioconda/orfipy)
 
 # Introduction
 orfipy is a tool written in python/cython to extract ORFs in extremely fast and flexible manner. Please read the [preprint here](https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1)
