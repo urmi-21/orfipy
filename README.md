@@ -35,43 +35,59 @@ pip install git+git://github.com/urmi-21/orfipy.git
 
 ## Examples
 
-Extract ORF sequences and write ORF sequences in orfs.fa file
+Details of `orfipy` algorithm are in the <a href=https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1> preprint</a> and <a href=https://github.com/urmi-21/orfipy/tree/master/supplementary_data>SI</a></em>. Please go through the <a href=https://github.com/urmi-21/orfipy/tree/master/supplementary_data>SI</a></em> if you are interested to know differences between `orfipy` and other ORF finder tools and how to set `orfipy` parameters to match the output of other tools.
+
+Below are some usage examples for `orfipy`
+
+
+To see full list of options use the command:
+
+```
+orfipy -h
+```
+
+
+
+**Extract ORF sequences and write ORF sequences in orfs.fa file**
 
 ```
 orfipy input.fasta --dna orfs.fa --min 10 --max 10000 --procs 4 --table 1 --outdir orfs_out
 ```
 
-Use [standard codon table](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=cgencodes)  but use only ATG as start codon
+**Use [standard codon table](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=cgencodes)  but use only ATG as start codon**
 
 ```
 orfipy input.fasta --dna orfs.fa --start ATG
 ```
+**Note:** Users can also provide their own translation table, as a .json file, to `orfipy` using `--table` option. Example of json file containing a valid translation table is [here](https://github.com/urmi-21/orfipy/blob/master/scripts/example_user_table.json)
 
-Extract ORF BED file
+**See available codon tables**
+```
+orfipy --show-table
+
+```
+
+**Extract ORFs BED file**
 ```
 orfipy input.fasta --bed orfs.bed --min 50 --procs 4
 or
 orfipy input.fasta --min 50 --procs 4 > orfs.bed 
 ```
 
-Extract ORF BED12 file
+**Extract ORFs BED12 file**
 
-**Note**: Add `--include-stop` for orfipy output to be consistent with Transdecoder.Predict output .bed file
+**Note**: Add `--include-stop` for orfipy output to be consistent with Transdecoder.Predict output .bed file. 
 
 ```
 orfipy testseq.fa --min 100 --bed12 of.bed --partial-5 --partial-3 --include-stop
 ```
 
-Extract peptides
+**Extract ORFs peptide sequences using default translation table**
 ```
 orfipy input.fasta --pep orfs_peptides.fa --min 50 --procs 4
 ```
 
-See available codon tables
-```
-orfipy --show-table
 
-```
 
 ## Comparison with getorf and OrfM
 
