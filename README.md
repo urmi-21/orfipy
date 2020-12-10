@@ -46,7 +46,8 @@ To see full list of options use the command:
 orfipy -h
 ```
 
-
+### Input
+`orfipy` currently supports sequences in only Fasta format. If you want to directly work with compressed Fasta files, compression format must be [bgzip](http://www.htslib.org/doc/bgzip.html). To use Fastq files, you will need to first [convert them to Fasta](https://bioinformaticsworkbook.org/dataWrangling/fastaq-manipulations/converting-fastq-format-to-fasta.html#gsc.tab=0).
 
 **Extract ORF sequences and write ORF sequences in orfs.fa file**
 
