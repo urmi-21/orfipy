@@ -4,7 +4,9 @@
 [![install with bioconda](https://anaconda.org/bioconda/plncpro/badges/installer/conda.svg)](https://anaconda.org/bioconda/orfipy)
 
 # Introduction
-orfipy is a tool written in python/cython to extract ORFs in extremely fast and flexible manner. Please read the [preprint here](https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1)
+orfipy is a tool written in python/cython to extract ORFs in extremely fast and flexible manner. Please read and cite the [preprint here](https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1).  
+
+This work is funded in part by the National Science Foundation award IOS 1546858, "Orphan Genes: An Untapped Genetic Reservoir of Novel Traits". This work used the Extreme Science and Engineering Discovery Environment (XSEDE), which is supported by National Science Foundation grant number ACI-1548562 (Bridges HPC environment through allocations TG-MCB190098 and TG-MCB200123 awarded from XSEDE and HPC Consortium).
 
 
 ## Installation
