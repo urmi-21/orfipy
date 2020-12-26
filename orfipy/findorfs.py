@@ -13,7 +13,8 @@ from contextlib import closing
 import gc
 #import pyximport; pyximport.install()
 import orfipy_core as oc
-from pyfaidx import Fasta
+#from pyfaidx import Fasta
+import pyfastx
 import subprocess
 import orfipy.utils as ut
 
@@ -144,6 +145,7 @@ def start_multiprocs(seqs,
         
         thisname=s
         thisseq=str(seqs[s])
+        print('SEQXXX',thisseq)
         #ignore if seq is < minlen
         if len(thisseq)<minlen:
             continue
@@ -151,7 +153,8 @@ def start_multiprocs(seqs,
         this_read=len(thisseq.encode('utf-8'))
         thisseq_rc=None
         if strand == 'b' or strand =='r':
-            thisseq_rc=seqs[s][:].complement.reverse.seq
+            #thisseq_rc=seqs[s][:].complement.reverse.seq
+            thisseq_rc=seqs[s][:].antisense
             #add bytes read of rev_com seq
             this_read=this_read*2
         
@@ -268,7 +271,7 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,part
             continue
         thisseq_rc=None
         if strand == 'b' or strand =='r':
-            thisseq_rc=seqs[s][:].complement.reverse.seq
+            thisseq_rc=seqs[s][:].antisense
         
         res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,table, include_stop, partial3, partial5, bw_stops,outputs)
         
@@ -476,7 +479,16 @@ def main(infasta,
     
     
     #read fasta file
-    seqs = Fasta(infasta)
+    #seqs = Fasta(infasta)
+    #replace with fastx
+    #if file is fasta
+    if infasta.endswith('.fastq'):
+        print('Input is fastq')
+        seqs=pyfastx.Fastq(infasta)
+    elif infasta.endswith('.fasta') or infasta.endswith('.fa'):        
+        seqs=pyfastx.Fasta(infasta)
+
+    #if file is fastq
     
     
     if single_mode:
