@@ -60,7 +60,7 @@ script:
   - gzip tests/testseq/sample.fq
   - orfipy --single --between-stops --min 36 --outdir fqoutgz --dna d --pep p tests/testseq/sample.fq.gz
   - python scripts/compare_fasta_files.py orfm_dna fqoutgz/d
-  - python scripts/compare_fasta_files.py orfm_pep fqoutgz/pep
+  - python scripts/compare_fasta_files.py orfm_pep fqoutgz/p
 
   #see logs
   - cat ofout/*.log
