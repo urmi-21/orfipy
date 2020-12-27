@@ -8,9 +8,8 @@ Created on Tue Sep 29 12:38:33 2020
 This script takes n fasta files as input and check whether all sequences are same in all files
 This script is quick and not memory efficient; written to test small fasta files.
 """
-import os
 import sys
-from pyfaidx import Fasta
+import pyfastx
 import collections
 
 
@@ -19,7 +18,7 @@ inseqs=[]
 i=0
 failed=False
 for f in sys.argv[1:]:
-    seqs=Fasta(f)
+    seqs=pyfastx.Fasta(f)
     newlist=[]
     inseqs.append(newlist)
     for k in list(seqs.keys()):
