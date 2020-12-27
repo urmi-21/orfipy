@@ -12,6 +12,14 @@ To run the comparison reported in the paper:
 2. Download required data: run `bash prepare_data.sh`. This will download the benchmark data in ../testdata/bmdata directory
 3. Run the comparison `bash run_benchmarks.sh infasta.fa outdir 5 300`. For example to run with human data: `bash run_benchmarks.sh ../testdata/bmdata/human.fa human_out 3 99`
 
+#### Run basic benchmark without pyrpipe
+Run the basic_benchmark.sh to measure the runtime for each tool. For example:
+
+```
+bash basic_benchmark.sh ../testdata/bmdata/human.fa 99 human_basic_out
+```
+
+First argument is input fasta file, Second is the min orf length, Third is the out directory
 
 
 
