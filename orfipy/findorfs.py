@@ -13,13 +13,19 @@ from contextlib import closing
 import gc
 #import pyximport; pyximport.install()
 import orfipy_core as oc
-#from pyfaidx import Fasta
 import subprocess
 import orfipy.utils as ut
-from orfipy.fasta_loader import FastxWrapper
+import pyfastx
 
 
-  
+#rev comp
+orig = "ACTG"
+comp = "TGAC"
+transtab = str.maketrans(orig, comp)
+def revcomp(seq):
+        return seq.translate(transtab)[::-1]
+
+
 def worker_map(arglist):
     """
     start worker
@@ -183,9 +189,13 @@ def start_multiprocs(seqs,
     
     #process sequences in fasta file
     #seqs is FastaWrapper object
-    for s in seqs.keys:
-        thisname=s
-        thisseq=seqs.get_seq(s)
+    #for s in seqs.keys:
+    for name, seq, *rest in seqs:
+        #print(name, seq)
+        thisname=name
+        thisseq=seq
+        #print(type(seq))
+        #thisseq=seqs.get_seq(s)
         #ignore if seq is < minlen
         if len(thisseq)<minlen:
             continue
@@ -193,7 +203,8 @@ def start_multiprocs(seqs,
         this_read=len(thisseq.encode('utf-8'))
         thisseq_rc=None
         if strand == 'b' or strand =='r':
-            thisseq_rc=seqs.get_seq(s,rc=True)
+            #thisseq_rc=seqs.get_seq(s,rc=True)
+            thisseq_rc=revcomp(thisseq)
             #add bytes read of rev_com seq
             this_read=this_read*2
         
@@ -294,7 +305,7 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,part
 
     """
    
-    print('orfipy single-mode',file=sys.stderr)
+    ut.print_notification('orfipy single-mode')
     #outputs
     outputs=[]
     for f in file_streams:
@@ -303,15 +314,16 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,part
         else:
             outputs.append(False)
     #results=[]
-    for s in seqs.keys:
-        thisname=s
-        thisseq=seqs.get_seq(s)
+    for name, seq, *rest in seqs:
+        #print(name, seq)
+        thisname=name
+        thisseq=seq
         #ignore if seq is < minlen
         if len(thisseq)<minlen:
             continue
         thisseq_rc=None
         if strand == 'b' or strand =='r':
-            thisseq_rc=seqs.get_seq(s,rc=True)
+            thisseq_rc=revcomp(thisseq)
         
         res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,table, include_stop, partial3, partial5, bw_stops,outputs)
         
@@ -655,14 +667,16 @@ def main(infasta,
     #replace with fastx
     
     #if file is fasta
-    seqs=None
+    #seqs=None
     if ftype=='a':
-        seqs=FastxWrapper(infasta,'fasta')
+        #seqs=FastxWrapper(infasta,'fasta')
+        seqs=pyfastx.Fasta(infasta, build_index=False)
     elif ftype=='q':
-        seqs=FastxWrapper(infasta,'fastq')
+        #seqs=FastxWrapper(infasta,'fastq')
+        seqs=pyfastx.Fastq(infasta, build_index=False)
     else:
         ut.print_error('Unknown input type {}'.format(ftype))
-    
+   
     if single_mode:
         
         worker_single(seqs,
@@ -712,8 +726,8 @@ def main(infasta,
         group_by_frame_length(bedfile,bed12file,longest,byframe)
         
     #print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration),file=sys.stderr)
-    ut.print_success("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration))
-    logr.info("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration))
+    #ut.print_success("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration))
+    #logr.info("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration))
     logr.info("END")
 
 
