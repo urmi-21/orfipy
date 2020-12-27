@@ -20,6 +20,22 @@ import multiprocessing
 
 
 def validate_codons(starts,stops):
+    """
+    Check if codons are valid
+
+    Parameters
+    ----------
+    starts : list
+        List of start codons.
+    stops : list
+        List of stop codons.
+
+    Returns
+    -------
+    bool
+        True is codons are fine.
+
+    """
     validalphabets=['A','C','T','G']
     if not starts:
         starts=[]
@@ -106,6 +122,9 @@ def get_command_for_log(infasta,intype,
          rna,
          pep,
          outdir):
+    """
+    return command as string for log
+    """
     cmd="orfipy "+infasta+" --intype "+str(intype)+" --min "+ str(minlen)+" --max "+str(maxlen)+" --procs "+str(procs)
     if single_mode:
         cmd+=" --single-mode"

@@ -56,10 +56,10 @@ def start_map(poolargs,procs):
 
     Parameters
     ----------
-    poolargs : TYPE
-        DESCRIPTION.
-    procs : TYPE
-        DESCRIPTION.
+    poolargs : list
+        Arguments passed to oc.start_search.
+    procs : int
+        Num procs.
 
     Returns
     -------
@@ -89,10 +89,10 @@ def start_imap_unordered(poolargs,procs):
 
     Parameters
     ----------
-    poolargs : TYPE
-        DESCRIPTION.
-    procs : TYPE
-        DESCRIPTION.
+    poolargs : list
+        Arguments passed to oc.start_search.
+    procs : int
+        Num procs.
 
     Returns
     -------
@@ -121,6 +121,47 @@ def start_multiprocs(seqs,
                      bw_stops,
                      file_streams,
                      tmpdir):
+    """
+    
+
+    Parameters
+    ----------
+    seqs : FastxWrapper object
+        A FastxWrapper object.
+    minlen : int
+        min len of ORFs.
+    maxlen : int
+        Max len of ORFs.
+    procs : int
+        Num procs.
+    chunk_size : dounle
+        Chunk size in MB.
+    strand : char
+        Strand to use (b)oth, (f)wd or (r)ev.
+    starts : list
+        List of start codons.
+    stops : list
+        List of stop codons.
+    table : dict
+        translation tab.
+    include_stop : bool
+        Include stop in results.
+    partial3 : bool
+        report ORF without stop codon.
+    partial5 : bool
+        report ORF without start codon.
+    bw_stops : bool
+        Orfs defined as between stops.
+    file_streams : list
+        List of file streams for outputting the results.
+    tmpdir : str
+        Out directory.
+
+    Returns
+    -------
+    None.
+
+    """
     
     #outputs
     outputs=[]
@@ -217,6 +258,43 @@ def start_multiprocs(seqs,
     
 
 def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,partial3,partial5,bw_stops,file_streams,tmp):
+    """
+    Compute ORFs using single thread
+
+    Parameters
+    ----------
+    seqs : FastxWrapper object
+        A FastxWrapper object.
+    minlen : int
+        min len of ORFs.
+    maxlen : int
+        Max len of ORFs.
+    strand : char
+        Strand to use (b)oth, (f)wd or (r)ev.
+    starts : list
+        List of start codons.
+    stops : list
+        List of stop codons.
+    table : dict
+        translation tab.
+    include_stop : bool
+        Include stop in results.
+    partial3 : bool
+        report ORF without stop codon.
+    partial5 : bool
+        report ORF without start codon.
+    bw_stops : bool
+        Orfs defined as between stops.
+    file_streams : list
+        List of file streams for outputting the results.
+    tmpdir : str
+        Out directory.
+
+    Returns
+    -------
+    None.
+
+    """
    
     print('orfipy single-mode',file=sys.stderr)
     #outputs
@@ -243,6 +321,21 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,part
 
 
 def write_results_single(results,file_streams):
+    """
+    Write result to file_stream
+
+    Parameters
+    ----------
+    results : list
+        List containing results in different formats.
+    file_streams : List
+        A list of file objects to write results.
+
+    Returns
+    -------
+    None.
+
+    """
     #results is a list on n lists. each n lists contain a string; file_streams contain n streams to write n lists
     
     all_none=True
@@ -256,6 +349,21 @@ def write_results_single(results,file_streams):
         print(results[0])
 
 def write_results_multiple(results,file_streams):
+    """
+    write results from multiple seqs
+
+    Parameters
+    ----------
+    results : list containing list of results
+        DESCRIPTION.
+    file_streams : list
+        A list of file objects to write results.
+
+    Returns
+    -------
+    None.
+
+    """
     #results is a generator; each item in result is a list of n lists.
     #file_streams contain n file_streams for each list in a result item
     #print(results)
@@ -265,6 +373,22 @@ def write_results_multiple(results,file_streams):
     
     
 def init_result_files(fileslist,tmp=""):
+    """
+    Open files and return objects to use later
+
+    Parameters
+    ----------
+    fileslist : TYPE
+        DESCRIPTION.
+    tmp : TYPE, optional
+        DESCRIPTION. The default is "".
+
+    Returns
+    -------
+    fstreams : list
+        List of file objects.
+
+    """
     #create outdir
     create_outdir(fileslist,tmp)
     #create empty files to append later
@@ -278,6 +402,21 @@ def init_result_files(fileslist,tmp=""):
 
 
 def create_outdir(outlist,outdir):
+    """
+    crete out dir
+
+    Parameters
+    ----------
+    outlist : TYPE
+        DESCRIPTION.
+    outdir : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
     for f in outlist:
         if f:
             if not os.path.exists(outdir):
@@ -285,6 +424,19 @@ def create_outdir(outlist,outdir):
             return
 
 def close_result_files(fstreams):
+    """
+    Close all the files after writing results
+
+    Parameters
+    ----------
+    fstreams : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
     for f in fstreams:
         if f:
             f.close()
@@ -309,6 +461,19 @@ def concat_resultfiles(fstreams,outdir):
 
 
 def filter_bed_longest(bedfile):
+    """
+    Extract longest ORF per seq
+
+    Parameters
+    ----------
+    bedfile : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
     res={}
     with open(bedfile) as f:
         for ind, l in enumerate(f):
@@ -330,6 +495,20 @@ def filter_bed_longest(bedfile):
     f.close()
 
 def group_bed_frame(bedfile):
+    """
+    Group ORF by frames
+
+    Parameters
+    ----------
+    bedfile : in bed file
+        DESCRIPTION.
+
+    Returns
+    -------
+    streams : TYPE
+        DESCRIPTION.
+
+    """
     basename=os.path.splitext(bedfile)[0]
     ext=os.path.splitext(bedfile)[1]
     fp1=open(basename+"_+1"+ext,'w')
@@ -351,7 +530,7 @@ def group_bed_frame(bedfile):
     
 def group_by_frame_length(bed,bed12,longest,byframe):
     """
-    
+    Gruoup file by longest length and frame
 
     Parameters
     ----------

@@ -10,7 +10,8 @@ from operator import itemgetter
 import ahocorasick
 import itertools
 
-   
+
+#struct for ORF
 cdef struct ORF:
     int start_index
     int stop_index
@@ -20,6 +21,55 @@ cdef struct ORF:
         
 
 cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,include_stop,partial3,partial5,find_between_stops,out_opts):
+    """
+    Start ORF search
+
+    Parameters
+    ----------
+    seq : str
+        Seq to search ORF.
+    seq_rc : str
+        Rev complement sequence.
+    seqname : str
+        Seq name.
+    minlen : int
+        min len of ORF.
+    maxlen : int
+        max len of ORF.
+    strand : char
+        Strand to use. 
+    starts : list
+        List of start codon.
+    stops : list
+        List of stop codons.
+    table : dict
+        Transclation table.
+    include_stop : bool
+        include stop codon in results.
+    partial3 : bool
+        Find orfs without stop codon.
+    partial5 : bool
+        Find orfs without start codon.
+    find_between_stops : bool
+        Find ORFs defined as between stops.
+    out_opts : list
+        List of file objects to output. These are in following order
+        bed12=out_opts[0]
+        bed=out_opts[1]
+        dna=out_opts[2]
+        rna=out_opts[3]
+        pep=out_opts[4]
+
+    Returns
+    -------
+    Returns a list containing results for different out_types:
+    [bed12results,bedresults,seqresults[0],seqresults[1],seqresults[2]]
+    each element in tihs list is a str containing the ORF results for the seq
+    
+    Example
+    -------
+
+    """
     
     
     cdef int seq_len=len(seq)
@@ -161,6 +211,33 @@ cdef list get_orfsc(list start_positions,
              bint find_between_stops=False,
              bint rev_com=False):
     """
+    Search ORFs given list of start and stop positions
+
+    Parameters
+    ----------
+    list start_positions : list
+        list of start positions in 0 based coordinates.
+    list stop_positions : list
+        ist of stop positions in 0 based coordinates.
+    int seq_len : int
+        len of sequence.
+    int minlen : int
+        min orf length.
+    int maxlen : int
+        max orf length.
+    bint partial3 : boolean, optional
+        allow orfs without stop. The default is False.
+    bint partial5 : bool, optional
+        allow orfs without start. The default is False.
+    bint find_between_stops : bool, optional
+        Find orfs bw stops. The default is False.
+    bint rev_com : bool, optional
+        Return results in reverse complemnt coordinates. The default is False.
+
+    Returns
+    -------
+    list of ORF objects each represents an ORF coordinate
+
     """
     
     
@@ -259,6 +336,14 @@ cdef list get_orfsc(list start_positions,
 
     
 cpdef list find_between_stops_v(list stop_positions):
+    """
+    Find ORFs defined as between stops from a list of stop coordinates
+    
+    returns a list of tuples. each tuple is (upstream_stop,current_stop,otype)
+    upstream_stop: position of upstream stop codon
+    current_stop: stop position in the ORF
+    otype: ORF type complete, 5 prime or 3 prime
+    """
     #find regions between stops
     cdef list result=[]
     cdef int upstream_stop
@@ -277,6 +362,14 @@ cpdef list find_between_stops_v(list stop_positions):
     return result
     
 cpdef list find_between_start_stop_v(start_positions,  list stop_positions):
+     """
+    Find ORFs defined as between start and stops from a list of start and stop coordinates
+    
+    returns a list of tuples. each tuple is (upstream_stop,current_stop,otype)
+    upstream_stop: position of start codon
+    current_stop: stop position in the ORF
+    otype: ORF type complete, 5 prime or 3 prime
+    """
     #result will contain pairs of ORFs [start,stop]
     cdef list result=[]
     cdef int upstream_stop
@@ -326,7 +419,7 @@ cpdef list find_between_start_stop_v(start_positions,  list stop_positions):
             otype=1
         else:
             otype=0
-        
+        #upstream_stop is start codon position
         result.append((upstream_stop,current_stop,otype))
     
     return result
@@ -336,6 +429,7 @@ cpdef list find_between_start_stop_v(start_positions,  list stop_positions):
 
 cdef str format_fasta(seq):
     """
+    Format string to fasta format
     Parameters
     ----------
     seq : TYPE
@@ -345,8 +439,8 @@ cdef str format_fasta(seq):
 
     Returns
     -------
-    TYPE
-        DESCRIPTION.
+    str
+        Returns seq as string after formatting.
 
     """ 
     cdef int width=62
@@ -355,6 +449,9 @@ cdef str format_fasta(seq):
 
 
 cdef list orfs_to_seq(list orfs_struct_list, str seq, str seq_rc, str seq_name, int seqlen, bint include_stop,out_types,dict table):
+    """
+    extract seqs from list of ORFs
+    """
     cdef ORF orf
     cdef int ostart
     cdef int oend
@@ -443,6 +540,9 @@ cdef list orfs_to_seq(list orfs_struct_list, str seq, str seq_rc, str seq_name, 
 
 #compile results in bed
 cdef str orfs_to_bed(list orfs_struct_list,str seq,str seq_rc,str seq_name, int seqlen, bint include_stop):
+    """
+    create bed file results fro list of ORF objects
+    """
     cdef ORF orf
     cdef int ostart
     cdef int oend
@@ -509,6 +609,9 @@ cdef str orfs_to_bed(list orfs_struct_list,str seq,str seq_rc,str seq_name, int 
 
 #compile results in bed12
 cdef str orfs_to_bed12(list orfs_struct_list,str seq,str seq_rc, str seq_name, int seqlen, bint include_stop):
+    """
+    create bed12 result
+    """
     cdef ORF orf
     cdef int ostart
     cdef int oend
