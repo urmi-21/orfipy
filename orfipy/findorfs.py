@@ -14,9 +14,9 @@ import gc
 #import pyximport; pyximport.install()
 import orfipy_core as oc
 #from pyfaidx import Fasta
-import pyfastx
 import subprocess
 import orfipy.utils as ut
+from orfipy.fasta_loader import FastxWrapper
 
 
   
@@ -141,11 +141,10 @@ def start_multiprocs(seqs,
     cummulative_read_bytes=0
     
     #process sequences in fasta file
-    for s in list(seqs.keys()):
-        
+    #seqs is FastaWrapper object
+    for s in seqs.keys:
         thisname=s
-        thisseq=str(seqs[s])
-        print('SEQXXX',thisseq)
+        thisseq=seqs.get_seq(s)
         #ignore if seq is < minlen
         if len(thisseq)<minlen:
             continue
@@ -153,8 +152,7 @@ def start_multiprocs(seqs,
         this_read=len(thisseq.encode('utf-8'))
         thisseq_rc=None
         if strand == 'b' or strand =='r':
-            #thisseq_rc=seqs[s][:].complement.reverse.seq
-            thisseq_rc=seqs[s][:].antisense
+            thisseq_rc=seqs.get_seq(s,rc=True)
             #add bytes read of rev_com seq
             this_read=this_read*2
         
@@ -223,37 +221,7 @@ def start_multiprocs(seqs,
     
 
 def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,partial3,partial5,bw_stops,file_streams,tmp):
-    """
-    Perform sequential processing
-
-    Parameters
-    ----------
-    infasta : TYPE
-        DESCRIPTION.
-    procs : TYPE
-        DESCRIPTION.
-    strand : TYPE
-        DESCRIPTION.
-    starts : TYPE
-        DESCRIPTION.
-    stops : TYPE
-        DESCRIPTION.
-    bed12 : TYPE
-        DESCRIPTION.
-    bed : TYPE
-        DESCRIPTION.
-    dna : TYPE
-        DESCRIPTION.
-    rna : TYPE
-        DESCRIPTION.
-    pep : TYPE
-        DESCRIPTION.
-
-    Returns
-    -------
-    None.
-
-    """
+   
     print('orfipy single-mode',file=sys.stderr)
     #outputs
     outputs=[]
@@ -263,15 +231,15 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,part
         else:
             outputs.append(False)
     #results=[]
-    for s in list(seqs.keys()):
+    for s in seqs.keys:
         thisname=s
-        thisseq=str(seqs[s])
+        thisseq=seqs.get_seq(s)
         #ignore if seq is < minlen
         if len(thisseq)<minlen:
             continue
         thisseq_rc=None
         if strand == 'b' or strand =='r':
-            thisseq_rc=seqs[s][:].antisense
+            thisseq_rc=seqs.get_seq(s,rc=True)
         
         res=oc.start_search(thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops,table, include_stop, partial3, partial5, bw_stops,outputs)
         
@@ -401,6 +369,7 @@ def group_by_frame_length(bed,bed12,longest,byframe):
 ##########main################
 #TODO: handle longest and byframe opts
 def main(infasta,
+         ftype,
          minlen,
          maxlen,
          procs,
@@ -423,55 +392,7 @@ def main(infasta,
          pep,
          outdir,logr):
     
-    """
     
-
-    Parameters
-    ----------
-    infasta : string
-        input path to input fasta file
-    minlen : TYPE
-        DESCRIPTION.
-    maxlen : TYPE
-        DESCRIPTION.
-    procs : TYPE
-        DESCRIPTION.
-    single_mode : TYPE
-        DESCRIPTION.
-    chunk_size : TYPE
-        DESCRIPTION.
-    strand : TYPE
-        DESCRIPTION.
-    starts : TYPE
-        DESCRIPTION.
-    stops : TYPE
-        DESCRIPTION.
-    nested : TYPE
-        DESCRIPTION.
-    partial3 : TYPE
-        DESCRIPTION.
-    partial5 : TYPE
-        DESCRIPTION.
-    byframe : TYPE
-        DESCRIPTION.
-    bed12 : TYPE
-        DESCRIPTION.
-    bed : TYPE
-        DESCRIPTION.
-    dna : TYPE
-        DESCRIPTION.
-    rna : TYPE
-        DESCRIPTION.
-    pep : TYPE
-        DESCRIPTION.
-    outdir : TYPE
-        DESCRIPTION.
-
-    Returns
-    -------
-    None.
-
-    """
     ##start time
     start = time.time()
     
@@ -481,14 +402,25 @@ def main(infasta,
     #read fasta file
     #seqs = Fasta(infasta)
     #replace with fastx
+    
     #if file is fasta
-    if infasta.endswith('.fastq'):
-        print('Input is fastq')
-        seqs=pyfastx.Fastq(infasta)
-    elif infasta.endswith('.fasta') or infasta.endswith('.fa'):        
-        seqs=pyfastx.Fasta(infasta)
+    fw=None
+    if ftype=='a':
+        fw=FastxWrapper(infasta,'fasta')
+    elif ftype=='q':
+        fw=FastxWrapper(infasta,'fastq')
+    else:
+        ut.print_error('Unknown input type {}'.format(ftype))
+            
+    #if infasta.endswith('.fastq'):
+    #    print('Input is fastq')
+    #    seqs=pyfastx.Fastq(infasta)
+    #elif infasta.endswith('.fasta') or infasta.endswith('.fa'):        
+    #    seqs=pyfastx.Fasta(infasta)
 
     #if file is fastq
+    #seqs=fw.get_fastx_object()
+    seqs=fw
     
     
     if single_mode:
@@ -539,9 +471,9 @@ def main(infasta,
            bed12file=os.path.join(outdir,bed12)
         group_by_frame_length(bedfile,bed12file,longest,byframe)
         
-    #print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration),file=sys.stderr)
-    ut.print_success("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration))
-    logr.info("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys()),duration))
+    #print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration),file=sys.stderr)
+    ut.print_success("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration))
+    logr.info("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration))
     logr.info("END")
 
 

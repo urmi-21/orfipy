@@ -84,7 +84,7 @@ def get_logger(outdir):
     ut.print_notification("Logs will be saved to: {}".format(logfile))
     return logger
     
-def get_command_for_log(infasta,
+def get_command_for_log(infasta,intype,
          minlen,
          maxlen,
          procs,
@@ -106,7 +106,7 @@ def get_command_for_log(infasta,
          rna,
          pep,
          outdir):
-    cmd="orfipy "+infasta+" --min "+ str(minlen)+" --max "+str(maxlen)+" --procs "+str(procs)
+    cmd="orfipy "+infasta+" --intype "+str(intype)+" --min "+ str(minlen)+" --max "+str(maxlen)+" --procs "+str(procs)
     if single_mode:
         cmd+=" --single-mode"
     cmd+=" --chunk-size "+str(chunk_size)+" --strand "+strand+ " --start "+','.join(starts)+" --stop "+",".join(stops)+" --table "+str(table)
@@ -145,6 +145,8 @@ def main():
     By default orfipy reports ORFs as sequences between start and stop codons. See ORF searching options to change this behaviour.
     If no output type, i.e. dna, rna, pep, bed or bed12, is specified, default output is bed format to stdout.
     """)
+    
+    parser.add_argument("--intype", help="Input file type [Fast(a), Fast(q), (e)xtension-based]. Example: to specify Fastq format use, '--intype q'. \nDefault: Detemined by file extension. If no extension is provided Fasta is assumed.",default='e',choices=['a', 'q','e'])
     parser.add_argument("--procs", help="Num processes\nDefault:mp.cpu_count()")
     parser.add_argument("--single-mode", help="Run in single mode i.e. no parallel processing (SLOWER). If supplied with procs, this is ignored. \nDefault: False", dest='single', action='store_true',default=False)
 
@@ -280,6 +282,17 @@ def main():
             print('Please specify the bed output option if providing --longest or --byframe')
             sys.exit(1)
     
+    #determine file intype
+    intype=args.intype
+    if intype=='e':
+        ext=infile.split('.')[-1]
+        if ext.lower() =='gz':
+            ext=infile.split('.')[-2]
+        if ext.lower() =='fastq' or ext.lower() =='fq':
+            intype='q'
+        else:
+            intype='a'
+            
     
     ###Estimate procs and chunk
     if not procs:
@@ -299,6 +312,10 @@ def main():
     #check py < 3.8; if yes max chunk size can be 2000 otherwise error is reported
     if sys.version_info[1] < 8 and chunk_size > 2000:
         chunk_size = 1900
+        
+    
+    
+    
                 
     #print("Setting chunk size {} MB. Procs {}".format(chunk_size,procs),file=sys.stderr)
     ut.print_message("Setting chunk size {} MB. Procs {}".format(chunk_size,procs))
@@ -309,7 +326,7 @@ def main():
     logr.info("START LOG")
     logr.info("Python info: {}".format(sys.version))
     logr.info("orfipy version: "+ver)          
-    logr.info(get_command_for_log(infile,
+    logr.info(get_command_for_log(infile,args.intype,
                          minlen,
                          maxlen,
                          procs,
@@ -335,7 +352,7 @@ def main():
     
     #print(args)
     #call main program    
-    orfipy.findorfs.main(infile,
+    orfipy.findorfs.main(infile,intype,
                          minlen,
                          maxlen,
                          procs,

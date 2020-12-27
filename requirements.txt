@@ -1,6 +1,6 @@
 cython
 psutil
-pyfaidx
+pyfastx
 biopython
 pyahocorasick
 colorama
