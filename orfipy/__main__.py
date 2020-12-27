@@ -165,7 +165,7 @@ def main():
     If no output type, i.e. dna, rna, pep, bed or bed12, is specified, default output is bed format to stdout.
     """)
     
-    parser.add_argument("--procs", help="Num processes\nDefault:mp.cpu_count()")
+    parser.add_argument("--procs", help="Num processor cores to use\nDefault:mp.cpu_count()")
     parser.add_argument("--single-mode", help="Run in single mode i.e. no parallel processing (SLOWER). If supplied with procs, this is ignored. \nDefault: False", dest='single', action='store_true',default=False)
 
     parser.add_argument("--table", help="The codon table number to use or path to .json file with codon table.\nUse --show-tables to see available tables compiled from: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=cgencodes\nDefault: 1",default="1")
