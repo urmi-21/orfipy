@@ -210,9 +210,7 @@ def start_multiprocs(seqs,
             #process seqs that were added to poolargs
             
             
-            
             # find ORFs in currently read data
-            
             #if num seq in chunk size are less --> larger seqs; call star_map
             if len(poolargs) < procs-2:
                 #results are written to temp files by each worker
@@ -664,7 +662,6 @@ def main(infasta,
         seqs=FastxWrapper(infasta,'fastq')
     else:
         ut.print_error('Unknown input type {}'.format(ftype))
-    
     
     if single_mode:
         
