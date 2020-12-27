@@ -355,14 +355,14 @@ def group_by_frame_length(bed,bed12,longest,byframe):
 
     Parameters
     ----------
-    bed : TYPE
-        DESCRIPTION.
-    bed12 : TYPE
-        DESCRIPTION.
-    longest : TYPE
-        DESCRIPTION.
-    byframe : TYPE
-        DESCRIPTION.
+    bed : str
+        path to bed file.
+    bed12 : str
+        path to bed12.
+    longest : bool
+        report longest ORF per seq.
+    byframe : bool
+        report ORFs by frame.
 
     Returns
     -------
