@@ -18,6 +18,10 @@ install:
   - make
   - cd ..
   - export PATH=$PATH:$PWD/EMBOSS-6.6.0/emboss
+  #install ORFm
+  - wget https://github.com/wwood/OrfM/releases/download/v0.7.1/orfm-0.7.1_Linux_x86_64.tar.gz -O /tmp/orfm.tar.gz
+  - tar -xvzf /tmp/orfm.tar.gz
+  - export PATH=$PATH:$PWD/orfm-0.7.1_Linux_x86_64
   
   
 # command to run tests
@@ -47,6 +51,16 @@ script:
   - python scripts/compare_fasta_files.py ecp3.fa ofout/p3
   - python scripts/compare_fasta_files.py ec.fa ofout/d
   - python scripts/compare_fasta_files.py ecp.fa ofout/p
+  #test fq
+  - orfipy --single --between-stops --min 36 --outdir fqout --dna d --pep p tests/testseq/sample.fq
+  - orfm -m 36 -t orfm_dna tests/testseq/sample.fq > orfm_pep
+  - python scripts/compare_fasta_files.py orfm_dna fqout/d
+  - python scripts/compare_fasta_files.py orfm_pep fqout/p
+  #test fq.gzip
+  - gzip tests/testseq/sample.fq
+  - orfipy --single --between-stops --min 36 --outdir fqoutgz --dna d --pep p tests/testseq/sample.fq.gz
+  - python scripts/compare_fasta_files.py orfm_dna fqoutgz/d
+  - python scripts/compare_fasta_files.py orfm_pep fqoutgz/pep
 
   #see logs
   - cat ofout/*.log
