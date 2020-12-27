@@ -404,23 +404,13 @@ def main(infasta,
     #replace with fastx
     
     #if file is fasta
-    fw=None
+    seqs=None
     if ftype=='a':
-        fw=FastxWrapper(infasta,'fasta')
+        seqs=FastxWrapper(infasta,'fasta')
     elif ftype=='q':
-        fw=FastxWrapper(infasta,'fastq')
+        seqs=FastxWrapper(infasta,'fastq')
     else:
         ut.print_error('Unknown input type {}'.format(ftype))
-            
-    #if infasta.endswith('.fastq'):
-    #    print('Input is fastq')
-    #    seqs=pyfastx.Fastq(infasta)
-    #elif infasta.endswith('.fasta') or infasta.endswith('.fa'):        
-    #    seqs=pyfastx.Fasta(infasta)
-
-    #if file is fastq
-    #seqs=fw.get_fastx_object()
-    seqs=fw
     
     
     if single_mode:
