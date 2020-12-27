@@ -576,7 +576,6 @@ def group_by_frame_length(bed,bed12,longest,byframe):
     
 ##########main################
 def main(infasta,
-         ftype,
          minlen,
          maxlen,
          procs,
@@ -606,8 +605,6 @@ def main(infasta,
     ----------
     infasta : str
         The input file.
-    ftype : char
-        input type fasta of fastq. a--> fasta adn 1-->fastq.
     minlen : int
         Min len of ORFs
     maxlen : int
@@ -666,21 +663,9 @@ def main(infasta,
     file_streams=init_result_files((bed12, bed, dna, rna, pep),tmp=outdir)    
     
     
-    #read fasta file
-    #seqs = Fasta(infasta)
-    #replace with fastx
+    #read fasta/fastq file  
+    seqs=pyfastx.Fastx(infasta)
     
-    #if file is fasta
-    #seqs=None
-    if ftype=='a':
-        #seqs=FastxWrapper(infasta,'fasta')
-        seqs=pyfastx.Fasta(infasta, build_index=False)
-    elif ftype=='q':
-        #seqs=FastxWrapper(infasta,'fastq')
-        seqs=pyfastx.Fastq(infasta, build_index=False)
-    else:
-        ut.print_error('Unknown input type {}'.format(ftype))
-   
     if single_mode:
         
         worker_single(seqs,

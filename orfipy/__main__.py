@@ -100,7 +100,7 @@ def get_logger(outdir):
     ut.print_notification("Logs will be saved to: {}".format(logfile))
     return logger
     
-def get_command_for_log(infasta,intype,
+def get_command_for_log(infasta,
          minlen,
          maxlen,
          procs,
@@ -125,7 +125,7 @@ def get_command_for_log(infasta,intype,
     """
     return command as string for log
     """
-    cmd="orfipy "+infasta+" --intype "+str(intype)+" --min "+ str(minlen)+" --max "+str(maxlen)+" --procs "+str(procs)
+    cmd="orfipy "+infasta+" --min "+ str(minlen)+" --max "+str(maxlen)+" --procs "+str(procs)
     if single_mode:
         cmd+=" --single-mode"
     cmd+=" --chunk-size "+str(chunk_size)+" --strand "+strand+ " --start "+','.join(starts)+" --stop "+",".join(stops)+" --table "+str(table)
@@ -165,7 +165,6 @@ def main():
     If no output type, i.e. dna, rna, pep, bed or bed12, is specified, default output is bed format to stdout.
     """)
     
-    parser.add_argument("--intype", help="Input file type [Fast(a), Fast(q), (e)xtension-based]. Example: to specify Fastq format use, '--intype q'. \nDefault: Detemined by file extension. If no extension is provided Fasta is assumed.",default='e',choices=['a', 'q','e'])
     parser.add_argument("--procs", help="Num processes\nDefault:mp.cpu_count()")
     parser.add_argument("--single-mode", help="Run in single mode i.e. no parallel processing (SLOWER). If supplied with procs, this is ignored. \nDefault: False", dest='single', action='store_true',default=False)
 
@@ -206,7 +205,7 @@ def main():
     parser.add_argument("--version", help="Print version information and exit",default=False,dest='versioninfo', action='store_true')
     
     
-    parser.add_argument('infile', help='The input file, in Fasta format, containing Nucletide sequences',action="store",nargs="?")
+    parser.add_argument('infile', help='The input file, in plain Fasta/Fastq or gzipped format, containing Nucletide sequences',action="store",nargs="?")
     
     
     args = parser.parse_args()
@@ -300,17 +299,6 @@ def main():
         if not bed:
             print('Please specify the bed output option if providing --longest or --byframe')
             sys.exit(1)
-    
-    #determine file intype
-    intype=args.intype
-    if intype=='e':
-        ext=infile.split('.')[-1]
-        if ext.lower() =='gz':
-            ext=infile.split('.')[-2]
-        if ext.lower() =='fastq' or ext.lower() =='fq':
-            intype='q'
-        else:
-            intype='a'
             
     
     ###Estimate procs and chunk
@@ -345,7 +333,7 @@ def main():
     logr.info("START LOG")
     logr.info("Python info: {}".format(sys.version))
     logr.info("orfipy version: "+ver)          
-    logr.info(get_command_for_log(infile,args.intype,
+    logr.info(get_command_for_log(infile,
                          minlen,
                          maxlen,
                          procs,
@@ -371,7 +359,7 @@ def main():
     
     #print(args)
     #call main program    
-    orfipy.findorfs.main(infile,intype,
+    orfipy.findorfs.main(infile,
                          minlen,
                          maxlen,
                          procs,
