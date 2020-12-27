@@ -17,7 +17,7 @@ import subprocess
 import orfipy.utils as ut
 import pyfastx
 
-
+_total_seqs=0
 #rev comp
 orig = "ACTG"
 comp = "TGAC"
@@ -191,6 +191,8 @@ def start_multiprocs(seqs,
     #seqs is FastaWrapper object
     #for s in seqs.keys:
     for name, seq, *rest in seqs:
+        global _total_seqs
+        _total_seqs+=1
         #print(name, seq)
         thisname=name
         thisseq=seq
@@ -315,6 +317,8 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,part
             outputs.append(False)
     #results=[]
     for name, seq, *rest in seqs:
+        global _total_seqs
+        _total_seqs+=1
         #print(name, seq)
         thisname=name
         thisseq=seq
@@ -726,8 +730,8 @@ def main(infasta,
         group_by_frame_length(bedfile,bed12file,longest,byframe)
         
     #print("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration),file=sys.stderr)
-    #ut.print_success("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration))
-    #logr.info("Processed {0:d} sequences in {1:.2f} seconds".format(len(seqs.keys),duration))
+    ut.print_success("Processed {0:d} sequences in {1:.2f} seconds".format(_total_seqs,duration))
+    logr.info("Processed {0:d} sequences in {1:.2f} seconds".format(_total_seqs,duration))
     logr.info("END")
 
 
