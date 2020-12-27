@@ -17,7 +17,7 @@ import subprocess
 import orfipy.utils as ut
 import pyfastx
 
-_total_seqs=0
+_total_seqs=0 #track total processed seqs
 #rev comp
 orig = "ACTG"
 comp = "TGAC"
