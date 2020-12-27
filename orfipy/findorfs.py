@@ -159,7 +159,6 @@ def start_multiprocs(seqs,
         #add read bytes to total_read_bytes
         total_read_bytes+=this_read
         cummulative_read_bytes+=this_read
-        #print(s,total_read_bytes,this_read)
         
         #add to poolargs; if limit is reached this will be reset
         poolargs.append([thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, table, include_stop, partial3, partial5, bw_stops, outputs,tmpdir])
@@ -175,12 +174,10 @@ def start_multiprocs(seqs,
             
             #if num seq in chunk size are less --> larger seqs; call star_map
             if len(poolargs) < procs-2:
-                #print('starting map')
                 #results are written to temp files by each worker
                 start_map(poolargs,procs)
             else:            
                 #call imap unorderd for multiple smaller seqs
-                #print('starting Imap')
                 results=start_imap_unordered(poolargs, procs)
                 #collect and write these results
                 write_results_multiple(results,file_streams)
@@ -197,7 +194,6 @@ def start_multiprocs(seqs,
             
         
     #after loop poolargs contains seq; process these 
-    #print('executing outer',len(poolargs))
     if len(poolargs) > 0:
         print('Processing {0:d} bytes'.format(cummulative_read_bytes), end="\r", flush=True,file=sys.stderr)
         if len(poolargs) < procs-2:
@@ -354,6 +350,25 @@ def group_bed_frame(bedfile):
     
     
 def group_by_frame_length(bed,bed12,longest,byframe):
+    """
+    
+
+    Parameters
+    ----------
+    bed : TYPE
+        DESCRIPTION.
+    bed12 : TYPE
+        DESCRIPTION.
+    longest : TYPE
+        DESCRIPTION.
+    byframe : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
     if longest:
         filter_bed_longest(bed)
     if byframe:
@@ -367,7 +382,6 @@ def group_by_frame_length(bed,bed12,longest,byframe):
 
     
 ##########main################
-#TODO: handle longest and byframe opts
 def main(infasta,
          ftype,
          minlen,
@@ -390,7 +404,67 @@ def main(infasta,
          dna,
          rna,
          pep,
-         outdir,logr):
+         outdir,
+         logr):
+    """
+    
+
+    Parameters
+    ----------
+    infasta : str
+        The input file.
+    ftype : char
+        input type fasta of fastq. a--> fasta adn 1-->fastq.
+    minlen : int
+        Min len of ORFs
+    maxlen : int
+        Max len of ORFs
+    procs : int
+        Threads to use
+    single_mode : bool
+        Use single thread
+    chunk_size : float
+        Chunk size in MB
+    strand : char
+        Strand to fint ORF. b--> both f--> fwd r --> reverse
+    starts : List
+        Start codons to search ORF
+    stops : List
+        Stop codons to search ORF
+    table : dict
+        Transclation table.
+    include_stop : bool
+        Include stop codon in ORF coordinate and sequence.
+    partial3 : bool
+        Report ORFs without stop codon.
+    partial5 : bool
+        Report ORFs without start codon.
+    bw_stops : bool
+        Find ORFs defined by between start and Stop.
+    longest : bool
+        Report longest ORFs in each sequence.
+    byframe : bool
+        Report ORFs by frames.
+    bed12 : bool
+        Output ORFs to bed12.
+    bed : bool
+        Output ORFs to bed.
+    dna : bool
+        Output ORFs as nucleotide .fasta.
+    rna : bool
+        Output ORFs as rna .fasta.
+    pep : bool
+        Output ORFs as peptide .fasta..
+    outdir : str
+        Output directory.
+    logr : logger
+        logging object to log mesages.
+
+    Returns
+    -------
+    None.
+
+    """
     
     
     ##start time
