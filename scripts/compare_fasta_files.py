@@ -18,11 +18,10 @@ inseqs=[]
 i=0
 failed=False
 for f in sys.argv[1:]:
-    seqs=pyfastx.Fasta(f)
-    newlist=[]
-    inseqs.append(newlist)
-    for k in list(seqs.keys()):
-        inseqs[i].append(str(seqs[k]))
+    inseqs.append([])
+    seqs=pyfastx.Fastx(f)
+    for name, seq, *rest in seqs:
+        inseqs[i].append(seq)
     i+=1
 
 #compare length
