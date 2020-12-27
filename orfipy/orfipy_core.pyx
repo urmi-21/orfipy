@@ -362,9 +362,9 @@ cpdef list find_between_stops_v(list stop_positions):
     return result
     
 cpdef list find_between_start_stop_v(start_positions,  list stop_positions):
-     """
+    """
     Find ORFs defined as between start and stops from a list of start and stop coordinates
-    
+
     returns a list of tuples. each tuple is (upstream_stop,current_stop,otype)
     upstream_stop: position of start codon
     current_stop: stop position in the ORF
