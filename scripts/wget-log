@@ -1,0 +1,15 @@
+--2020-12-27 15:13:34--  ftp://ftp.ensemblgenomes.org/pub/plants/release-48/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz
+           => ‘../testdata/bmdata/at.gz’
+Resolving ftp.ensemblgenomes.org (ftp.ensemblgenomes.org)... 193.62.193.141
+Connecting to ftp.ensemblgenomes.org (ftp.ensemblgenomes.org)|193.62.193.141|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /pub/plants/release-48/fasta/arabidopsis_thaliana/dna ... done.
+==> SIZE Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz ... 36462703
+==> PASV ... done.    ==> RETR Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz ... done.
+Length: 36462703 (35M) (unauthoritative)
+
+Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz        88%[=======================================================================================================>              ]  30.76M   249 B/s    eta 50m 29sArabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz        94%[==============================================================================================================>       ]  32.79M   329 B/s    eta 50m 29sArabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz       100%[=====================================================================================================================>]  34.77M   413 B/s    in 6h 27m  
+
+2020-12-27 21:40:55 (1.53 KB/s) - ‘../testdata/bmdata/at.gz’ saved [36462703]
+

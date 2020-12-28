@@ -10,7 +10,12 @@ from operator import itemgetter
 import ahocorasick
 import itertools
 
-
+orig = "ACTG"
+comp = "TGAC"
+transtab = str.maketrans(orig, comp)
+cpdef revcomp(seq):
+        return seq.translate(transtab)[::-1]
+    
 #struct for ORF
 cdef struct ORF:
     int start_index
@@ -18,6 +23,30 @@ cdef struct ORF:
     int framenum 
     int orf_type
     int length
+    
+    
+cpdef orfs(seq,name='Seq',minlen=0,maxlen=1000000,strand='b',starts=['TTG','CTG','ATG'],stops=['TAA','TAG','TGA'],include_stop=False,partial3=False,partial5=False,between_stops=False):
+    """
+    API to use orfipy in python
+    returns a list of  tuple (orf start (0 based), stop (1 based), strand, description)
+    the ORF sequence can be obtained by slicing seq[start:stop] or to include stop codon seq[start:stop+3]
+    
+    Example
+    ---------
+    >>> import orfipy_core as oc
+    >>> orfs=oc.orfs('ATGGGGGTAGACATTCAGATGAATATATATTAGATGTTTTTTTAG')
+
+    """
+    seq_rc=revcomp(seq)
+    result=start_search(seq,seq_rc,name,minlen,maxlen,strand,starts,stops,None,include_stop,partial3,partial5,between_stops,[False,True,False,False,False])
+    bed=result[1].split('\n')
+    final_result=[]
+    for l in bed:
+        temp=l.split('\t')
+        thisorf=(int(temp[1]),int(temp[2]),temp[5],temp[3])
+        final_result.append(thisorf)
+    
+    return final_result
         
 
 cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,include_stop,partial3,partial5,find_between_stops,out_opts):
@@ -53,7 +82,7 @@ cpdef start_search(seq,seq_rc,seqname,minlen,maxlen,strand,starts,stops,table,in
     find_between_stops : bool
         Find ORFs defined as between stops.
     out_opts : list
-        List of file objects to output. These are in following order
+        List of boolean values indicating type of output required. These are in following order
         bed12=out_opts[0]
         bed=out_opts[1]
         dna=out_opts[2]
