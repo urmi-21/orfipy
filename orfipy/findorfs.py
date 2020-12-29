@@ -132,8 +132,8 @@ def start_multiprocs(seqs,
 
     Parameters
     ----------
-    seqs : FastxWrapper object
-        A FastxWrapper object.
+    seqs : Fastx object
+        A Fastx object.
     minlen : int
         min len of ORFs.
     maxlen : int
@@ -274,8 +274,8 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,part
 
     Parameters
     ----------
-    seqs : FastxWrapper object
-        A FastxWrapper object.
+    seqs : Fastx object
+        A Fastx object.
     minlen : int
         min len of ORFs.
     maxlen : int
