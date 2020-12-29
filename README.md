@@ -47,7 +47,7 @@ orfipy -h
 ```
 
 ### Input
-`orfipy` currently supports sequences in only Fasta format. If you want to directly work with compressed Fasta files, compression format must be [bgzip](http://www.htslib.org/doc/bgzip.html). To use Fastq files, you will need to first [convert them to Fasta](https://bioinformaticsworkbook.org/dataWrangling/fastaq-manipulations/converting-fastq-format-to-fasta.html#gsc.tab=0).
+`orfipy` supports sequences in only Fasta/Fastq format (orfipy uses [pyfastx](https://github.com/lmdu/pyfastx)). Input files can be in .gz format.
 
 **Extract ORF sequences and write ORF sequences in orfs.fa file**
 
@@ -58,7 +58,7 @@ orfipy input.fasta --dna orfs.fa --min 10 --max 10000 --procs 4 --table 1 --outd
 **Use [standard codon table](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?chapter=cgencodes)  but use only ATG as start codon**
 
 ```
-orfipy input.fasta --dna orfs.fa --start ATG
+orfipy input.fa.gz --dna orfs.fa --start ATG
 ```
 **Note:** Users can also provide their own translation table, as a .json file, to `orfipy` using `--table` option. Example of json file containing a valid translation table is [here](https://github.com/urmi-21/orfipy/blob/master/scripts/example_user_table.json)
 
@@ -87,6 +87,33 @@ orfipy testseq.fa --min 100 --bed12 of.bed --partial-5 --partial-3 --include-sto
 ```
 orfipy input.fasta --pep orfs_peptides.fa --min 50 --procs 4
 ```
+
+### API
+
+Users can directly import the ORF search algorithm, written in cython, in their python ecosystem.
+
+```
+>>> import orfipy_core 
+>>> seq='ATGCATGACTAGCATCAGCATCAGCAT'
+>>> for start,stop,strand,description in orfipy_core.orfs(seq,minlen=3,maxlen=1000):
+...     print(start,stop,strand,description)
+... 
+0 9 + ID=Seq_ORF.1;ORF_type=complete;ORF_len=9;ORF_frame=1;Start:ATG;Stop:TAG
+
+```
+`orfipy_core.orfs` function can take following arguments
+
+- seq: Required input sequence (str)
+- name ['Seq'] Name (str)
+- minlen [0] min length (int)
+- maxlen [1000000] max length (int)
+- strand ['b'] Strand to use, (b)oth, (f)wd or (r)ev (char)
+- starts [['TTG','CTG','ATG']] Start codons to use (list)
+- stops=['TAA','TAG','TGA'] Stop codons to use (list)
+- include_stop [False] Include stop codon in ORF (bool)
+- partial3 [False] Report ORFs without a stop (bool)
+- partial5 [False] Report ORFs without a start (bool)
+- between_stops [False] Report ORFs defined as between stops (bool)
 
 
 
