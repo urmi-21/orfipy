@@ -1,0 +1,17 @@
+Tool	Data	Environment	Walltime(sec.)
+orfipy_bed	Fastq (1.5 GB)	PC	59.02
+orfipy_fa	Fastq (1.5 GB)	PC	79.48
+orfm_fa	Fastq (1.5 GB)	PC	17.08
+orfm_pep	Fastq (1.5 GB)	PC	9.54
+orfipy_bed	Fastq (1.5 GB)	HPC	41.88
+orfipy_fa	Fastq (1.5 GB)	HPC	47.36
+orfm_fa	Fastq (1.5 GB)	HPC	24.21
+orfm_pep	Fastq (1.5 GB)	HPC	13.76
+orfipy_bed	Fastq.gz (305 MB)	PC	62.43
+orfipy_fa	Fastq.gz (305 MB)	PC	84.66
+orfm_fa	Fastq.gz (305 MB)	PC	19.51
+orfm_pep	Fastq.gz (305 MB)	PC	13.63
+orfipy_bed	Fastq.gz (305 MB)	HPC	46.79
+orfipy_fa	Fastq.gz (305 MB)	HPC	49.68
+orfm_fa	Fastq.gz (305 MB)	HPC	28.83
+orfm_pep	Fastq.gz (305 MB)	HPC	18.68

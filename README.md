@@ -47,7 +47,7 @@ orfipy -h
 ```
 
 ### Input
-`orfipy` supports sequences in only Fasta/Fastq format (orfipy uses [pyfastx](https://github.com/lmdu/pyfastx)). Input files can be in .gz format.
+`orfipy`, version 0.0.3 and above, supports sequences in Fasta/Fastq format (orfipy uses [pyfastx](https://github.com/lmdu/pyfastx)). Input files can be in .gz format.
 
 **Extract ORF sequences and write ORF sequences in orfs.fa file**
 
