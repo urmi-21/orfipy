@@ -225,7 +225,7 @@ def start_multiprocs(seqs,
             
             # find ORFs in currently read data
             #if num seq in chunk size are less --> larger seqs; call star_map
-            if len(poolargs) < procs-2:
+            if len(poolargs) < procs-2 or procs < 2:
                 #results are written to temp files by each worker
                 start_map(poolargs,procs)
             else:            
