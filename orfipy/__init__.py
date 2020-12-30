@@ -14,7 +14,6 @@ _max_procs=int(multiprocessing.cpu_count())
 #total system memory in MB
 mem_values=psutil.virtual_memory()
 _max_mem=mem_values.total >> 20
-#print('XXXX',_max_mem,_max_procs)
 
 """
 A long seq is ~ 150-200 MB (around chr1 on human)
