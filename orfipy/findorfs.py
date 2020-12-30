@@ -16,8 +16,8 @@ import orfipy_core as oc
 import subprocess
 import orfipy.utils as ut
 import pyfastx
-from orfipy import _long_limit
 from orfipy import _long_seq_bytes
+from orfipy import _long_limit
 
 
 _total_seqs=0 #track total processed seqs
@@ -189,6 +189,8 @@ def start_multiprocs(seqs,
     total_read_bytes=0
     #all read bytes
     cummulative_read_bytes=0
+    long_seqs=False
+    process_long=False
     
     #process sequences in fasta file
     #seqs is FastaWrapper object
@@ -221,12 +223,19 @@ def start_multiprocs(seqs,
         poolargs.append([thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, table, include_stop, partial3, partial5, bw_stops, outputs,tmpdir])
         
         """
+        If a long sequence is read e.g. chromosome
+        """
+        if this_read >= _long_seq_bytes: 
+            long_seqs=True
+            #if more than _long_limit long seqs are read, process them
+            if len(poolargs)>=_long_limit:
+                process_long=True
+        
+        """
         if total_read_bytes is more than memory limit, perform search
         or identify if the sequences are very large
         """
-        long_seqs=total_read_bytes>_long_seq_bytes and len(poolargs) <= _long_limit
-        if long_seqs: print('TOTAL BYTES',total_read_bytes,len(poolargs))
-        if total_read_bytes+1000000 >= _MEMLIMIT or long_seqs:
+        if total_read_bytes+1000000 >= _MEMLIMIT or process_long:
             print('Processing {0:d} bytes'.format(cummulative_read_bytes), end="\r", flush=True,file=sys.stderr)
             #process seqs that were added to poolargs
             
@@ -236,7 +245,7 @@ def start_multiprocs(seqs,
             start_map does serial process and is slow so that will limit memory usage for large sequences.
             For smaller seqs (requires less memory) start_imap_unordered does parallel processing and writing to file. it is faster and
             """
-            if len(poolargs) < procs-2 or long_seqs:
+            if long_seqs:
                 #results are written to temp files by each worker
                 start_map(poolargs,procs)
             else:            
@@ -244,8 +253,7 @@ def start_multiprocs(seqs,
                 results=start_imap_unordered(poolargs, procs)
                 #collect and write these results
                 write_results_multiple(results,file_streams)
-                
-            
+                            
             #perform GC
             #del results_inner
             del poolargs
@@ -254,13 +262,14 @@ def start_multiprocs(seqs,
             poolargs=[]
             #reset total read bytes for next batch
             total_read_bytes=0
+            long_seqs=False
+            process_long=False
             
         
     #after loop poolargs contains seq; process these 
     if len(poolargs) > 0:
-        long_seqs=total_read_bytes>_long_seq_bytes and len(poolargs) < _long_limit
         print('Processing {0:d} bytes'.format(cummulative_read_bytes), end="\r", flush=True,file=sys.stderr)
-        if len(poolargs) < procs-2:
+        if long_seqs:
             #results are written to temp files by each worker
             start_map(poolargs,procs)
         else:            

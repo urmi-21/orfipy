@@ -17,11 +17,10 @@ _max_mem=mem_values.total >> 20
 #print('XXXX',_max_mem,_max_procs)
 
 """
-A long seq is ~ 4e8 bytes (around chr1 on human)
+A long seq is ~ 150-200 MB (around chr1 on human)
 
-roughly determine how many long seqs and their ORFs can fit in total_memory/2
+roughly determine how many long seqs and their ORFs can fit in total_memory
 """
-_long_seq_bytes=4e8
-_long_limit=max(min(int(mem_values[0]/_long_seq_bytes/30),5),1)
-
-print('LONG limit',_long_limit)
+_long_seq_bytes=min(2e8,mem_values[0]/60)
+#limit on how many long seqs to load at once; max of 3 gives best performance; more than 3 slows down
+_long_limit=min(max(int(mem_values[0]/2e8/60),1),3)
