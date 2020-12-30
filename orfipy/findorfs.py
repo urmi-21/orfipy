@@ -16,6 +16,9 @@ import orfipy_core as oc
 import subprocess
 import orfipy.utils as ut
 import pyfastx
+from orfipy import _long_limit
+from orfipy import _long_seq_bytes
+
 
 _total_seqs=0 #track total processed seqs
 #rev comp
@@ -217,15 +220,23 @@ def start_multiprocs(seqs,
         #add to poolargs; if limit is reached this will be reset
         poolargs.append([thisseq,thisseq_rc,thisname,minlen,maxlen,strand,starts,stops, table, include_stop, partial3, partial5, bw_stops, outputs,tmpdir])
         
-        #if total_read_bytes is more than memory limit
-        if total_read_bytes+1000000 >= _MEMLIMIT:
+        """
+        if total_read_bytes is more than memory limit, perform search
+        or identify if the sequences are very large
+        """
+        long_seqs=total_read_bytes>_long_seq_bytes and len(poolargs) <= _long_limit
+        if long_seqs: print('TOTAL BYTES',total_read_bytes,len(poolargs))
+        if total_read_bytes+1000000 >= _MEMLIMIT or long_seqs:
             print('Processing {0:d} bytes'.format(cummulative_read_bytes), end="\r", flush=True,file=sys.stderr)
             #process seqs that were added to poolargs
             
-            
             # find ORFs in currently read data
-            #if num seq in chunk size are less --> larger seqs; call star_map
-            if len(poolargs) < procs-2 or procs < 2:
+            """
+            if num seq in chunk size are less --> larger seqs; call star_map
+            start_map does serial process and is slow so that will limit memory usage for large sequences.
+            For smaller seqs (requires less memory) start_imap_unordered does parallel processing and writing to file. it is faster and
+            """
+            if len(poolargs) < procs-2 or long_seqs:
                 #results are written to temp files by each worker
                 start_map(poolargs,procs)
             else:            
@@ -247,13 +258,12 @@ def start_multiprocs(seqs,
         
     #after loop poolargs contains seq; process these 
     if len(poolargs) > 0:
+        long_seqs=total_read_bytes>_long_seq_bytes and len(poolargs) < _long_limit
         print('Processing {0:d} bytes'.format(cummulative_read_bytes), end="\r", flush=True,file=sys.stderr)
         if len(poolargs) < procs-2:
-            #print('starting map')
             #results are written to temp files by each worker
             start_map(poolargs,procs)
         else:            
-            #print('starting Imap')
             results=start_imap_unordered(poolargs, procs)
             #collect and write these results
             write_results_multiple(results,file_streams)

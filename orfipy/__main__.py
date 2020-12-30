@@ -14,8 +14,9 @@ import orfipy.version
 import orfipy.utils as ut
 import json
 import logging
-import psutil
-import multiprocessing
+from orfipy import _max_mem
+from orfipy import _max_procs
+
 
 
 
@@ -302,16 +303,17 @@ def main():
             
     
     ###Estimate procs and chunk
+    #total_procs=int(multiprocessing.cpu_count())
     if not procs:
-        procs=int(multiprocessing.cpu_count()*.7)+1
+        procs=int(_max_procs*.7)+1
     
     #estimate chunk_size
     if not chunk_size:
         #total mem in MB
-        total_mem_MB=psutil.virtual_memory()[0]/1000000
-        chunk_size=int(total_mem_MB/(procs*4))
+        chunk_size=int(_max_mem/(procs*4))
     else:
         chunk_size=int(chunk_size)
+    
     #limit chunk size to 1000 if sequences are extracted; this works best
     if (dna or rna or pep) and (chunk_size > 1000):
         chunk_size=1000
