@@ -303,7 +303,6 @@ def main():
             
     
     ###Estimate procs and chunk
-    #total_procs=int(multiprocessing.cpu_count())
     if not procs:
         procs=int(_max_procs*.7)+1
     
