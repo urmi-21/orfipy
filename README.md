@@ -4,7 +4,11 @@
 [![install with bioconda](https://anaconda.org/bioconda/plncpro/badges/installer/conda.svg)](https://anaconda.org/bioconda/orfipy)
 
 # Introduction
-orfipy is a tool written in python/cython to extract ORFs in extremely fast and flexible manner. Please read and cite the [preprint here](https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1).  
+orfipy is a tool written in python/cython to extract ORFs in extremely an fast and flexible manner. 
+Other popular ORF searching tools are [OrfM](https://github.com/wwood/OrfM) and [getorf](http://emboss.sourceforge.net/apps/cvs/emboss/apps/getorf.html).
+Compared to OrfM and getorf, orfipy provides the most options to fine tune ORF searches.
+orfipy uses multiple CPU cores and is particularly faster for data containing multiple smaller fasta sequences such as de-novo transcriptome assemblies.
+Please read the [preprint here](https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1).
 
 
 ## Installation
@@ -127,11 +131,9 @@ Users can directly import the ORF search algorithm, written in cython, in their 
 
 ## Funding
 
-This work is funded in part by the National Science Foundation award IOS 1546858, "Orphan Genes: An Untapped Genetic Reservoir of Novel Traits". This work used the Extreme Science and Engineering Discovery Environment (XSEDE), which is supported by National Science Foundation grant number ACI-1548562 (Bridges HPC environment through allocations TG-MCB190098 and TG-MCB200123 awarded from XSEDE and HPC Consortium).
-
-
-
-
+This work is funded in part by the National Science Foundation award IOS 1546858, "Orphan Genes: An Untapped Genetic Reservoir of Novel Traits". 
+This work used the Extreme Science and Engineering Discovery Environment (XSEDE), which is supported by National Science Foundation grant number 
+ACI-1548562 (Bridges HPC environment through allocations TG-MCB190098 and TG-MCB200123 awarded from XSEDE and HPC Consortium).
 
 
 
