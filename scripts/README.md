@@ -35,6 +35,9 @@ bash basic_benchmark.sh ../testdata/bmdata/human.fa 99 human_basic_out
 ```
 First argument is input fasta file, Second is the min orf length, Third is the out directory
 
+### Reproduce figures in the paper
+Use the file `makeplot.ipynb` in jupyter notebook to reproduce the figures in the paper.
+
 
 
 ### Scripts description
