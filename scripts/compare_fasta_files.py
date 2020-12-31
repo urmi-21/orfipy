@@ -7,6 +7,8 @@ Created on Tue Sep 29 12:38:33 2020
 
 This script takes n fasta files as input and check whether all sequences are same in all files
 This script is quick and not memory efficient; written to test small fasta files.
+Example:
+python compare_fasta_files.py file1.fa file2.fa file3.fa
 """
 import sys
 import pyfastx

@@ -27,17 +27,22 @@ minlen=sys.argv[4]
 
 testseq=sys.argv[1]
 #compare orfipy, orfm, getorf
+orfipy_cmd_b=["bash", "run_orfipy_bed.sh",testseq,outdir,minlen,N]
 orfipy_cmd=["bash", "run_orfipy.sh",testseq,outdir,minlen,N]
 orfm_cmd=["bash", "run_orfm.sh",testseq,outdir,minlen,N]
+orfm_cmd_p=["bash", "run_orfm_p.sh",testseq,outdir,minlen,N]
 getorf_cmd=["bash", "run_getorf.sh",testseq,outdir,minlen,N]
-pe.execute_command(getorf_cmd,objectid="test",command_name="getorf")
+
+pe.execute_command(orfipy_cmd_b,objectid="test",command_name="orfipy_b")
 pe.execute_command(orfipy_cmd,objectid="test",command_name="orfipy")
+pe.execute_command(orfm_cmd_p,objectid="test",command_name="orfm_p")
 pe.execute_command(orfm_cmd,objectid="test",command_name="orfm")
+pe.execute_command(getorf_cmd,objectid="test",command_name="getorf")
 
 
 ###Compare orfipy and getorf -3 option
-orfipy_cmd=["bash", "run_orfipy_3.sh",testseq,outdir,minlen,N]
-getorf_cmd=["bash", "run_getorf_3.sh",testseq,outdir,minlen,N]
-pe.execute_command(getorf_cmd,objectid="test",command_name="getorf_3")
-pe.execute_command(orfipy_cmd,objectid="test",command_name="orfipy_3")
+#orfipy_cmd=["bash", "run_orfipy_3.sh",testseq,outdir,minlen,N]
+#getorf_cmd=["bash", "run_getorf_3.sh",testseq,outdir,minlen,N]
+#pe.execute_command(getorf_cmd,objectid="test",command_name="getorf_3")
+#pe.execute_command(orfipy_cmd,objectid="test",command_name="orfipy_3")
 
