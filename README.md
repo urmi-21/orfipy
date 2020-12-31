@@ -125,9 +125,13 @@ Users can directly import the ORF search algorithm, written in cython, in their 
 
 <p>
     <img src="https://raw.githubusercontent.com/urmi-21/orfipy/master/scripts/comparison.png" alt>
-    <em>Comparison of orfipy features and performance with getorf and OrfM. For details see <a href=https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1> preprint</a> and <a href=https://github.com/urmi-21/orfipy/tree/master/supplementary_data>SI</a></em>
+    <em>Comparison of orfipy features and performance with getorf and OrfM.
+    For details see <a href=https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1> preprint</a> and <a href=https://github.com/urmi-21/orfipy/tree/master/supplementary_data>SI</a></em>
 </p>
 
+- orfipy is most flexible, particularly faster for data containing multiple smaller fasta sequences such as de-novo transcriptome assemblies or collection of microbial genomes.
+- OrfM is fast (faster for Fastq), uses less memory, but ORF search options are limited
+- getorf is slower, no Fastq support. Provides some flexibility in ORF searches.
 
 ## Funding
 
