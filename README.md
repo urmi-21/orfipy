@@ -4,7 +4,7 @@
 [![install with bioconda](https://anaconda.org/bioconda/plncpro/badges/installer/conda.svg)](https://anaconda.org/bioconda/orfipy)
 
 # Introduction
-orfipy is a tool written in python/cython to extract ORFs in extremely an fast and flexible manner. 
+orfipy is a tool written in python/cython to extract ORFs in an extremely and fast and flexible manner. 
 Other popular ORF searching tools are [OrfM](https://github.com/wwood/OrfM) and [getorf](http://emboss.sourceforge.net/apps/cvs/emboss/apps/getorf.html).
 Compared to OrfM and getorf, orfipy provides the most options to fine tune ORF searches.
 orfipy uses multiple CPU cores and is particularly faster for data containing multiple smaller fasta sequences such as de-novo transcriptome assemblies.
