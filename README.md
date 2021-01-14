@@ -131,7 +131,7 @@ Users can directly import the ORF search algorithm, written in cython, in their 
 
 - orfipy is most flexible, particularly faster for data containing multiple smaller fasta sequences such as de-novo transcriptome assemblies or collection of microbial genomes.
 - OrfM is fast (faster for Fastq), uses less memory, but ORF search options are limited
-- getorf is slower, no Fastq support. Provides some flexibility in ORF searches.
+- getorf is memory efficient but slower, no Fastq support. Provides some flexibility in ORF searches.
 
 ## Funding
 
