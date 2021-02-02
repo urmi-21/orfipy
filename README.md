@@ -20,7 +20,11 @@ pip install orfipy
 Or install via conda
 
 ```
-conda install -c bioconda orfipy
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+
+conda create -n orfipy -c bioconda orfipy
 ```
 
 ### Install the development version from source
