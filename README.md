@@ -2,13 +2,14 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/orfipy)
 ![PyPI](https://img.shields.io/pypi/v/orfipy?style=flat-square)
 [![install with bioconda](https://anaconda.org/bioconda/plncpro/badges/installer/conda.svg)](https://anaconda.org/bioconda/orfipy)
+[![publication](https://img.shields.io/badge/publication-Bioinformatics-blue)](https://doi.org/10.1093/bioinformatics/btab090)
 
 # Introduction
 orfipy is a tool written in python/cython to extract ORFs in an extremely and fast and flexible manner. 
 Other popular ORF searching tools are [OrfM](https://github.com/wwood/OrfM) and [getorf](http://emboss.sourceforge.net/apps/cvs/emboss/apps/getorf.html).
 Compared to OrfM and getorf, orfipy provides the most options to fine tune ORF searches.
 orfipy uses multiple CPU cores and is particularly faster for data containing multiple smaller fasta sequences such as de-novo transcriptome assemblies.
-Please read the [preprint here](https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1).
+Please read the [paper here](https://doi.org/10.1093/bioinformatics/btab090).
 
 
 ## Installation
@@ -43,7 +44,7 @@ pip install git+git://github.com/urmi-21/orfipy.git
 
 ## Examples
 
-Details of `orfipy` algorithm are in the <a href=https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1> preprint</a> and <a href=https://github.com/urmi-21/orfipy/tree/master/supplementary_data>SI</a></em>. Please go through the <a href=https://github.com/urmi-21/orfipy/tree/master/supplementary_data>SI</a></em> if you are interested to know differences between `orfipy` and other ORF finder tools and how to set `orfipy` parameters to match the output of other tools.
+Details of `orfipy` algorithm are in the <a href=https://doi.org/10.1093/bioinformatics/btab090> paper. Please go through the <a href=https://github.com/urmi-21/orfipy/tree/master/supplementary_data>SI</a></em> if you are interested to know differences between `orfipy` and other ORF finder tools and how to set `orfipy` parameters to match the output of other tools.
 
 Below are some usage examples for `orfipy`
 
