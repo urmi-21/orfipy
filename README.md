@@ -11,6 +11,8 @@ Compared to OrfM and getorf, orfipy provides the most options to fine tune ORF s
 orfipy uses multiple CPU cores and is particularly faster for data containing multiple smaller fasta sequences such as de-novo transcriptome assemblies.
 Please read the [paper here](https://doi.org/10.1093/bioinformatics/btab090).
 
+Please cite as: Urminder Singh, Eve Syrkin Wurtele, orfipy: a fast and flexible tool for extracting ORFs, Bioinformatics, 2021;, btab090, https://doi.org/10.1093/bioinformatics/btab090
+
 
 ## Installation
 
