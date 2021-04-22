@@ -2,7 +2,7 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/orfipy)
 [![install with bioconda](https://anaconda.org/bioconda/plncpro/badges/installer/conda.svg)](https://anaconda.org/bioconda/orfipy)
 [![install with bioconda](https://img.shields.io/conda/dn/bioconda/orfipy?label=conda%20downloads&style=flat-square)](https://anaconda.org/bioconda/orfipy)
-![PyPI](https://img.shields.io/pypi/v/orfipy?style=flat-square)
+![PyPI](https://img.shields.io/PyPI/v/orfipy?style=flat-square)
 [![Downloads](https://img.shields.io/pypi/dm/orfipy?color=orange&label=PyPI%20downloads&style=flat-square)](https://pepy.tech/project/orfipy)
 [![publication](https://img.shields.io/badge/publication-Bioinformatics-blue)](https://doi.org/10.1093/bioinformatics/btab090)
 
