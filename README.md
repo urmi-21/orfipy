@@ -1,7 +1,10 @@
 [![Build Status](https://travis-ci.org/urmi-21/orfipy.svg?branch=master)](https://travis-ci.org/urmi-21/orfipy)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/orfipy)
-![PyPI](https://img.shields.io/pypi/v/orfipy?style=flat-square)
 [![install with bioconda](https://anaconda.org/bioconda/plncpro/badges/installer/conda.svg)](https://anaconda.org/bioconda/orfipy)
+[![install with bioconda](https://img.shields.io/conda/dn/bioconda/orfipy?label=conda%20downloads&style=flat-square)](https://anaconda.org/bioconda/orfipy)
+![PyPI](https://img.shields.io/pypi/v/orfipy?style=flat-square)
+[![Downloads](https://img.shields.io/pypi/dm/orfipy?color=orange&label=PyPI%20downloads&style=flat-square)](https://pepy.tech/project/orfipy)
+
 [![publication](https://img.shields.io/badge/publication-Bioinformatics-blue)](https://doi.org/10.1093/bioinformatics/btab090)
 
 # Introduction
@@ -133,7 +136,7 @@ Users can directly import the ORF search algorithm, written in cython, in their 
 <p>
     <img src="https://raw.githubusercontent.com/urmi-21/orfipy/master/scripts/comparison.png" alt>
     <em>Comparison of orfipy features and performance with getorf and OrfM. Tools were run on different data and ORFs were output to both nucleotide and peptide Fasta files (fasta), only peptide Fasta (peptide) and BED (bed).
-    For details see <a href=https://www.biorxiv.org/content/10.1101/2020.10.20.348052v1> preprint</a> and <a href=https://github.com/urmi-21/orfipy/tree/master/supplementary_data>SI</a></em>
+    For details see the <a href=https://doi.org/10.1093/bioinformatics/btab090> publication</a> and <a href=https://doi.org/10.1093/bioinformatics/btab090>SI</a></em>
 </p>
 
 - orfipy is most flexible, particularly faster for data containing multiple smaller fasta sequences such as de-novo transcriptome assemblies or collection of microbial genomes.
