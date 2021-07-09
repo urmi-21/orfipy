@@ -128,6 +128,7 @@ def start_multiprocs(seqs,
                      partial3,
                      partial5,
                      bw_stops,
+                     ignore_case,
                      file_streams,
                      tmpdir):
     """
@@ -161,6 +162,8 @@ def start_multiprocs(seqs,
         report ORF without start codon.
     bw_stops : bool
         Orfs defined as between stops.
+    ignore_case : bool
+        Convert lower case chars to upper
     file_streams : list
         List of file streams for outputting the results.
     tmpdir : str
@@ -201,6 +204,7 @@ def start_multiprocs(seqs,
         #print(name, seq)
         thisname=name
         thisseq=seq
+        if ignore_case: thisseq=thisseq.upper()
         #print(type(seq))
         #thisseq=seqs.get_seq(s)
         #ignore if seq is < minlen
@@ -287,7 +291,7 @@ def start_multiprocs(seqs,
     print()
     
 
-def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,partial3,partial5,bw_stops,file_streams,tmp):
+def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,partial3,partial5,bw_stops,ignore_case,file_streams,tmp):
     """
     Compute ORFs using single thread
 
@@ -315,6 +319,8 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,part
         report ORF without start codon.
     bw_stops : bool
         Orfs defined as between stops.
+    ignore_case : bool
+        Convert lower case chars to upper
     file_streams : list
         List of file streams for outputting the results.
     tmpdir : str
@@ -341,6 +347,7 @@ def worker_single(seqs,minlen,maxlen,strand,starts,stops,table,include_stop,part
         #print(name, seq)
         thisname=name
         thisseq=seq
+        if ignore_case: thisseq=thisseq.upper()
         #ignore if seq is < minlen
         if len(thisseq)<minlen:
             continue
@@ -610,6 +617,7 @@ def main(infasta,
          bw_stops,
          longest,
          byframe,
+         ignore_case,
          bed12,
          bed,
          dna,
@@ -654,6 +662,8 @@ def main(infasta,
         Report longest ORFs in each sequence.
     byframe : bool
         Report ORFs by frames.
+    ignore_case : bool
+        Convert all lower case chars to upper case
     bed12 : bool
         Output ORFs to bed12.
     bed : bool
@@ -698,6 +708,7 @@ def main(infasta,
                       partial3,
                       partial5,
                       bw_stops,
+                      ignore_case,
                       file_streams,
                       outdir)
         duration = time.time() - start
@@ -715,6 +726,7 @@ def main(infasta,
                          partial3,
                          partial5,
                          bw_stops,
+                         ignore_case,
                          file_streams,
                          outdir)
         duration = time.time() - start
