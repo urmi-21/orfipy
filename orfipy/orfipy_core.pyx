@@ -41,8 +41,15 @@ cpdef orfs(seq,name='Seq',minlen=0,maxlen=1000000,strand='b',starts=['TTG','CTG'
     result=start_search(seq,seq_rc,name,minlen,maxlen,strand,starts,stops,None,include_stop,partial3,partial5,between_stops,[False,True,False,False,False])
     bed=result[1].split('\n')
     final_result=[]
+    
+    # Return emty list if no matches
+    if not bed: return final_result
+    
     for l in bed:
+        # continue if empty list
+        if not l: continue
         temp=l.split('\t')
+        
         thisorf=(int(temp[1]),int(temp[2]),temp[5],temp[3])
         final_result.append(thisorf)
     
