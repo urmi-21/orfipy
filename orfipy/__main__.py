@@ -122,6 +122,7 @@ def get_command_for_log(infasta,
          dna,
          rna,
          pep,
+         ignorecase,
          outdir):
     """
     return command as string for log
@@ -142,6 +143,8 @@ def get_command_for_log(infasta,
         cmd+=" --longest"
     if byframe:
         cmd+=" --by-frame"
+    if ignorecase:
+        cmd+="--ignore-case"
     if bed12:
         cmd+=" --bed12 "+bed12
     if bed:
