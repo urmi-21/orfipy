@@ -121,7 +121,7 @@ Users can directly import the ORF search algorithm, written in cython, in their 
 - minlen [0] min length (int)
 - maxlen [1000000] max length (int)
 - strand ['b'] Strand to use, (b)oth, (f)wd or (r)ev (char)
-- starts [['TTG','CTG','ATG']] Start codons to use (list)
+- starts ['TTG','CTG','ATG'] Start codons to use (list)
 - stops=['TAA','TAG','TGA'] Stop codons to use (list)
 - include_stop [False] Include stop codon in ORF (bool)
 - partial3 [False] Report ORFs without a stop (bool)
